@@ -38,7 +38,7 @@ CREATE TABLE transactions (
 );
 
 CREATE TABLE categories (
-    name VARCHAR PRIMARY KEY,
+    category VARCHAR PRIMARY KEY,
     services INTEGER REFERENCES services
 );
 
