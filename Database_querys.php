@@ -30,12 +30,17 @@
             return $stmt->fetch();
         }
 
-        public function getServiceCategories(int $id): array{
+        public function getServiceCategories(int $id): array{ #corrigir esta
             $stmt = $this->db->prepare('SELECT category FROM categories WHERE services = ?');
             $stmt->execute([$id]);
             return $stmt->fetch();
         }
 
+        public function getServiceComments(int $id): array{
+            $stmt = $this->db->prepare('SELECT comment, user FROM comments WHERE service_id = ?');
+            $stmt->execute([$id]);
+            return $stmt->fetch();
+        }
 
         public function getUser(string $username):array{
             $stmt = $this->db->prepare('SELECT * FROM users WHERE username = ?');

@@ -24,7 +24,7 @@ CREATE TABLE service_image (
 
 CREATE TABLE comments (
     id INTEGER PRIMARY KEY,
-    text VARCHAR,
+    comment VARCHAR,
     service_id INTEGER REFERENCES services,
     user VARCHAR REFERENCES users NOTNULL,
     replie_to INTEGER REFERENCES comments
@@ -39,7 +39,7 @@ CREATE TABLE transactions (
 
 CREATE TABLE categories (
     category VARCHAR PRIMARY KEY,
-    services INTEGER REFERENCES services
+    --services INTEGER REFERENCES services
 );
 
 CREATE TABLE cate_serv (
