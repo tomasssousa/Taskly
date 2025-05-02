@@ -12,10 +12,14 @@ CREATE TABLE services (
     pricing INTEGER NOTNULL,
     delivery_time VARCHAR,
     description VARCHAR,
-    images VARCHAR, --??????????? table imagens que sabem o serviço?
     rating INTEGER,
     status VARCHAR, -- talvez seja na transactions
     user VARCHAR REFERENCES users NOTNULL
+);
+
+CREATE TABLE service_image (
+    id varchar PRIMARY KEY,
+    services INTEGER REFERENCES services
 );
 
 CREATE TABLE comments (
@@ -34,7 +38,8 @@ CREATE TABLE transactions (
 );
 
 CREATE TABLE categories (
-    name VARCHAR PRIMARY KEY
+    name VARCHAR PRIMARY KEY,
+    services INTEGER REFERENCES services
 );
 
 CREATE TABLE cate_serv (
