@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Welcome to Taskly . . .</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="home.css">
+    <link rel="icon" href="docs/logo.png" type="icon/x-icon">
+</head>
+<body>
+    <header>
+        <a href="home.html"><img src="docs/logo.png" alt="Taskly Logo" class="logo"></a>
+        <button class="menu-button" onclick="togglePopup()">....</button>
+        <div class="popup-menu" id="popupMenu">
+            <button class="popup-item">Log In</button>
+            <button class="popup-item">Sign Up</button>
+        </div>
+    </header>
+    <main>
+        <h1 class="main-title">Search For Gigs</h1>
+        <div class="search-container">
+            <input type="text" placeholder="Search for available tasks..." class="search-input">
+            <button class="search-button">
+                <img src="docs/loupe.png" alt="Search" class="search-icon">
+            </button>
+        </div>
+    </main>
+    <script>
+        function togglePopup() {
+            const popup = document.getElementById('popupMenu');
+            popup.style.display = popup.style.display === 'block' ? 'none' : 'block';
+        }
+    </script>
+</body>
+</html>

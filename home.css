@@ -1,0 +1,96 @@
+@import url('https://fonts.googleapis.com/css?family=Lora:400,700|Poppins:400,700');
+
+html {
+    font-family: Poppins;
+    font-size: 16px;
+    text-align: center;
+}
+
+body > header {
+    padding: 0.5em;
+    background-color: #27364c;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+
+body > main {
+    padding: 2em;
+    display : flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.logo {
+    height: 50px;
+    width: auto;
+    margin-left: 0.5em;
+}
+
+.menu-button {
+    background-color: #516c81;
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-size: 1.5rem;
+    padding: 0.5em;
+    cursor: pointer;
+}
+
+.popup-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 1em;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+.popup-item {
+    display: block;
+    padding: 0.5em 1em;
+    background-color: white;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    width: 100%;
+}
+
+.popup-item:hover {
+    padding: 0.5em 1em;
+    border:#27364c solid 1px;
+    background-color: #f4f4f4;
+}
+
+.search-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.search-input {
+    width: 50%;
+    padding: 0.5em;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px 0 0 5px;
+    outline: none;
+}
+
+.search-button {
+    background-color: #516c81;
+    border: none;
+    padding: 0.5em;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+}
+
+.search-icon {
+    height: 20px;
+    width: 20px;
+}
