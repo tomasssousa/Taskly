@@ -1,4 +1,9 @@
 <?php
+
+    # Nas outras coisas relacionadas com base de dados é que estão as implementações, de acordo com o exemplo do chinook dado pelo professor
+    # Espero que a parte do PDO, das base de dados, possamos copiar e adaptar para o nosso site
+    # NÃO MANDAR ESTES COMENTÁRIOS ^^^
+
     class Database {
         private $db;
 
@@ -46,6 +51,11 @@
             $stmt = $this->db->prepare('SELECT * FROM users WHERE username = ?');
             $stmt->execute([$username]);
             return $stmt->fetch();
+        }
+
+        public function CreateUser(string $username, string $name, string $password, string $email){
+            $stmt = $this->db->prepare('SELECT * FROM users WHERE username = ?');
+
         }
     }
 ?>

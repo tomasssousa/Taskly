@@ -1,14 +1,23 @@
+PRAGMA FOREIGN KEYS ON;
+
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS services;
+DROP TABLE IF EXISTS service_image;
+DROP TABLE IF EXISTS comments;
+DROP TABLE IF EXISTS transactions;
+DROP TABLE IF EXISTS categories;
+DROP TABLE IF EXISTS cate_serv;
+
 CREATE TABLE users (
     username VARCHAR PRIMARY KEY,
     name VARCHAR NOTNULL,
     password VARCHAR NOTNULL,
-    email VARCHAR NOTNULL,
-    admin_power BOOLEAN
+    email VARCHAR NOTNULL UNIQUE,
+    admin BOOLEAN
 );
 
 CREATE TABLE services (
     id INTEGER PRIMARY KEY,
-    --category VARCHAR REFERENCES categories,
     pricing INTEGER NOTNULL,
     delivery_time VARCHAR,
     description VARCHAR,
