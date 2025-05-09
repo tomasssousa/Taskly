@@ -17,12 +17,12 @@ CREATE TABLE users (
 );
 
 CREATE TABLE services (
-    id INTEGER PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     pricing INTEGER NOTNULL,
     delivery_time VARCHAR,
     description VARCHAR,
     rating INTEGER,
-    status VARCHAR, -- talvez seja na transactions
+    --status VARCHAR, -- talvez seja na transactions
     user VARCHAR REFERENCES users NOTNULL
 );
 
@@ -43,15 +43,16 @@ CREATE TABLE transactions (
     id INTEGER PRIMARY KEY,
     user VARCHAR REFERENCES users,
     service_id INTEGER REFERENCES services,
-    rating INTEGER, --don't know
+    status VARCHAR,
+    rating INTEGER --don't know
 );
 
 CREATE TABLE categories (
-    category VARCHAR PRIMARY KEY,
+    category VARCHAR PRIMARY KEY
     --services INTEGER REFERENCES services
 );
 
 CREATE TABLE cate_serv (
     service_id INTEGER REFERENCES services,
-    categorie VARCHAR REFERENCES categories
+    category VARCHAR REFERENCES categories
 );

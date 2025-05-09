@@ -35,3 +35,4 @@ class User {
         $stmt->execute([$username]);
     }
 }
+?>
