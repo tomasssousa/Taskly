@@ -27,20 +27,20 @@ CREATE TABLE services (
 );
 
 CREATE TABLE service_image (
-    id varchar PRIMARY KEY,
+    id varchar PRIMARY KEY AUTOINCREMENT,
     services INTEGER REFERENCES services
 );
 
 CREATE TABLE comments (
-    id INTEGER PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     comment VARCHAR,
     service_id INTEGER REFERENCES services,
     user VARCHAR REFERENCES users NOTNULL,
-    replie_to INTEGER REFERENCES comments
+    reply_to INTEGER REFERENCES comments
 );
 
 CREATE TABLE transactions (
-    id INTEGER PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     user VARCHAR REFERENCES users,
     service_id INTEGER REFERENCES services,
     status VARCHAR,
