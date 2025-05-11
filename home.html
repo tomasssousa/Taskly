@@ -4,16 +4,20 @@
     <title>Taskly | The website that solves your problems</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="first.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="home.css">
     <link rel="icon" href="docs/logo.png" type="icon/x-icon">
 </head>
 <body>
     <header>
         <a href="home.html"><img src="docs/logo.png" alt="Taskly Logo" class="logo"></a>
-        <button class="menu-button" onclick="togglePopup()">....</button>
-        <div class="popup-menu" id="popupMenu">
-            <button class="popup-item">Log In</button>
-            <button class="popup-item">Sign Up</button>
+        <div class="header-right">
+            <a href="new_task.html" class = "new-task-button">New Task</a>
+            <img src="docs/user_icon.png" alt="User Profile" class="user-icon" onclick="toggleUserMenu()">
+            <div class="user-menu" id="userMenu">
+                <a href="index.html">Log In</a>
+                <a href="signup.html">Sign Up</a>
+            </div>
         </div>
     </header>
     <main>
@@ -26,9 +30,9 @@
         </div>
     </main>
     <script>
-        function togglePopup() {
-            const popup = document.getElementById('popupMenu');
-            popup.style.display = popup.style.display === 'block' ? 'none' : 'block';
+        function toggleUserMenu() {
+            const menu = document.getElementById('userMenu');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
         }
     </script>
 </body>
