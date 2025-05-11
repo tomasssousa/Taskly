@@ -1,0 +1,199 @@
+.main-layout {
+    display: flex;
+    min-height: calc(100vh - 80px);
+}
+
+.user {
+    width: 350px;
+    background: white;
+    padding: 25px;
+    position: sticky;
+    top: 80px;
+    height: calc(100vh - 80px);
+    overflow-y: auto;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+}
+.user-profile {
+    text-align: center;
+}
+
+.user-photo {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 15px;
+    border: 4px solid #ccc;
+}
+
+.user-name {
+    font-size: 1.5em;
+    margin: 0;
+    color: #27364c;
+}
+
+.user-bio {
+    font-size: 0.95em;
+    color: #555;
+    margin: 10px 0 20px 0;
+}
+
+.user-skills {
+    text-align: left;
+}
+
+.user-skills h3 {
+    margin-bottom: 10px;
+    color: #27364c;
+}
+
+.skills-list {
+    list-style-type: none;
+    padding-left: 0;
+    margin-bottom: 10px;
+}
+
+.skills-list li {
+    background-color: #e4e9f0;
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 15px;
+    margin: 4px;
+    font-size: 0.9em;
+    color: #27364c;
+}
+
+.add-skill-container {
+    display: flex;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.add-skill-input {
+    flex: 1;
+    padding: 6px;
+    font-size: 0.9em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.add-skill-button {
+    width: 36px;        
+    height: 36px;         
+    padding: 0;            
+    background-color: #516c81;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2em;     
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.content-area {
+    flex: 1;
+    padding: 30px;
+    background-color: #f9f9f9;
+}
+
+.search-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.search-input {
+    width: 50%;
+    padding: 0.5em;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px 0 0 5px;
+    outline: none;
+}
+
+.search-button {
+    background-color: #516c81;
+    border: none;
+    padding: 0.5em;
+    width: auto;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+}
+
+.search-icon {
+    height: 20px;
+    width: 20px;
+}
+
+.gigs-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 25px;
+}
+
+.gig-card {
+    display: flex;
+    flex-direction: row;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    min-height: 200px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+}
+
+.gig-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.gig-image-container {
+    width: 30%;
+}
+
+.gig-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.gig-card:hover .gig-image {
+    transform: scale(1.03);
+}
+
+.gig-details {
+    width: 70%;
+    padding: 20px;
+}
+
+.gig-seller {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.seller-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin-right: 10px;
+    object-fit: cover;
+}
+
+.rating {
+    margin-left: auto;
+    color: #ffb400;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+}
+
+.order-button {
+    align-self: flex-start;
+    padding: 12px 25px;
+    margin-top: 15px;
+}
