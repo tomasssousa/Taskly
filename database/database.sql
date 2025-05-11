@@ -13,7 +13,7 @@ CREATE TABLE users (
     name VARCHAR NOTNULL,
     password VARCHAR NOTNULL,
     email VARCHAR NOTNULL UNIQUE,
-    admin BOOLEAN
+    admin BOOLEAN NOTNULL
 );
 
 CREATE TABLE services (
@@ -41,9 +41,9 @@ CREATE TABLE comments (
 
 CREATE TABLE transactions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user VARCHAR REFERENCES users,
-    service_id INTEGER REFERENCES services,
-    status VARCHAR,
+    user VARCHAR REFERENCES users NOTNULL,
+    service_id INTEGER REFERENCES services NOTNULL,
+    status VARCHAR NOTNULL,
     rating INTEGER --don't know
 );
 
@@ -54,5 +54,6 @@ CREATE TABLE categories (
 
 CREATE TABLE cate_serv (
     service_id INTEGER REFERENCES services,
-    category VARCHAR REFERENCES categories
+    category VARCHAR REFERENCES categories,
+    PRIMARY KEY (service_id, category_id)
 );
