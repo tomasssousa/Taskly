@@ -6,26 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="home.css">
-    <link rel="icon" href="docs/logo.png" type="icon/x-icon">
+    <link rel="icon" href="../docs/logo.png" type="icon/x-icon">
 </head>
 <body>
-    <header>
-        <a href="home.html"><img src="docs/logo.png" alt="Taskly Logo" class="logo"></a>
-        <div class="header-right">
-            <a href="new_task.html" class = "new-task-button">New Task</a>
-            <img src="docs/user_icon.png" alt="User Profile" class="user-icon" onclick="toggleUserMenu()">
-            <div class="user-menu" id="userMenu">
-                <a href="index.html">Log In</a>
-                <a href="signup.html">Sign Up</a>
-            </div>
-        </div>
-    </header>
+<?php include_once(__DIR__ . '/../components/header.php'); ?>
     <main>
         <h1 class="main-title">Search For Gigs</h1>
         <div class="search-container">
             <input type="text" placeholder="Search for available tasks..." class="search-input">
             <button class="search-button">
-                <img src="docs/loupe.png" alt="Search" class="search-icon">
+                <img src="../docs/loupe.png" alt="Search" class="search-icon">
             </button>
         </div>
     </main>
