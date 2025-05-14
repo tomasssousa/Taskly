@@ -23,8 +23,32 @@ class Transaction{
         $stmt->execute([$user, $service_id, $status, $rating]);
     }
 
-    public static function get_transaction(){
-        
+    #used to get all (or limitited by count) transactions between the user and the service
+    public static function get_transaction($user, $service_id, $count){
+        $db = Database::getInstance();
+        $stmt = $db->prepare('SELECT * FROM transactions WHERE user = ? AND service_id = ? LIMIT ?');
+        $stmt->execute([$id, $service_id, $count]);
+
+        $transactions = [];
+
+        while ($transaction = $stmt->fetch()) {
+            $transactions[] = new Transaction($transaction['id'], $transaction['user'], $transaction['service_id'], $transaction['status'], $transaction['rating']);
+        }
+        return $transactions;
+    }
+
+    #used to get the transactions between the user and service that are in a certain status (primarily imagined for getting pending transacions)
+    public static function get_pending_transaction($user, $service_id, $status, $count){
+        $db = Database::getInstance();
+        $stmt = $db->prepare('SELECT * FROM transactions WHERE user = ? AND service_id = ? AND status = ? LIMIT ?');
+        $stmt->execute([$id, $service_id, $status, $count]);
+
+        $transactions = [];
+
+        while ($transaction = $stmt->fetch()) {
+            $transactions[] = new Transaction($transaction['id'], $transaction['user'], $transaction['service_id'], $transaction['status'], $transaction['rating']);
+        }
+        return $transactions;
     }
 
     public static function update_rating($id, $user, $rating){

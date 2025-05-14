@@ -24,13 +24,14 @@ class Service {
         $stmt = $db->prepare('INSERT INTO services (pricing, delivery_time, description, rating, user) VALUES (?, ?, ?, ?, ?)');
         $stmt->execute([$pricing, $delivery_time, $description, $rating, $user]);
     }
-
+    
     public static function get_service(int $id){
         $db = Database::getInstance();
         $stmt = $db->prepare('SELECT * FROM services WHERE id = ?');
         $stmt->execute([$id]);
     }
 
+    #get the services that belong to the desired category. Singular category search.
     public static function get_service_by_category(int $category, int $count){
         $db = Database::getInstance();
         $stmt = $db->prepare('SELECT services.* FROM cate_serv JOIN services ON cate_serv.category=services.id AND cate_serv.category  LIKE ? LIMIT ?');
@@ -44,6 +45,8 @@ class Service {
         return $services;
     }
 
+    #obtain the services that contain a certain word($description) in their description.
+    #The input is not separated in any way and, as such, it does not work well with more a word, with no spaces before or after, and with caligraphy errors (asssuming the service description is well written)
     public static function get_service_by_description(int $description, int $count){
         $db = Database::getInstance();
         $stmt = $db->prepare('SELECT * FROM  services WHERE description LIKE ? LIMIT ?');
