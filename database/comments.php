@@ -31,8 +31,16 @@ class Comment {
         $stmt->execute([$comment, $user, $reply_to]); 
     }
 
+    public static function get_comment_by_id($id): Comment{
+        $db = Database::getInstance();
+        $stmt = $db->prepare('SELECT * FROM comments WHERE id = ?');
+        $stmt->execute([$id]);
+        $comment = $stmt->fetch();
+        return new Comment($comment['id'], $comment['comment'], $comment['service_id'], $comment['user'], $comment['reply_to']);
+    }
+
     #get the comments to a service
-    public static function get_comments($service_id, $count){
+    public static function get_comments($service_id, $count): array {
         $db = Database::getInstance();
         $stmt = $db->prepare('SELECT * FROM comments WHERE service_id = ? LIMIT ?');
         $stmt->execute([$service_id, $count]);
@@ -46,7 +54,7 @@ class Comment {
     }
 
     #get the comments that are a reply to a certain comment
-    public static function get_replies($id, $count){
+    public static function get_replies($id, $count): array {
         $db = Database::getInstance();
         $stmt = $db->prepare('SELECT * FROM comments WHERE reply_to = ? LIMIT ?');
         $stmt->execute([$id, $count]);
@@ -60,7 +68,7 @@ class Comment {
     }
 
     #get all the users made comments and replies
-    public static function get_comments_by_user($user, $count){ #lembrete que algumas destas funções podem não vir a ser usadas, uma vez que determinadas coisas podem não ser desejáveis de implementar.
+    public static function get_comments_by_user($user, $count): array { #lembrete que algumas destas funções podem não vir a ser usadas, uma vez que determinadas coisas podem não ser desejáveis de implementar.
         $db = Database::getInstance();
         $stmt = $db->prepare('SELECT * FROM comments WHERE user = ? LIMIT ?');
         $stmt->execute([$user, $count]);

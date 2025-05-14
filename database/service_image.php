@@ -18,7 +18,7 @@ class Service_image{
     }
 
     #get the id of the images that belong to a certain service, with the $count limiter
-    public static function get_service_images($service, $count){
+    public static function get_service_images($service, $count): array {
         $db = Database::getInstance();
         $stmt = $db->prepare('SELECT * FROM service_image WHERE services = ? LIMIT ?');
         $stmt->execute([$service, $count]);

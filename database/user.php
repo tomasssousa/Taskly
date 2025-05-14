@@ -21,6 +21,7 @@ class User {
         $stmt->execute([$username, $name, $sha1($password), $email, $admin]);
     }
 
+    #it does not return a new User beacuse it requires further investigation on how it will be used
     public static function get_user($username, $password) {
         $db = Database::getInstance();
         $stmt = $db->prepare('SELECT * FROM users WHERE username = ? AND password = ?');

@@ -9,30 +9,34 @@ class Service {
     public string $description;
     public int $rating;
     public string $user;
+    public string $title;
 
-    public function __construct(int $id, int $pricing, string $delivery_time, string $description, int $rating, string $user){
+    public function __construct(int $id, int $pricing, string $delivery_time, string $description, int $rating, string $user, string $title){
         $this->id = $id;
         $this->pricing = $pricing;
         $this->delivery_time = $delivery_time;
         $this->description = $description;
         $this->rating = $rating;
         $this->user = $user;
+        $this->title = $title;
     }
 
-    public static function create(int $pricing, string $delivery_time, string $description, int $rating, string $user){
+    public static function create(int $pricing, string $delivery_time, string $description, int $rating, string $user, string $title){
         $db = Database::getInstance();
-        $stmt = $db->prepare('INSERT INTO services (pricing, delivery_time, description, rating, user) VALUES (?, ?, ?, ?, ?)');
-        $stmt->execute([$pricing, $delivery_time, $description, $rating, $user]);
+        $stmt = $db->prepare('INSERT INTO services (pricing, delivery_time, description, rating, user, title) VALUES (?, ?, ?, ?, ?, ?)');
+        $stmt->execute([$pricing, $delivery_time, $description, $rating, $user, $title]);
     }
-    
-    public static function get_service(int $id){
+
+    public static function get_service(int $id): Service {
         $db = Database::getInstance();
         $stmt = $db->prepare('SELECT * FROM services WHERE id = ?');
         $stmt->execute([$id]);
+        $service = $stmt->fetch();
+        return new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['user'], $service['title']);
     }
 
     #get the services that belong to the desired category. Singular category search.
-    public static function get_service_by_category(int $category, int $count){
+    public static function get_service_by_category(int $category, int $count): array {
         $db = Database::getInstance();
         $stmt = $db->prepare('SELECT services.* FROM cate_serv JOIN services ON cate_serv.category=services.id AND cate_serv.category  LIKE ? LIMIT ?');
         $stmt->execute(["$category%", $count]);
@@ -40,14 +44,14 @@ class Service {
         $services = [];
 
         while ($service = $stmt->fetch()) {
-            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['user']);
+            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['user'], $service['title']);
         }
         return $services;
     }
 
     #obtain the services that contain a certain word($description) in their description.
-    #The input is not separated in any way and, as such, it does not work well with more a word, with no spaces before or after, and with caligraphy errors (asssuming the service description is well written)
-    public static function get_service_by_description(int $description, int $count){
+    #The input is not separated in any way and, as such, it does not work well with more than a word, with no spaces before or after, and without caligraphy errors (asssuming the service description is well written)
+    public static function get_service_by_description(int $description, int $count): array {
         $db = Database::getInstance();
         $stmt = $db->prepare('SELECT * FROM  services WHERE description LIKE ? LIMIT ?');
         $stmt->execute(["$description%", $count]);
@@ -55,7 +59,22 @@ class Service {
         $services = [];
 
         while ($service = $stmt->fetch()) {
-            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['user']);
+            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['user'], $service['title']);
+        }
+        return $services;
+    }
+
+    #obtain the services that contain a certain word($title) in their title.
+    #The input is not separated in any way and, as such, it does not work well with more than a word, with no spaces before or after, and without caligraphy errors (asssuming the service title is well written)
+    public static function get_service_by_title(int $title, int $count): array {
+        $db = Database::getInstance();
+        $stmt = $db->prepare('SELECT * FROM  services WHERE title LIKE ? LIMIT ?');
+        $stmt->execute(["$title%", $count]);
+
+        $services = [];
+
+        while ($service = $stmt->fetch()) {
+            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['user'], $service['title']);
         }
         return $services;
     }

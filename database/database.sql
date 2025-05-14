@@ -23,7 +23,8 @@ CREATE TABLE services (
     description VARCHAR,
     rating INTEGER,
     --status VARCHAR, -- talvez seja na transactions
-    user VARCHAR REFERENCES users NOTNULL
+    user VARCHAR REFERENCES users NOTNULL,
+    title VARCHAR NOTNULL
 );
 
 CREATE TABLE service_image (
@@ -57,3 +58,24 @@ CREATE TABLE cate_serv (
     category VARCHAR REFERENCES categories,
     PRIMARY KEY (service_id, category_id)
 );
+
+
+
+--ADMIN USER.  Password can be changed to somethingless secure and quick (!am$9of28FGT-SALT<-funny_joke   OR    1234)
+INSERT INTO users (username, name, password, email, admin) VALUES ('admin', 'administrater', '!am$9of28FGT-SALT<-funny_joke', 'siteAdmin@fe.up.pt', 1);
+
+--Services to fill the site a bit
+INSERT INTO services (id, pricing, delivery_time, description, rating, user, title) VALUES (1, 200,'10 days','Hear hear, do you have a dragon and dont know how to properly train him/her? Dont fear beacuse, for a mere 200 money currency I will train your dragon to be obidient to you. Full refund if you end up unsatisfied and the site allows for refunds. PS: it doesnt',5,'admin', 'How to train your dragon');
+INSERT INTO services (id, pricing, delivery_time, description, rating, user, title) VALUES (2, 50,'2 days','Beginners course for web design. More information after contact.',4,'admin', 'Learnig web design');
+INSERT INTO services (id, pricing, delivery_time, description, rating, user, title) VALUES (3, 10,'Your pick','Hi, my names Becky and i really LOVE pets. Dogs, cat, snakes, hamsters, you say it, i love it. And thats why I am the PERFECT pick for you to leave your pets with when you need to leave the house. For 10 money currency a day I will take of your precious Kids(not humans tho). Send me a message if you need a Petsitter. Byeee.',4,'admin', 'Petsitting');
+INSERT INTO services (id, pricing, delivery_time, description, rating, user, title) VALUES (4, 0,'Max until you are 55','Your country needs you. If you are a young men and unemployed, look no further. Come serve your country under a good salary, a good retirement plan, and a sence of proudness. Join today. PS: Let it be known that lowering our rating helps no one.',1,'admin', 'Military');
+
+--Categories and their connections
+INSERT INTO categories (category) Values ('education');
+INSERT INTO categories (category) Values ('babysitting');
+INSERT INTO categories (category) Values ('spam');
+
+INSERT INTO cate_serv (service_id, category) Values (1,'education');
+INSERT INTO cate_serv (service_id, category) Values (2,'education');
+INSERT INTO cate_serv (service_id, category) Values (3,'babysitting');
+INSERT INTO cate_serv (service_id, category) Values (4,'spam');

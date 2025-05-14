@@ -23,11 +23,19 @@ class Transaction{
         $stmt->execute([$user, $service_id, $status, $rating]);
     }
 
+    public static function get_transaction_by_id($id): Transaction {
+        $db = Database::getInstance();
+        $stmt = $db->prepare('SELECT * FROM transactions WHERE id = ?');
+        $stmt->execute([$id]);
+        $transaction = $stmt->fetch();
+        return new Transaction($transaction['id'], $transaction['user'], $transaction['service_id'], $transaction['status'], $transaction['rating']);
+    }
+
     #used to get all (or limitited by count) transactions between the user and the service
-    public static function get_transaction($user, $service_id, $count){
+    public static function get_transaction($user, $service_id, $count): array {
         $db = Database::getInstance();
         $stmt = $db->prepare('SELECT * FROM transactions WHERE user = ? AND service_id = ? LIMIT ?');
-        $stmt->execute([$id, $service_id, $count]);
+        $stmt->execute([$user, $service_id, $count]);
 
         $transactions = [];
 
@@ -38,10 +46,10 @@ class Transaction{
     }
 
     #used to get the transactions between the user and service that are in a certain status (primarily imagined for getting pending transacions)
-    public static function get_pending_transaction($user, $service_id, $status, $count){
+    public static function get_pending_transaction($user, $service_id, $status, $count): array {
         $db = Database::getInstance();
         $stmt = $db->prepare('SELECT * FROM transactions WHERE user = ? AND service_id = ? AND status = ? LIMIT ?');
-        $stmt->execute([$id, $service_id, $status, $count]);
+        $stmt->execute([$user, $service_id, $status, $count]);
 
         $transactions = [];
 
