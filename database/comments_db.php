@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);        # Se Alguém mudar os ficheiros de sitio, que tenha atenção a atualizar o path em baixo
-require_once(__DIR__ . '/../database/database.php');  # <--
+require_once(__DIR__ . '/../database/connection.php');  # <--
 
 class Comment {
     public int $id;

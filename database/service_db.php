@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);        # Se Alguém mudar os ficheiros de sitio, que tenha atenção a atualizar o path em baixo
-require_once(__DIR__ . '/../database/database.php');  # <--
+require_once(__DIR__ . '/../database/connection.php');  # <--
 
 class Service {
     public int $id;
@@ -49,12 +49,26 @@ class Service {
         return $services;
     }
 
+    #get the services that belong to a desried delivery time. Singular delivery time search.
+    public static function get_service_by_delivery_time(int $delivery_time, int $count): array {
+        $db = Database::getInstance();
+        $stmt = $db->prepare('SELECT * FROM services WHERE delivery_time LIKE ? LIMIT ?');
+        $stmt->execute(["$delivery_time%", $count]);
+
+        $services = [];
+
+        while ($service = $stmt->fetch()) {
+            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['user'], $service['title']);
+        }
+        return $services;
+    }
+
     #obtain the services that contain a certain word($description) in their description.
     #The input is not separated in any way and, as such, it does not work well with more than a word, with no spaces before or after, and without caligraphy errors (asssuming the service description is well written)
     public static function get_service_by_description(int $description, int $count): array {
         $db = Database::getInstance();
         $stmt = $db->prepare('SELECT * FROM  services WHERE description LIKE ? LIMIT ?');
-        $stmt->execute(["$description%", $count]);
+        $stmt->execute(["%$description%", $count]);
 
         $services = [];
 
@@ -69,7 +83,7 @@ class Service {
     public static function get_service_by_title(int $title, int $count): array {
         $db = Database::getInstance();
         $stmt = $db->prepare('SELECT * FROM  services WHERE title LIKE ? LIMIT ?');
-        $stmt->execute(["$title%", $count]);
+        $stmt->execute(["%$title%", $count]);
 
         $services = [];
 
