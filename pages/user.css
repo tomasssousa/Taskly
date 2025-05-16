@@ -17,6 +17,67 @@
     text-align: center;
 }
 
+.button-wrapper {
+    position: relative;
+    height: 50px; /* example height */
+    width: 100%; /* or whatever width you need */
+  }
+  
+  .save-button {
+    background-color: #526D82;
+    color: white;
+    font-weight: bold;
+    padding: 4px 10px;
+    border: 1px solid #526D82;
+    border-radius: 20px;
+    text-decoration: none;
+    display: inline-block;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 14px;
+  }
+  
+
+
+.save-button:hover {
+    background-color: white;
+    color: #526D82;
+}
+
+/* Adjust the edit-icon-container for button placement */
+.edit-icon-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.edit-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+}
+
+.edit-icon-img {
+    width: 25px;
+    height: 25px;
+    object-fit: contain;
+    opacity: 0.8;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.edit-icon-img:hover {
+    opacity: 1;
+}
+
+
+
 .user-photo {
     width: 120px;
     height: 120px;
