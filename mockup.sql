@@ -11,13 +11,12 @@ CREATE TABLE users (
 
 CREATE TABLE services (
     id INTEGER PRIMARY KEY,
-    --category VARCHAR REFERENCES categories,
     pricing INTEGER NOT NULL,
     delivery_time VARCHAR,
     description VARCHAR,
-    images VARCHAR, --??????????? table imagens que sabem o serviço?
+    images VARCHAR,
     rating INTEGER,
-    status VARCHAR, -- talvez seja na transactions
+    status VARCHAR,
     user VARCHAR REFERENCES users NOT NULL
 );
 
@@ -33,7 +32,7 @@ CREATE TABLE transactions (
     id INTEGER PRIMARY KEY,
     user VARCHAR REFERENCES users,
     service_id INTEGER REFERENCES services,
-    rating INTEGER --don't know
+    rating INTEGER
 );
 
 CREATE TABLE categories (
@@ -45,9 +44,9 @@ CREATE TABLE cate_serv (
     categorie VARCHAR REFERENCES categories
 );
 
-CREATE TABLE media {
-    id INTEGER PRIMARY KEY;
+CREATE TABLE media (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     service_id INTEGER NOT NULL REFERENCES services(id),
     file_path TEXT NOT NULL,
     media_type TEXT CHECK(media_type IN ('image', 'video')) NOT NULL
-}
+);
