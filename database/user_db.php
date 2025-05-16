@@ -28,10 +28,10 @@ class User {
     }
 
     #it does not return a new User beacuse it requires further investigation on how it will be used
-    public static function get_user($username, $password) {
+    public static function get_user($username) {
         $db = Database::getInstance();
-        $stmt = $db->prepare('SELECT * FROM users WHERE username = ? AND password = ?');
-        $stmt->execute([$username, sha1($password)]);
+        $stmt = $db->prepare('SELECT * FROM users WHERE username = ?');
+        $stmt->execute([$username]);
 
         return $stmt->fetch();
     }
