@@ -36,6 +36,18 @@ class User {
         return $stmt->fetch();
     }
 
+    public static function update_bio($username,$bio){
+        $db = Database::getInstance();
+        $stmt = $db->prepare('UPDATE users SET bio = ? WHERE username = ?');
+        $stmt->execute([$bio,$username]);
+    }
+
+    public static function update_skills($username,$skills){
+        $db = Database::getInstance();
+        $stmt = $db->prepare('UPDATE users SET skills = ? WHERE username = ?');
+        $stmt->execute([$skills,$username]);
+    }
+
     public static function promote_to_admin($username) {
         $db = Database::getInstance();
         $stmt = $db->prepare('UPDATE users SET admin_power = TRUE WHERE username = ?');
