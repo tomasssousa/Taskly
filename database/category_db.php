@@ -32,7 +32,7 @@ class Category {
     
     public static function add_category_to_service($category, $service_id) {
         $db = Database::getInstance();
-        $stmt = $db->prepare('INSERT INTO cate_serv (service_id, category) VALUES (?, ?)');
+        $stmt = $db->prepare('INSERT INTO cate_serv (service_id, name) VALUES (?, ?)');
         $stmt->execute([$service_id, $category]);
     }
 }
