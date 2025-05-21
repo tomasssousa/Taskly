@@ -164,41 +164,74 @@
 .skills-list li {
     background-color: #e4e9f0;
     display: inline-block;
-    padding: 5px 10px;
+    padding: 5px 15px;
     border-radius: 15px;
     margin: 4px;
     font-size: 0.9em;
-    color: #27364c;
+    transition: all 0.2s ease;
 }
 
+/* Add styles for edit mode */
+.skills-list.edit-mode li {
+    background-color: #ffcfcf;  /* Pastel red */
+    padding-right: 30px;        /* Space for cross */
+    position: relative;
+    cursor: pointer;
+}
+
+.skills-list.edit-mode li::after {
+    content: '×';
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #ff6b6b;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.skills-list.edit-mode li:hover {
+    background-color: #ffb8b8;  /* Slightly darker on hover */
+}
+
+/* Remove the old skill input styles and replace with these */
 .add-skill-container {
-    display: flex;
-    gap: 5px;
+    position: relative;
+    width: 230px;
     margin-top: 10px;
 }
 
 .add-skill-input {
-    flex: 1;
-    padding: 6px;
+    width: 100%;
+    padding: 8px 35px 8px 12px; /* Increased right padding to make room for button */
+    border: 1px solid #ddd;
+    border-radius: 20px;
     font-size: 0.9em;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    outline: none;
 }
 
 .add-skill-button {
-    width: 36px;        
-    height: 36px;         
-    padding: 0;            
+    position: absolute;
+    top: 50%;
+    right: 20px;           /* Increased from 4px to 8px */
+    transform: translateY(-60%); /* Changed from -50% to -55% to move up slightly */
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
     background-color: #516c81;
     color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 1.2em;     
-    line-height: 1;
+    font-size: 1.2em;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: background-color 0.2s ease;
+    z-index: 2;
+}
+
+.add-skill-button:hover {
+    background-color: #3a4f5f;
 }
 
 .content-area {
@@ -236,72 +269,3 @@
     width: 20px;
 }
 
-.gigs-container {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 25px;
-}
-
-.gig-card {
-    display: flex;
-    flex-direction: row;
-    background-color: white;
-    border-radius: 8px;
-    overflow: hidden;
-    min-height: 200px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    transition: transform 0.2s ease;
-}
-
-.gig-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
-
-.gig-image-container {
-    width: 30%;
-}
-
-.gig-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-}
-
-.gig-card:hover .gig-image {
-    transform: scale(1.03);
-}
-
-.gig-details {
-    width: 70%;
-    padding: 20px;
-}
-
-.gig-seller {
-    display: flex;
-    align-items: center;
-    margin: 10px 0;
-}
-
-.seller-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    margin-right: 10px;
-    object-fit: cover;
-}
-
-.rating {
-    margin-left: auto;
-    color: #ffb400;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-}
-
-.order-button {
-    align-self: flex-start;
-    padding: 12px 25px;
-    margin-top: 15px;
-}

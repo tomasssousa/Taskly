@@ -36,6 +36,7 @@ if ($profileUser) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="style.css">
         <link rel="stylesheet" href="user.css">
+        <link rel="stylesheet" href="gig_card.css">
         <link rel="icon" href="../docs/logo.png" type="icon/x-icon">
     </head>
     <body>
@@ -99,14 +100,20 @@ if ($profileUser) {
                                 echo '<li>' . htmlspecialchars(trim($skill)) . '</li>';
                             }
                         } else {
-                            echo '<li>JavaScript</li><li>React</li><li>Node.js</li><li>UI/UX</li>';
+                            echo '<li>JavaScript</li><li>React</li><li>UI/UX</li>';
                         }
                         ?>
                     </ul>
 
-                    <div class="add-skill-container" id="addSkillContainer" style="display: none;">
-                        <input type="text" placeholder="Add a skill..." class="add-skill-input" id="addSkillInput">
-                        <button class="add-skill-button" id="addSkillButton" onclick="addSkill()">+</button>
+                    <div class="skill-input-wrapper" id="addSkillContainer" style="display: none;">
+                        <div class="skill-input-container">
+                            <input type="text" 
+                                   placeholder="Add a skill..." 
+                                   class="add-skill-input" 
+                                   id="addSkillInput"
+                                   onkeypress="if(event.key === 'Enter') addSkill()">
+                            <button type="button" class="add-skill-button" onclick="addSkill()">+</button>
+                        </div>
                     </div>
                 </div> <!-- .user-skills -->
             </div> <!-- .user-profile -->
@@ -114,10 +121,70 @@ if ($profileUser) {
         </aside>
 
         <section class="content-area">
-            <h1 class="page-title">Available Gigs</h1>
+            <h1 class="page-title">My Tasks</h1>
 
             <div class="gigs-container">
-                <!-- Your gig cards here -->
+                <?php
+                // Fetch user's services/tasks
+                try {
+                    $stmt = $db->prepare("
+                        SELECT s.*, u.profile_photo as seller_photo, u.name as seller_name,
+                               COALESCE(s.taskname, s.description) as task_title,
+                               (SELECT COUNT(*) FROM transactions WHERE service_id = s.id) as order_count,
+                               (SELECT file_path FROM media WHERE service_id = s.id ORDER BY id ASC LIMIT 1) as first_image
+                        FROM services s
+                        JOIN users u ON s.user = u.username
+                        WHERE s.user = ?
+                        ORDER BY s.id DESC
+                    ");
+                    $stmt->execute([$profileUser]);
+                    $services = $stmt->fetchAll();
+
+                    foreach($services as $service) {
+                        ?>
+                        <div class="gig-card">
+                            <div class="gig-image-container">
+                                <img src="<?= !empty($service['first_image']) ? 
+                                    (strpos($service['first_image'], 'uploads/') === 0 ? '../docs/' : '../docs/uploads/') . 
+                                    htmlspecialchars($service['first_image']) : 
+                                    '../docs/default-gig.jpg' ?>" 
+                                     alt="<?= htmlspecialchars($service['task_title']) ?>" 
+                                     class="gig-image">
+                            </div>
+                            <div class="gig-details">
+                                <h3><?= htmlspecialchars($service['task_title']) ?></h3>
+                                <div class="gig-seller">
+                                    <img src="<?= !empty($service['seller_photo']) ? '../docs/' . htmlspecialchars($service['seller_photo']) : '../docs/user_icon.png' ?>" 
+                                         alt="<?= htmlspecialchars($service['seller_name']) ?>" 
+                                         class="seller-avatar">
+                                    <span><?= htmlspecialchars($service['seller_name']) ?></span>
+                                    <!--<span class="rating">★ <?= number_format($service['rating'], 1) ?> (<?= $service['order_count'] ?>)</span>-->
+                                </div>
+                                <p class="gig-description"><?= htmlspecialchars($service['description']) ?></p>
+                                <div class="gig-pricing">
+                                    <span class="price">€<?= htmlspecialchars($service['pricing']) ?></span>
+                                    <span class="delivery"><?= htmlspecialchars($service['delivery_time']) ?> delivery</span>
+                                </div>
+                                <div class="gig-status">
+                                    Status: <span class="status-<?= htmlspecialchars(strtolower($service['status'])) ?>">
+                                        <?= htmlspecialchars($service['status']) ?>
+                                    </span>
+                                </div>
+                                <a href="edit_task.php?id=<?= $service['id'] ?>" class="edit-button">Edit Task</a>
+                            </div>
+                        </div>
+                        <?php
+                    }
+                    
+                    if (empty($services)) {
+                        echo '<p class="no-tasks">No tasks found. <a href="new_task.php">Create your first task!</a></p>';
+                    }
+                    
+                } catch (PDOException $e) {
+                    error_log("Error fetching services: " . $e->getMessage());
+                    echo '<p class="error">Error loading tasks. Please try again later.</p>';
+                }
+                ?>
             </div>
         </section>
     </main>
@@ -143,6 +210,23 @@ if ($profileUser) {
             photoContainer.classList.add('edit-mode');
         } else {
             photoContainer.classList.remove('edit-mode');
+        }
+
+        const skillsList = document.querySelector('.skills-list');
+        if (editMode) {
+            skillsList.classList.add('edit-mode');
+            // Add click handlers to all skills
+            skillsList.querySelectorAll('li').forEach(skill => {
+                skill.onclick = function() {
+                    this.remove();  // Remove without confirmation
+                };
+            });
+        } else {
+            skillsList.classList.remove('edit-mode');
+            // Remove click handlers
+            skillsList.querySelectorAll('li').forEach(skill => {
+                skill.onclick = null;
+            });
         }
     }
 
@@ -183,6 +267,11 @@ if ($profileUser) {
         if (skill) {
             const li = document.createElement('li');
             li.textContent = skill;
+            if (document.querySelector('.skills-list').classList.contains('edit-mode')) {
+                li.onclick = function() {
+                    this.remove();  // Remove without confirmation
+                };
+            }
             document.querySelector('.skills-list').appendChild(li);
             document.getElementById('addSkillInput').value = '';
         }
@@ -209,30 +298,49 @@ if ($profileUser) {
 
         const profileImage = document.getElementById('profileImage').files[0];
         if (profileImage) {
-            formData.append('profile_photo', profileImage);
+            formData.append('profile_photo', profileImage, profileImage.name); // Add filename
         }
 
-        fetch('update_profile.php', {
+        // Show loading state
+        const saveButton = document.getElementById('saveButton');
+        saveButton.textContent = 'Saving...';
+        saveButton.disabled = true;
+
+        fetch('../actions/action_update_profile.php', { // Update the path
             method: 'POST',
             body: formData,
             credentials: 'same-origin'
         })
         .then(response => {
             if (!response.ok) {
-                return response.text().then(text => { throw new Error(`Server error: ${text}`); });
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.json();
         })
         .then(data => {
             if (data.success) {
-                toggleEditProfile(); 
+                // Update UI with new data
+                if (data.profile_photo) {
+                    document.getElementById('userProfilePic').src = '../docs/' + data.profile_photo;
+                }
+                toggleEditProfile();
+                // Reload header photo if it exists
+                const headerPhoto = document.querySelector('.user-icon');
+                if (headerPhoto && data.profile_photo) {
+                    headerPhoto.src = '../docs/' + data.profile_photo;
+                }
             } else {
-                alert('Error: ' + (data.error || 'Unknown error'));
+                throw new Error(data.error || 'Unknown error occurred');
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Failed to save. ' + error.message);
+            alert('Failed to save profile: ' + error.message);
+        })
+        .finally(() => {
+            // Reset button state
+            saveButton.textContent = 'Save';
+            saveButton.disabled = false;
         });
     }
 

@@ -11,6 +11,7 @@ CREATE TABLE users (
 
 CREATE TABLE services (
     id INTEGER PRIMARY KEY,
+    taskname VARCHAR NOT NULL,
     pricing INTEGER NOT NULL,
     delivery_time VARCHAR,
     description VARCHAR,

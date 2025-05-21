@@ -1,0 +1,77 @@
+.gigs-container {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    padding: 20px;
+}
+
+.gig-card {
+    display: flex;
+    flex-direction: row;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    height: 230px;  /* Increased from 200px to 250px */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+}
+
+.gig-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.gig-image-container {
+    width: 300px;
+    height: 230px;  /* Match the card height */
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.gig-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.gig-card:hover .gig-image {
+    transform: scale(1.03);
+}
+
+.gig-details {
+    padding: 25px;  /* Increased padding */
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 15px;  /* Add gap between elements */
+}
+
+.gig-seller {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.seller-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin-right: 10px;
+    object-fit: cover;
+}
+
+.rating {
+    margin-left: auto;
+    color: #ffb400;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+}
+
+.order-button {
+    align-self: flex-start;
+    padding: 12px 25px;
+    margin-top: 15px;
+}

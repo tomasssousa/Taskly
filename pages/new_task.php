@@ -17,7 +17,7 @@
                 <p class="error"><?= htmlspecialchars($_SESSION['error']) ?></p>
                 <?php unset($_SESSION['error']); ?>
             <?php endif; ?>
-            <form action="../actions/action_newtask.php" method="post">
+            <form action="../actions/action_newtask.php" method="post" enctype="multipart/form-data">
                 <input type="text" placeholder="Task Title" name="taskname" required>
                 <input type="text" placeholder="Task Description" name="taskdesc" required>
                 <input type="text" placeholder="Pricing" name="pricing" required>
