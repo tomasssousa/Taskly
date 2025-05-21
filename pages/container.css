@@ -25,7 +25,7 @@ main {
     color: black;
 }
 
-.container input, .container button {
+.container input, .container button, .container select {
     width: 100%; 
     padding: 1em;
     margin: 1em 0;
