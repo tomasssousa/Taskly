@@ -98,5 +98,30 @@ class Service {
         $stmt = $db->prepare('UPDATE services SET pricing = ?, delivery_time = ?, description = ? WHERE id = ? AND user = ?');
         $stmt->execute([$pricing],[$delivery_time],[$description],[$id],[$user]);
     }
+
+    public static function add_as_favourite(string $username, int $id){
+        $db = Database::getInstance();
+        $stmt = $db->prepare('INSERT INTO favourite_services (username, id) VALUES (?, ?)');
+        $stmt->execute([$username, $id]);
+    }
+
+    public static function remove_from_favourite(string $username, int $id){
+        $db = Database::getInstance();
+        $stmt = $db->prepare('DELETE FROM favourite_services WHERE username = ? AND id = ?');
+        $stmt->execute([$username, $id]);
+    }
+
+    public static function get_favourites(string $username, int $count){
+        $db = Database::getInstance();
+        $stmt = $db->prepare('SELECT services.* FROM  services JOIN favourite_services ON favourite_services.id = services.id WHERE favourite_services.username = ? LIMIT ?');
+        $stmt->execute([$username, $count]);
+
+        $services = [];
+
+        while ($service = $stmt->fetch()) {
+            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['user'], $service['title']);
+        }
+        return $services;
+    }
 }
 ?>

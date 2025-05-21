@@ -7,7 +7,7 @@ DROP TABLE IF EXISTS categories;
 DROP TABLE IF EXISTS cate_serv;
 DROP TABLE IF EXISTS media;
 DROP TABLE IF EXISTS delivery_time;
-
+DROP TABLE IF EXISTS favourite_services:
 
 CREATE TABLE users (
     username VARCHAR PRIMARY KEY,
@@ -28,6 +28,12 @@ CREATE TABLE services (
     rating INTEGER,
     user VARCHAR REFERENCES users NOT NULL,
     title VARCHAR NOT NULL
+);
+
+CREATE TABLE favourite_services (
+    username VARCHAR REFERENCES users,
+    id INTEGER REFERENCES services,
+    PRIMARY KEY (username, id)
 );
 
 CREATE TABLE service_image (
