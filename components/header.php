@@ -23,6 +23,11 @@ if (isset($_SESSION['username'])) {
     <a href="home.php"><img src="../docs/logo.png" alt="Taskly Logo" class="logo"></a>
     <div class="header-right">
         <a href="new_task.php" class="new-task-button">New Task</a>
+        <a href="favorites.php" class="favorites-button">
+            <svg class="star-icon" viewBox="0 0 24 24" width="24" height="24">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="currentColor"/>
+            </svg>
+        </a>
         <img src="<?= htmlspecialchars($userPhoto) ?>" alt="User Profile" class="user-icon" onclick="toggleUserMenu()">
         <div class="user-menu" id="userMenu">
             <?php if (isset($_SESSION['username'])): ?>

@@ -131,7 +131,7 @@ if ($profileUser) {
                         SELECT s.*, u.profile_photo as seller_photo, u.name as seller_name,
                                COALESCE(s.taskname, s.description) as task_title,
                                (SELECT COUNT(*) FROM transactions WHERE service_id = s.id) as order_count,
-                               (SELECT file_path FROM media WHERE service_id = s.id ORDER BY id ASC LIMIT 1) as first_image
+                               (SELECT GROUP_CONCAT(file_path) FROM media WHERE service_id = s.id ORDER BY id ASC) as all_images
                         FROM services s
                         JOIN users u ON s.user = u.username
                         WHERE s.user = ?
@@ -140,43 +140,13 @@ if ($profileUser) {
                     $stmt->execute([$profileUser]);
                     $services = $stmt->fetchAll();
 
-                    foreach($services as $service) {
-                        ?>
-                        <div class="gig-card">
-                            <div class="gig-image-container">
-                                <img src="<?= !empty($service['first_image']) ? 
-                                    (strpos($service['first_image'], 'uploads/') === 0 ? '../docs/' : '../docs/uploads/') . 
-                                    htmlspecialchars($service['first_image']) : 
-                                    '../docs/default-gig.jpg' ?>" 
-                                     alt="<?= htmlspecialchars($service['task_title']) ?>" 
-                                     class="gig-image">
-                            </div>
-                            <div class="gig-details">
-                                <h3><?= htmlspecialchars($service['task_title']) ?></h3>
-                                <div class="gig-seller">
-                                    <img src="<?= !empty($service['seller_photo']) ? '../docs/' . htmlspecialchars($service['seller_photo']) : '../docs/user_icon.png' ?>" 
-                                         alt="<?= htmlspecialchars($service['seller_name']) ?>" 
-                                         class="seller-avatar">
-                                    <span><?= htmlspecialchars($service['seller_name']) ?></span>
-                                    <!--<span class="rating">★ <?= number_format($service['rating'], 1) ?> (<?= $service['order_count'] ?>)</span>-->
-                                </div>
-                                <p class="gig-description"><?= htmlspecialchars($service['description']) ?></p>
-                                <div class="gig-pricing">
-                                    <span class="price">€<?= htmlspecialchars($service['pricing']) ?></span>
-                                    <span class="delivery"><?= htmlspecialchars($service['delivery_time']) ?> delivery</span>
-                                </div>
-                                <div class="gig-status">
-                                    Status: <span class="status-<?= htmlspecialchars(strtolower($service['status'])) ?>">
-                                        <?= htmlspecialchars($service['status']) ?>
-                                    </span>
-                                </div>
-                                <a href="edit_task.php?id=<?= $service['id'] ?>" class="edit-button">Edit Task</a>
-                            </div>
-                        </div>
-                        <?php
-                    }
+                    require_once(__DIR__ . '/gig_card.php');
                     
-                    if (empty($services)) {
+                    if (!empty($services)) {
+                        foreach($services as $service) {
+                            renderGigCard($service);
+                        }
+                    } else {
                         echo '<p class="no-tasks">No tasks found. <a href="new_task.php">Create your first task!</a></p>';
                     }
                     

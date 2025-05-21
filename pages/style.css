@@ -117,10 +117,34 @@ main {
     justify-content: center;
     height: 36px; 
     box-sizing: border-box; 
-    margin-right: 50px;
 }
 .new-task-button:hover {
     background-color: #526D82;
     color: white;
+}
+
+.favorites-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3px;
+    margin: 0 15px;
+    border-radius: 50%;
+    transition: background-color 0.2s ease;
+}
+
+.favorites-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.star-icon {
+    width: 35px;
+    height: 35px;
+    color: #ffffff;
+    transition: color 0.2s ease;
+}
+
+.favorites-button:hover .star-icon {
+    color: #ffffff;
 }
 
