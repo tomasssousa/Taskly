@@ -45,7 +45,7 @@
                 <div class ="search-container">
                     <input type="text" placeholder="Search for gigs..." class = "search-input">
                     <button class="search-button">
-                        <img src="docs/loupe.png" alt="Search" class="search-icon">
+                        <img src="../docs/loupe.png" alt="Search" class="search-icon">
                     </button>
                 </div>
 
