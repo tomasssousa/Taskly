@@ -1,8 +1,21 @@
 <?php
 function renderGigCard($service) {
     $images = !empty($service['all_images']) ? explode(',', $service['all_images']) : ['default-gig.jpg'];
+    $isOwner = isset($_SESSION['username']) && $_SESSION['username'] === $service['user'];
     ?>
-    <div class="gig-card">
+    <div class="gig-card" data-gig-id="<?= $service['id'] ?>">
+        <!-- Only render gig-actions if user is owner -->
+        <?php if ($isOwner): ?>
+            <div class="gig-actions">
+                <button class="gig-settings-btn" onclick="toggleGigMenu(<?= $service['id'] ?>)">
+                    <img src="../docs/settings.png" alt="Settings" class="settings-icon">
+                </button>
+                <div class="gig-menu" id="gigMenu_<?= $service['id'] ?>" style="display: none;">
+                    <a href="edit_task.php?id=<?= $service['id'] ?>">Edit Task</a>
+                    <a href="#" onclick="showDeleteConfirmation(<?= $service['id'] ?>)">Delete Task</a>
+                </div>
+            </div>
+        <?php endif; ?>
         <div class="gig-image-container">
             <div class="carousel" data-gig-id="<?= $service['id'] ?>">
                 <?php foreach ($images as $index => $image): ?>
@@ -44,14 +57,12 @@ function renderGigCard($service) {
                     </span>
                 </div>
             <?php endif; ?>
-            <?php if (isset($_SESSION['username']) && $_SESSION['username'] === $service['user']): ?>
-                <a href="edit_task.php?id=<?= $service['id'] ?>" class="edit-button">Edit Task</a>
-            <?php endif; ?>
         </div>
     </div>
     <?php
 }
 ?>
+
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -96,4 +107,62 @@ function setCarouselImage(gigId, index) {
     images[index].classList.add('active');
     dots[index].classList.add('active');
 }
+
+function toggleGigMenu(gigId) {
+    const menu = document.getElementById(`gigMenu_${gigId}`);
+    const allMenus = document.querySelectorAll('.gig-menu');
+    
+    // Close all other menus
+    allMenus.forEach(m => {
+        if (m.id !== `gigMenu_${gigId}`) {
+            m.style.display = 'none';
+        }
+    });
+    
+    menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+}
+
+// Close menus when clicking outside
+document.addEventListener('click', function(event) {
+    if (!event.target.closest('.gig-actions')) {
+        document.querySelectorAll('.gig-menu').forEach(menu => {
+            menu.style.display = 'none';
+        });
+    }
+});
+
+function showDeleteConfirmation(taskId) {
+    showPopup('deleteTaskPopup', () => deleteTask(taskId));
+}
+
+function deleteTask(taskId) {
+    fetch(`../actions/action_delete_task.php?id=${taskId}`, {
+        method: 'POST',
+        credentials: 'same-origin'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const gigCard = document.querySelector(`[data-gig-id="${taskId}"]`).closest('.gig-card');
+            gigCard.remove();
+        } else {
+            throw new Error(data.error || 'Failed to delete task');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to delete task: ' + error.message);
+    });
+}
 </script>
+
+<?php 
+require_once(__DIR__ . '/../components/warning_popup.php');
+showWarningPopup(
+    'deleteTaskPopup', 
+    'Delete Task?', 
+    'Are you sure you want to delete this task? This cannot be undone.',
+    'Delete',
+    'Cancel'
+); 
+?>

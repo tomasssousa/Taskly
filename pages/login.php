@@ -21,6 +21,9 @@
         <form action="../actions/action_login.php" method="post">
             <input type="text" placeholder="Username" name="username" required>
             <input type="password" placeholder="Password" name="password" required>
+            <?php if (isset($_GET['redirect'])): ?>
+                <input type="hidden" name="redirect" value="<?= htmlspecialchars($_GET['redirect']) ?>">
+            <?php endif; ?>
             <button type="submit">Login</button>
             <p>Not a Member? <a href="signup.php">Sign up</a></p>
         </form>

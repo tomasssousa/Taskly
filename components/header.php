@@ -19,24 +19,48 @@ if (isset($_SESSION['username'])) {
 }
 ?>
 
+<head>
+    <link rel="stylesheet" href="../components/warning_popup.css">
+</head>
+
 <header>
     <a href="home.php"><img src="../docs/logo.png" alt="Taskly Logo" class="logo"></a>
     <div class="header-right">
-        <a href="new_task.php" class="new-task-button">New Task</a>
-        <a href="favorites.php" class="favorites-button">
-            <svg class="star-icon" viewBox="0 0 24 24" width="24" height="24">
-                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="currentColor"/>
-            </svg>
-        </a>
+        <?php if (isset($_SESSION['username'])): ?>
+            <a href="new_task.php" class="new-task-button">New Task</a>
+            <a href="favorites.php" class="favorites-button">
+                <img src="../docs/star.png" alt="Favorites" class="star-icon">
+            </a>
+        <?php else: ?>
+            <a href="login.php?redirect=new_task" class="new-task-button">New Task</a>
+            <a href="login.php?redirect=favorites" class="favorites-button">
+                <img src="../docs/star.png" alt="Favorites" class="star-icon">
+            </a>
+        <?php endif; ?>
         <img src="<?= htmlspecialchars($userPhoto) ?>" alt="User Profile" class="user-icon" onclick="toggleUserMenu()">
         <div class="user-menu" id="userMenu">
             <?php if (isset($_SESSION['username'])): ?>
-                <a href="user.php">Profile</a>
-                <a href="settings.php">Settings</a>
-                <a href="../actions/action_logout.php">Logout</a>
+                <a href="user.php">
+                    <img src="../docs/user_logo.png" alt="" class="menu-icon">
+                    Profile
+                </a>
+                <a href="settings.php">
+                    <img src="../docs/settings.png" alt="" class="menu-icon">
+                    Settings
+                </a>
+                <a href="../actions/action_logout.php">
+                    <img src="../docs/logout.png" alt="" class="menu-icon">
+                    Logout
+                </a>
             <?php else: ?>
-                <a href="login.php">Log In</a>
-                <a href="signup.php">Sign Up</a>
+                <a href="login.php">
+                    <img src="../docs/login.png" alt="" class="menu-icon">
+                    Log In
+                </a>
+                <a href="signup.php">
+                    <img src="../docs/signup.png" alt="" class="menu-icon">
+                    Sign Up
+                </a>
             <?php endif; ?>
         </div>
     </div>

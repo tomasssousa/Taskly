@@ -16,7 +16,22 @@ try {
         session_regenerate_id(true);
         $_SESSION['username'] = $user['username'];
         $_SESSION['admin'] = $user['admin_power'];
-        header('Location: ../pages/home.php');
+
+        // Handle redirect after login
+        if (isset($_POST['redirect'])) {
+            switch ($_POST['redirect']) {
+                case 'new_task':
+                    header('Location: ../pages/new_task.php');
+                    break;
+                case 'favorites':
+                    header('Location: ../pages/favorites.php');
+                    break;
+                default:
+                    header('Location: ../pages/home.php');
+            }
+        } else {
+            header('Location: ../pages/home.php');
+        }
         exit();
     } else {
         $_SESSION['error'] = 'Incorrect username or password.';

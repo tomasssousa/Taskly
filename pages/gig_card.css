@@ -14,6 +14,7 @@
     height: 230px;  /* Increased from 200px to 250px */
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     transition: transform 0.2s ease;
+    position: relative; /* Add this */
 }
 
 .gig-card:hover {
@@ -151,4 +152,132 @@
 
 .dot.active {
     background: white;
+}
+
+/* Settings button and menu styles */
+.gig-actions:empty {
+    display: none;
+}
+
+.gig-actions {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+    width: 40px;
+    height: 40px;
+    pointer-events: none; /* Add this */
+}
+
+.gig-settings-btn {
+    pointer-events: auto; /* Add this */
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 40px;  /* Increased from 32px */
+    height: 40px; /* Increased from 32px */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.gig-settings-btn:hover {
+    background: white;
+}
+
+.settings-icon {
+    width: 20px;  /* Increased from 16px */
+    height: 20px; /* Increased from 16px */
+    opacity: 0.7;
+}
+
+.gig-menu {
+    pointer-events: auto; /* Add this */
+    position: absolute;
+    top: 40px;
+    right: 0;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    min-width: 120px;
+    z-index: 11;
+    display: none; /* Add this */
+}
+
+.gig-menu a {
+    display: block;
+    padding: 8px 16px;
+    color: #333;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.gig-menu a:hover {
+    background-color: #f5f5f5;
+}
+
+/* Modal styles */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.modal-title {
+    font-size: 1.2em;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.modal-btn {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.modal-btn-cancel {
+    background: #f0f0f0;
+    color: #666;
+}
+
+.modal-btn-confirm {
+    background: #dc3545;
+    color: white;
+}
+
+.modal-btn-cancel:hover {
+    background: #e4e4e4;
+}
+
+.modal-btn-confirm:hover {
+    background: #c82333;
 }

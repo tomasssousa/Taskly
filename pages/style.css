@@ -87,10 +87,12 @@ main {
     border-radius: 4px;
 }
 .user-menu a {
-    color: #27364c;
+    display: flex;
+    align-items: center;
+    gap: 8px;
     padding: 10px 15px;
     text-decoration: none;
-    display: block;
+    color: #333;
 }
 
 .user-menu a:hover {
@@ -127,10 +129,12 @@ main {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 3px;
-    margin: 0 15px;
+    width: 40px;  
+    height: 40px;
+    margin: 0 1px;
     border-radius: 50%;
     transition: background-color 0.2s ease;
+    padding-right: 2px; /* Add slight padding to move star right */
 }
 
 .favorites-button:hover {
@@ -138,13 +142,19 @@ main {
 }
 
 .star-icon {
-    width: 35px;
-    height: 35px;
-    color: #ffffff;
+    width: 28px; /* Slightly smaller for better proportions */
+    height: 28px;
     transition: color 0.2s ease;
 }
 
-.favorites-button:hover .star-icon {
-    color: #ffffff;
+.menu-icon {
+    width: 16px;
+    height: 16px;
+    opacity: 0.7;
 }
+
+.user-menu a:hover .menu-icon {
+    opacity: 1;
+}
+
 

@@ -227,10 +227,14 @@ if ($profileUser) {
         const input = document.getElementById('editBio');
         const newBio = input.value.trim();
         bio.textContent = newBio;
-
-        input.style.display = 'none';
-        bio.style.display = 'block';
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const editBio = document.getElementById('editBio');
+        if (editBio) {
+            editBio.addEventListener('input', updateBio);
+        }
+    });
 
     function addSkill() {
         const skill = document.getElementById('addSkillInput').value.trim();
