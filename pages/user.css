@@ -206,75 +206,67 @@
 /* Remove the old skill input styles and replace with these */
 .add-skill-container {
     position: relative;
-    width: 230px;
+    width: 100%; /* Make it as wide as you want */
     margin-top: 10px;
 }
 
 .add-skill-input {
     width: 100%;
-    padding: 8px 35px 8px 12px; /* Increased right padding to make room for button */
+    padding: 8px 45px 8px 12px; /* More space for button */
     border: 1px solid #ddd;
     border-radius: 20px;
     font-size: 0.9em;
     outline: none;
+    background: #fff;
+    color: #27364c;
+    box-sizing: border-box;
 }
 
 .add-skill-button {
     position: absolute;
-    top: 50%;
-    right: 20px;           /* Increased from 4px to 8px */
-    transform: translateY(-60%); /* Changed from -50% to -55% to move up slightly */
-    width: 28px;
-    height: 28px;
+    top: 35%;      /* Move up (was 50%) */
+    right: 0px;   /* Move more to the right (was 10px) */
+    transform: translateY(-50%);
+    width: 32px;   /* Slightly bigger */
+    height: 32px;
     border-radius: 50%;
     border: none;
-    background-color: #516c81;
+    background-color: #526D82;
     color: white;
-    font-size: 1.2em;
+    font-size: 1.4em;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: background-color 0.2s ease;
-    z-index: 2;
 }
 
 .add-skill-button:hover {
     background-color: #3a4f5f;
 }
 
+.skill-input-container {
+    position: relative;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.add-skill-input {
+    width: 90%;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    color: #27364c;
+    font-family: inherit;
+    box-sizing: border-box;
+    outline: none;
+    background: none;
+}
+
 .content-area {
     flex: 1;
     padding: 30px;
     background-color: #f9f9f9;
-}
-
-.search-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.search-input {
-    width: 50%;
-    padding: 0.5em;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 5px 0 0 5px;
-    outline: none;
-}
-
-.search-button {
-    background-color: #516c81;
-    border: none;
-    padding: 0.5em;
-    width: auto;
-    border-radius: 0 5px 5px 0;
-    cursor: pointer;
-}
-
-.search-icon {
-    height: 20px;
-    width: 20px;
 }
 
