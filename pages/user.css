@@ -180,10 +180,9 @@
     transition: all 0.2s ease;
 }
 
-/* Add styles for edit mode */
 .skills-list.edit-mode li {
-    background-color: #ffcfcf;  /* Pastel red */
-    padding-right: 30px;        /* Space for cross */
+    background-color: #ffcfcf;  
+    padding-right: 30px;      
     position: relative;
     cursor: pointer;
 }
@@ -200,19 +199,18 @@
 }
 
 .skills-list.edit-mode li:hover {
-    background-color: #ffb8b8;  /* Slightly darker on hover */
+    background-color: #ffb8b8;  
 }
 
-/* Remove the old skill input styles and replace with these */
 .add-skill-container {
     position: relative;
-    width: 100%; /* Make it as wide as you want */
+    width: 100%; 
     margin-top: 10px;
 }
 
 .add-skill-input {
     width: 100%;
-    padding: 8px 45px 8px 12px; /* More space for button */
+    padding: 8px 45px 8px 12px; 
     border: 1px solid #ddd;
     border-radius: 20px;
     font-size: 0.9em;
@@ -224,10 +222,10 @@
 
 .add-skill-button {
     position: absolute;
-    top: 35%;      /* Move up (was 50%) */
-    right: 0px;   /* Move more to the right (was 10px) */
+    top: 35%;     
+    right: 0px;  
     transform: translateY(-50%);
-    width: 32px;   /* Slightly bigger */
+    width: 32px;  
     height: 32px;
     border-radius: 50%;
     border: none;

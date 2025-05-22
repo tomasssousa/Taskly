@@ -71,4 +71,18 @@ function toggleUserMenu() {
     const menu = document.getElementById("userMenu");
     menu.style.display = menu.style.display === "block" ? "none" : "block";
 }
+
+// Close user menu when clicking outside
+document.addEventListener('click', function(event) {
+    const userMenu = document.getElementById('userMenu');
+    const userIcon = document.querySelector('.user-icon');
+    if (!userMenu) return;
+    if (
+        userMenu.style.display === 'block' &&
+        !userMenu.contains(event.target) &&
+        !userIcon.contains(event.target)
+    ) {
+        userMenu.style.display = 'none';
+    }
+});
 </script>

@@ -47,7 +47,6 @@ function renderGigCard($service) {
             </div>
             <p class="gig-description"><?= htmlspecialchars($service['description']) ?></p>
             <div class="gig-pricing">
-                <span class="price">€<?= htmlspecialchars($service['pricing']) ?></span>
                 <span class="delivery"><?= htmlspecialchars($service['delivery_time']) ?> delivery</span>
             </div>
             <?php if (isset($service['status'])): ?>
@@ -57,6 +56,7 @@ function renderGigCard($service) {
                     </span>
                 </div>
             <?php endif; ?>
+            <span class="gig-price">€<?= htmlspecialchars($service['pricing']) ?></span>
         </div>
     </div>
     <?php
