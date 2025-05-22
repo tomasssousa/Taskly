@@ -12,12 +12,12 @@
 <?php include_once(__DIR__ . '/../components/header.php'); ?>
     <main>
         <h1 class="main-title">Search For Gigs</h1>
-        <div class="search-container">
-            <input type="text" placeholder="Search for available tasks..." class="search-input">
-            <button class="search-button">
+        <form class="search-container" action="../actions/action_homesearch.php" method="get">
+            <input type="text" placeholder="Search for available tasks..." class="search-input" name="search">
+            <button class="search-button" type="submit">
                 <img src="../docs/loupe.png" alt="Search" class="search-icon">
             </button>
-        </div>
+        </form>
     </main>
     <script>
         function toggleUserMenu() {

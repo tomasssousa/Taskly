@@ -30,7 +30,7 @@
                 </select>
                 <select name="category" required>
                     <option value="" disabled selected>Select Category</option>
-                    <option value="less_than_1_day">Translation</option>
+                    <option value="Translation">Translation</option>
                 </select>
                 <input type="file" placeholder="Upload photo(s)" name="taskphoto[]" accept="image/*" multiple>
                 <button type="submit">Submit Task</button>
