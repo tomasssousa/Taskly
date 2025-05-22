@@ -40,10 +40,12 @@ function renderGigCard($service) {
         <div class="gig-details">
             <h3><?= htmlspecialchars($service['task_title']) ?></h3>
             <div class="gig-seller">
-                <img src="<?= !empty($service['seller_photo']) ? '../docs/' . htmlspecialchars($service['seller_photo']) : '../docs/user_icon.png' ?>" 
-                     alt="<?= htmlspecialchars($service['seller_name']) ?>" 
-                     class="seller-avatar">
-                <span><?= htmlspecialchars($service['seller_name']) ?></span>
+                <a href="user.php?user=<?= urlencode($service['user']) ?>" style="display: flex; align-items: center; text-decoration: none; color: inherit;">
+                    <img src="<?= !empty($service['seller_photo']) ? '../docs/' . htmlspecialchars($service['seller_photo']) : '../docs/user_icon.png' ?>" 
+                         alt="<?= htmlspecialchars($service['seller_name']) ?>" 
+                         class="seller-avatar">
+                    <span><?= htmlspecialchars($service['seller_name']) ?></span>
+                </a>
             </div>
             <p class="gig-description"><?= htmlspecialchars($service['description']) ?></p>
             <div class="gig-pricing">
