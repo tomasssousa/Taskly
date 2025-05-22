@@ -134,7 +134,8 @@ main {
     margin: 0 1px;
     border-radius: 50%;
     transition: background-color 0.2s ease;
-    padding-right: 2px; /* Add slight padding to move star right */
+    padding-right: 2px; 
+
 }
 
 .favorites-button:hover {
@@ -142,9 +143,10 @@ main {
 }
 
 .star-icon {
-    width: 28px; /* Slightly smaller for better proportions */
+    width: 28px; 
     height: 28px;
     transition: color 0.2s ease;
+    filter: brightness(0) invert(1);
 }
 
 .menu-icon {
@@ -155,6 +157,27 @@ main {
 
 .user-menu a:hover .menu-icon {
     opacity: 1;
+}
+
+.messages-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin: 0 1px;
+    border-radius: 50%;
+    transition: background-color 0.2s ease;
+}
+
+.messages-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.message-icon {
+    width: 40px;  
+    height: 40px;
+    filter: brightness(0) invert(1);
 }
 
 

@@ -28,11 +28,17 @@ if (isset($_SESSION['username'])) {
     <div class="header-right">
         <?php if (isset($_SESSION['username'])): ?>
             <a href="new_task.php" class="new-task-button">New Task</a>
+            <a href="messages.php" class="messages-button">
+                <img src="../docs/message.png" alt="Messages" class="message-icon">
+            </a>
             <a href="favorites.php" class="favorites-button">
                 <img src="../docs/star.png" alt="Favorites" class="star-icon">
             </a>
         <?php else: ?>
             <a href="login.php?redirect=new_task" class="new-task-button">New Task</a>
+            <a href="login.php?redirect=messages" class="messages-button">
+                <img src="../docs/message.png" alt="Messages" class="message-icon">
+            </a>
             <a href="login.php?redirect=favorites" class="favorites-button">
                 <img src="../docs/star.png" alt="Favorites" class="star-icon">
             </a>
