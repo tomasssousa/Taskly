@@ -36,19 +36,19 @@ class Service {
         $stmt = $db->prepare('SELECT * FROM services WHERE id = ?');
         $stmt->execute([$id]);
         $service = $stmt->fetch();
-        return new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['user'], $service['title']);
+        return new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['Nrating'], $service['user'], $service['taskname'], $service['category']);
     }
 
     #get the services that belong to the desired category. Singular category search.
     public static function get_service_by_category(string $category, int $count): array {
         $db = Database::getInstance();
-        $stmt = $db->prepare('SELECT services.* FROM cate_serv JOIN services ON cate_serv.category=services.id AND cate_serv.category  LIKE ? LIMIT ?');
+        $stmt = $db->prepare('SELECT * FROM services WHERE category  LIKE ? LIMIT ?');
         $stmt->execute(["$category%", $count]);
 
         $services = [];
 
         while ($service = $stmt->fetch()) {
-            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['user'], $service['title']);
+            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['Nrating'], $service['user'], $service['taskname'], $service['category']);
         }
         return $services;
     }
@@ -62,7 +62,7 @@ class Service {
         $services = [];
 
         while ($service = $stmt->fetch()) {
-            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['user'], $service['title']);
+            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['Nrating'], $service['user'], $service['taskname'], $service['category']);
         }
         return $services;
     }
@@ -77,22 +77,22 @@ class Service {
         $services = [];
 
         while ($service = $stmt->fetch()) {
-            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['user'], $service['title']);
+            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['Nrating'], $service['user'], $service['taskname'], $service['category']);
         }
         return $services;
     }
 
     #obtain the services that contain a certain word($title) in their title.
     #The input is not separated in any way and, as such, it does not work well with more than a word, with no spaces before or after, and without caligraphy errors (asssuming the service title is well written)
-    public static function get_service_by_title(string $title, int $count): array {
+    public static function get_service_by_name(string $title, int $count): array {
         $db = Database::getInstance();
-        $stmt = $db->prepare('SELECT * FROM  services WHERE title LIKE ? LIMIT ?');
+        $stmt = $db->prepare('SELECT * FROM  services WHERE taskname LIKE ? LIMIT ?');
         $stmt->execute(["%$title%", $count]);
 
         $services = [];
 
         while ($service = $stmt->fetch()) {
-            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['user'], $service['title']);
+            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['Nrating'], $service['user'], $service['taskname'], $service['category']);
         }
         return $services;
     }
@@ -124,7 +124,7 @@ class Service {
         $services = [];
 
         while ($service = $stmt->fetch()) {
-            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['user'], $service['title']);
+            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['Nrating'], $service['user'], $service['taskname'], $service['category']);
         }
         return $services;
     }
@@ -132,13 +132,13 @@ class Service {
     #get the services that belong to the desired category, from the favourited services. Singular category search.
     public static function get_favourite_service_by_category(string $username, string $category, int $count): array {
         $db = Database::getInstance();
-        $stmt = $db->prepare('SELECT services.* FROM cate_serv JOIN services ON cate_serv.category=services.id JOIN favourite_services ON favourite_services.id = services.id WHERE favourite_services.username = ? AND cate_serv.category  LIKE ? LIMIT ?');
+        $stmt = $db->prepare('SELECT services.* FROM services JOIN favourite_services ON favourite_services.id = services.id WHERE favourite_services.username = ? AND services.category  LIKE ? LIMIT ?');
         $stmt->execute([$username,"$category%", $count]);
 
         $services = [];
 
         while ($service = $stmt->fetch()) {
-            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['user'], $service['title']);
+            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['Nrating'], $service['user'], $service['taskname'], $service['category']);
         }
         return $services;
     }
@@ -152,7 +152,7 @@ class Service {
         $services = [];
 
         while ($service = $stmt->fetch()) {
-            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['user'], $service['title']);
+            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['Nrating'], $service['user'], $service['taskname'], $service['category']);
         }
         return $services;
     }
@@ -167,22 +167,22 @@ class Service {
         $services = [];
 
         while ($service = $stmt->fetch()) {
-            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['user'], $service['title']);
+            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['Nrating'], $service['user'], $service['taskname'], $service['category']);
         }
         return $services;
     }
 
     #obtain the services that contain a certain word($title) in their title, from the favourited services.
     #The input is not separated in any way and, as such, it does not work well with more than a word, with no spaces before or after, and without caligraphy errors (asssuming the service title is well written)
-    public static function get_favourite_service_by_title(string $username, string $title, int $count): array {
+    public static function get_favourite_service_by_name(string $username, string $title, int $count): array {
         $db = Database::getInstance();
-        $stmt = $db->prepare('SELECT services.* FROM  services JOIN favourite_services ON favourite_services.id = services.id WHERE favourite_services.username = ? AND title LIKE ? LIMIT ?');
+        $stmt = $db->prepare('SELECT services.* FROM  services JOIN favourite_services ON favourite_services.id = services.id WHERE favourite_services.username = ? AND taskname LIKE ? LIMIT ?');
         $stmt->execute([$username, "%$title%", $count]);
 
         $services = [];
 
         while ($service = $stmt->fetch()) {
-            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['user'], $service['title']);
+            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['Nrating'], $service['user'], $service['taskname'], $service['category']);
         }
         return $services;
     }

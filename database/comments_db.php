@@ -4,14 +4,14 @@ require_once(__DIR__ . '/../database/connection.php');  # <--
 
 class Comment {
     public int $id;
-    public string $comment;
+    public string $text;
     public int $service_id;
     public string $user;
     public int $reply_to;
 
     public function __construct(int $id, string $comment, int $service_id, string $user, int $reply_to){
         $this->id = $id;
-        $this->comment = $comment;
+        $this->text = $comment;
         $this->service_id = $service_id;
         $this->user = $user;
         $this->reply_to = $reply_to;
@@ -20,14 +20,14 @@ class Comment {
     #create a comment to a service
     public static function create_comment($comment, $service_id, $user){
         $db = Database::getInstance();
-        $stmt = $db->prepare('INSERT INTO comments (comment, service_id, user) VALUES (?, ?, ?)');
+        $stmt = $db->prepare('INSERT INTO comments (text, service_id, user) VALUES (?, ?, ?)');
         $stmt->execute([$comment, $service_id, $user]);
     }
 
     #create a reply to a comment
     public static function create_reply($comment, $user, $reply_to){
         $db = Database::getInstance();
-        $stmt = $db->prepare('INSERT INTO comments (comment, user, reply_to) VALUES (?, ?, ?)');
+        $stmt = $db->prepare('INSERT INTO comments (text, user, reply_to) VALUES (?, ?, ?)');
         $stmt->execute([$comment, $user, $reply_to]); 
     }
 
@@ -36,7 +36,7 @@ class Comment {
         $stmt = $db->prepare('SELECT * FROM comments WHERE id = ?');
         $stmt->execute([$id]);
         $comment = $stmt->fetch();
-        return new Comment($comment['id'], $comment['comment'], $comment['service_id'], $comment['user'], $comment['reply_to']);
+        return new Comment($comment['id'], $comment['text'], $comment['service_id'], $comment['user'], $comment['reply_to']);
     }
 
     #get the comments to a service
@@ -48,7 +48,7 @@ class Comment {
         $comments = [];
 
         while ($comment = $stmt->fetch()) {
-            $comments[] = new Comment($comment['id'], $comment['comment'], $comment['service_id'], $comment['user'], $comment['reply_to']);
+            $comments[] = new Comment($comment['id'], $comment['text'], $comment['service_id'], $comment['user'], $comment['reply_to']);
         }
         return $comments;
     }
@@ -62,7 +62,7 @@ class Comment {
         $comments = [];
 
         while ($comment = $stmt->fetch()) {
-            $comments[] = new Comment($comment['id'], $comment['comment'], $comment['service_id'], $comment['user'], $comment['reply_to']);
+            $comments[] = new Comment($comment['id'], $comment['text'], $comment['service_id'], $comment['user'], $comment['reply_to']);
         }
         return $comments;
     }
@@ -76,7 +76,7 @@ class Comment {
         $comments = [];
 
         while ($comment = $stmt->fetch()) {
-            $comments[] = new Comment($comment['id'], $comment['comment'], $comment['service_id'], $comment['user'], $comment['reply_to']);
+            $comments[] = new Comment($comment['id'], $comment['text'], $comment['service_id'], $comment['user'], $comment['reply_to']);
         }
         return $comments;
     }
