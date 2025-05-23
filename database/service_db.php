@@ -31,6 +31,12 @@ class Service {
         $stmt->execute([$pricing, $delivery_time, $description, 5, 1, $user, $title, $category]);
     }
 
+    public static function delete(int $id, string $user) {
+        $db = Database::getInstance();
+        $stmt = $db->prepare('DELETE FROM services WHERE id = ? AND user = ?');
+        $stmt->execute([$id, $user]);
+    }
+
     public static function get_service(int $id): Service {
         $db = Database::getInstance();
         $stmt = $db->prepare('SELECT * FROM services WHERE id = ?');
