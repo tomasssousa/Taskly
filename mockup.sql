@@ -30,7 +30,7 @@ CREATE TABLE services (
     rating INTEGER,
     Nrating INTEGER,
     category VARCHAR REFERENCES categories,
-    user VARCHAR REFERENCES users NOT NULL
+    user VARCHAR REFERENCES users NOT NULL ON DELETE CASCADE
 );
 
 CREATE TABLE favourite_services (
@@ -45,6 +45,14 @@ CREATE TABLE comments (
     service_id INTEGER REFERENCES services,
     user VARCHAR REFERENCES users NOT NULL,
     replie_to INTEGER REFERENCES comments
+);
+
+CREATE TABLE chat (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    text VARCHAR,
+    chat_id INTEGER REFERENCES chat,
+    sender VARCHAR REFERENCES users NOT NULL ON DELETE CASCADE,
+    receiver VARCHAR REFERENCES users NOT NULL ON DELETE CASCADE
 );
 
 CREATE TABLE transactions (
