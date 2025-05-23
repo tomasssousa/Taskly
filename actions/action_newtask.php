@@ -1,8 +1,10 @@
 <?php
 session_start();
 require_once(__DIR__ . '/../database/connection.php');
+require_once(__DIR__ . '/../database/service_db.php');
+require_once(__DIR__ . '/../database/media_db.php');
 
-$db = getDatabaseConnection();
+$db = Database::getInstance();
 
 // Create uploads directory if it doesn't exist
 $uploadDir = __DIR__ . '/../docs/uploads';
@@ -37,19 +39,7 @@ try {
     $db->beginTransaction();
 
     // Insert service
-    $stmt = $db->prepare('
-        INSERT INTO services (taskname, pricing, delivery_time, description, user, status)
-        VALUES (?, ?, ?, ?, ?, ?)
-    ');
-    
-    $stmt->execute([
-        $taskname,      // Add taskname here
-        $pricing,
-        $deltime,
-        $taskdesc,
-        $_SESSION['username'], 
-        'open'
-    ]);
+    Service::create($pricing, $deltime, $taskdesc, $_SESSION['username'], $taskname, 'other');
 
     $serviceId = $db->lastInsertId();
 
@@ -82,20 +72,11 @@ try {
                 }
 
                 // Insert into media table with consistent path format
-                $stmt = $db->prepare('
-                    INSERT INTO media (service_id, file_path, media_type)
-                    VALUES (?, ?, ?)
-                ');
-                $stmt->execute([$serviceId, 'uploads/' . $filename, 'image']);
-
+                Media::create($serviceId, 'uploads/' . $filename, 'image');
+                
                 // Set first image as service's main image
                 if ($key === 0) {
-                    $stmt = $db->prepare('
-                        UPDATE services 
-                        SET images = ? 
-                        WHERE id = ?
-                    ');
-                    $stmt->execute(['uploads/' . $filename, $serviceId]);
+                    Service::setMainImage($serviceId, 'uploads/' . $filename);
                 }
             }
         }
@@ -103,11 +84,7 @@ try {
 
     // Handle category
     if (!empty($category)) {
-        $stmt = $db->prepare('
-            INSERT INTO cate_serv (service_id, categorie)
-            VALUES (?, ?)
-        ');
-        $stmt->execute([$serviceId, $category]);
+        Service::set_category($serviceId, $category);   
     }
 
     $db->commit();

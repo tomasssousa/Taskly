@@ -25,10 +25,10 @@ class User {
         $this->money = $money;
     }
 
-    public static function create($username, $name, $password, $email, $task_mode) {
+    public static function create($username, $name, $password, $email) {
         $db = Database::getInstance();
         $stmt = $db->prepare('INSERT INTO users (username, name, password, email, admin_power, task_mode, money) VALUES (?, ?, ?, ?, ?, ?, ?)');
-        $stmt->execute([$username, $name, $password, $email, FALSE, $task_mode, '0 euros']);
+        $stmt->execute([$username, $name, $password, $email, FALSE, FALSE, '0 euros']);
     }
 
     #it does not return a new User beacuse it requires further investigation on how it will be used
@@ -38,6 +38,18 @@ class User {
         $stmt->execute([$username]);
 
         return $stmt->fetch();
+    }
+
+    public static function update_user($username, $name, $bio, $skills) {
+        $db = Database::getInstance();
+        $stmt = $db->prepare('UPDATE users SET name = ?, bio = ?, skills = ? WHERE username = ?');
+        return $stmt->execute([$name, $bio, $skills, $username]);
+    }
+
+    public static function update_profile_photo($username, $profile_photo) {
+        $db = Database::getInstance();
+        $stmt = $db->prepare('UPDATE users SET profile_foto = ? WHERE username = ?');
+        return $stmt->execute([$profile_photo, $username]);
     }
 
     public static function update_bio($username,$bio){

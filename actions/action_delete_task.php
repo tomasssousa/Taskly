@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once(__DIR__ . '/../database/connection.php');
+require_once(__DIR__ . '/../database/service_db.php');
 
 // Set JSON header before any output
 header('Content-Type: application/json');
@@ -17,25 +17,19 @@ if (!$taskId) {
 }
 
 try {
-    $db = getDatabaseConnection();
     
     // Verify ownership
-    $stmt = $db->prepare('SELECT user FROM services WHERE id = ?');
-    $stmt->execute([$taskId]);
-    $task = $stmt->fetch();
+    $task = Service::get_service($taskid);
     
-    if (!$task || $task['user'] !== $_SESSION['username']) {
+    if (!$task || $task->user !== $_SESSION['username']) {
         echo json_encode(['success' => false, 'error' => 'Unauthorized']);
         exit();
     }
     
-    // Delete associated media first
-    $stmt = $db->prepare('DELETE FROM media WHERE service_id = ?');
-    $stmt->execute([$taskId]);
+    // Delete associated media first by ON DELETE CASCADE
     
     // Delete task
-    $stmt = $db->prepare('DELETE FROM services WHERE id = ?');
-    $stmt->execute([$taskId]);
+    Service::delete($taskId);
     
     echo json_encode(['success' => true]);
     

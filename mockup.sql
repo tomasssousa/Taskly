@@ -32,7 +32,8 @@ CREATE TABLE services (
     rating INTEGER,
     Nrating INTEGER,
     category VARCHAR REFERENCES categories,
-    user VARCHAR REFERENCES users ON DELETE CASCADE
+    user VARCHAR REFERENCES users ON DELETE CASCADE,
+    image TEXT
 );
 
 CREATE TABLE favourite_services (
@@ -71,7 +72,7 @@ CREATE TABLE categories (
 
 CREATE TABLE media (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    service_id INTEGER NOT NULL REFERENCES services(id),
+    service_id INTEGER NOT NULL REFERENCES services(id) ON DELETE CASCADE,
     file_path TEXT NOT NULL,
     media_type TEXT CHECK(media_type IN ('image', 'video')) NOT NULL
 );

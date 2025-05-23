@@ -12,8 +12,9 @@ class Service {
     public int $Nrating;
     public string $category;
     public string $user;
+    public string $media;
 
-    public function __construct(int $id, int $pricing, string $delivery_time, string $description, int $rating, int $Nrating, string $user, string $taskname, string $category){
+    public function __construct(int $id, int $pricing, string $delivery_time, string $description, int $rating, int $Nrating, string $user, string $taskname, string $category, string $media){
         $this->id = $id;
         $this->pricing = $pricing;
         $this->delivery_time = $delivery_time;
@@ -23,6 +24,7 @@ class Service {
         $this->user = $user;
         $this->taskname = $taskname;
         $this->category = $category;
+        $this->media = $media;
     }
 
     public static function create(int $pricing, string $delivery_time, string $description, string $user, string $title, string $category) {
@@ -31,10 +33,10 @@ class Service {
         $stmt->execute([$pricing, $delivery_time, $description, 5, 1, $user, $title, $category]);
     }
 
-    public static function delete(int $id, string $user) {
+    public static function delete(int $id) {
         $db = Database::getInstance();
-        $stmt = $db->prepare('DELETE FROM services WHERE id = ? AND user = ?');
-        $stmt->execute([$id, $user]);
+        $stmt = $db->prepare('DELETE FROM services WHERE id = ?');
+        $stmt->execute([$id]);
     }
 
     public static function get_service(int $id): Service {
@@ -42,7 +44,13 @@ class Service {
         $stmt = $db->prepare('SELECT * FROM services WHERE id = ?');
         $stmt->execute([$id]);
         $service = $stmt->fetch();
-        return new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['Nrating'], $service['user'], $service['taskname'], $service['category']);
+        return new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['Nrating'], $service['user'], $service['taskname'], $service['category'], $service['media']);
+    }
+
+    public static function set_main_image(int $id, string $image_path) {
+        $db = Database::getInstance();
+        $stmt = $db->prepare('UPDATE services SET image = ? WHERE id = ?');
+        $stmt->execute([$image_path, $id]);
     }
 
     #get the services that belong to the desired category. Singular category search.
@@ -54,7 +62,7 @@ class Service {
         $services = [];
 
         while ($service = $stmt->fetch()) {
-            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['Nrating'], $service['user'], $service['taskname'], $service['category']);
+            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['Nrating'], $service['user'], $service['taskname'], $service['category'], $service['media']);
         }
         return $services;
     }
@@ -68,7 +76,7 @@ class Service {
         $services = [];
 
         while ($service = $stmt->fetch()) {
-            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['Nrating'], $service['user'], $service['taskname'], $service['category']);
+            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['Nrating'], $service['user'], $service['taskname'], $service['category'], $service['media']);
         }
         return $services;
     }
@@ -83,7 +91,7 @@ class Service {
         $services = [];
 
         while ($service = $stmt->fetch()) {
-            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['Nrating'], $service['user'], $service['taskname'], $service['category']);
+            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['Nrating'], $service['user'], $service['taskname'], $service['category'], $service['media']);
         }
         return $services;
     }
@@ -98,7 +106,7 @@ class Service {
         $services = [];
 
         while ($service = $stmt->fetch()) {
-            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['Nrating'], $service['user'], $service['taskname'], $service['category']);
+            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['Nrating'], $service['user'], $service['taskname'], $service['category'], $service['media']);
         }
         return $services;
     }
@@ -130,7 +138,7 @@ class Service {
         $services = [];
 
         while ($service = $stmt->fetch()) {
-            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['Nrating'], $service['user'], $service['taskname'], $service['category']);
+            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['Nrating'], $service['user'], $service['taskname'], $service['category'], $service['media']);
         }
         return $services;
     }
@@ -144,7 +152,7 @@ class Service {
         $services = [];
 
         while ($service = $stmt->fetch()) {
-            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['Nrating'], $service['user'], $service['taskname'], $service['category']);
+            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['Nrating'], $service['user'], $service['taskname'], $service['category'], $service['media']);
         }
         return $services;
     }
@@ -158,7 +166,7 @@ class Service {
         $services = [];
 
         while ($service = $stmt->fetch()) {
-            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['Nrating'], $service['user'], $service['taskname'], $service['category']);
+            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['Nrating'], $service['user'], $service['taskname'], $service['category'], $service['media']);
         }
         return $services;
     }
@@ -173,7 +181,7 @@ class Service {
         $services = [];
 
         while ($service = $stmt->fetch()) {
-            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['Nrating'], $service['user'], $service['taskname'], $service['category']);
+            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['Nrating'], $service['user'], $service['taskname'], $service['category'], $service['media']);
         }
         return $services;
     }
@@ -188,9 +196,15 @@ class Service {
         $services = [];
 
         while ($service = $stmt->fetch()) {
-            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['Nrating'], $service['user'], $service['taskname'], $service['category']);
+            $services[] = new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['Nrating'], $service['user'], $service['taskname'], $service['category'], $service['media']);
         }
         return $services;
+    }
+
+    public static function set_category(int $id, string $category) {
+        $db = Database::getInstance();
+        $stmt = $db->prepare('UPDATE services SET category = ? WHERE id = ?');
+        $stmt->execute([$category, $id]);
     }
 }
 ?>
