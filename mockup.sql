@@ -5,7 +5,8 @@ DROP TABLE IF EXISTS transactions;
 DROP TABLE IF EXISTS categories;
 DROP TABLE IF EXISTS media;
 DROP TABLE IF EXISTS delivery_time;
-DROP TABLE IF EXISTS favourite_services:
+DROP TABLE IF EXISTS favourite_services;
+DROP TABLE IF EXISTS chat;
 
 
 
@@ -30,7 +31,7 @@ CREATE TABLE services (
     rating INTEGER,
     Nrating INTEGER,
     category VARCHAR REFERENCES categories,
-    user VARCHAR REFERENCES users NOT NULL ON DELETE CASCADE
+    user VARCHAR REFERENCES users ON DELETE CASCADE
 );
 
 CREATE TABLE favourite_services (
@@ -44,15 +45,15 @@ CREATE TABLE comments (
     text VARCHAR,
     service_id INTEGER REFERENCES services,
     user VARCHAR REFERENCES users NOT NULL,
-    replie_to INTEGER REFERENCES comments
+    reply_to INTEGER REFERENCES comments
 );
 
 CREATE TABLE chat (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     text VARCHAR,
     chat_id INTEGER REFERENCES chat,
-    sender VARCHAR REFERENCES users NOT NULL ON DELETE CASCADE,
-    receiver VARCHAR REFERENCES users NOT NULL ON DELETE CASCADE
+    sender VARCHAR REFERENCES users ON DELETE CASCADE,
+    receiver VARCHAR REFERENCES users ON DELETE CASCADE
 );
 
 CREATE TABLE transactions (
@@ -105,11 +106,11 @@ INSERT INTO categories (name) Values ('other');
 
 
 --Some comments
-INSERT INTO comments (id ,comment, service_id, user) Values(1, 'Join the military today', 3, 'USA');
-INSERT INTO comments (id ,comment, user, reply_to) Values(2, 'Sorry. Cant leave my babies alone', 'Becky', 1);
-INSERT INTO comments (id ,comment, user, reply_to) Values(3, 'If you keep spaming, your account will be terminated', 'admin', 1);
-INSERT INTO comments (id ,comment, service_id, user) Values(4, 'Great stuff although, as a professional in the area, i think it is somewhat lackluster', 2, 'Becky');
-INSERT INTO comments (id ,comment, service_id, user) Values(5, 'Loved it. My dragon now flyes on command and no longer burn the couch. Please message me if you ever open a people trainig on how to train all your pets', 1, 'Becky');
+INSERT INTO comments (id ,text, service_id, user) Values(1, 'Join the military today', 3, 'USA');
+INSERT INTO comments (id ,text, user, reply_to) Values(2, 'Sorry. Cant leave my babies alone', 'Becky', 1);
+INSERT INTO comments (id ,text, user, reply_to) Values(3, 'If you keep spaming, your account will be terminated', 'admin', 1);
+INSERT INTO comments (id ,text, service_id, user) Values(4, 'Great stuff although, as a professional in the area, i think it is somewhat lackluster', 2, 'Becky');
+INSERT INTO comments (id ,text, service_id, user) Values(5, 'Loved it. My dragon now flyes on command and no longer burn the couch. Please message me if you ever open a people trainig on how to train all your pets', 1, 'Becky');
 
 --Some transactions
 Insert INTO transactions (id, user, service_id, status, rating) Values(1, 'USA', 3, 'completed', 4);
