@@ -19,7 +19,8 @@ CREATE TABLE users (
     task_mode BOOLEAN,
     bio VARCHAR,
     profile_photo VARCHAR(255), 
-    skills TEXT                  
+    skills TEXT,
+    money string NOT NULL 
 );
 
 CREATE TABLE services (
@@ -81,11 +82,11 @@ CREATE TABLE delivery_time (
 
 
 --ADMIN USER.  Password can be changed to somethingless secure and quick (!am$9of28FGT-SALT<-funny_joke   OR    12345678)
-INSERT INTO users (username, name, password, email, admin_power) VALUES ('admin', 'administrater', '$2y$10$z58xCvcQdCuGP1bM2Hy6zeYFUSJtZSsVMMAuERMGLxJrcE9cAXkf6', 'siteAdmin@fe.up.pt', 1);--12345678
+INSERT INTO users (username, name, password, email, admin_power, money) VALUES ('admin', 'administrater', '$2y$10$z58xCvcQdCuGP1bM2Hy6zeYFUSJtZSsVMMAuERMGLxJrcE9cAXkf6', 'siteAdmin@fe.up.pt', 1, '2 Trilion fake money');--12345678
 
 --Regular User.
-INSERT INTO users (username, name, password, email, admin_power) VALUES ('Becky', 'Becky Paw', '$2y$10$rafzWJcdAe8Kk9lG6cz2GeyRqLiSyqXYQDhBtWc4hUtGmxiWYY8Wa', 'BeckyP@gmail.com', 0);--!_L0V3_P3T5
-INSERT INTO users (username, name, password, email, admin_power) VALUES ('USA', 'MILITARY', '$2y$10$nUJfvOHdsAohUbvg63/BAuBwNK1qGW6vDbnl780n9mvggdH2w9o/2', 'USAMILITARY@Military.USA', 0);--setrgh43876%$
+INSERT INTO users (username, name, password, email, admin_power, money) VALUES ('Becky', 'Becky Paw', '$2y$10$rafzWJcdAe8Kk9lG6cz2GeyRqLiSyqXYQDhBtWc4hUtGmxiWYY8Wa', 'BeckyP@gmail.com', 0, '42 dollars');--!_L0V3_P3T5
+INSERT INTO users (username, name, password, email, admin_power, money) VALUES ('USA', 'MILITARY', '$2y$10$nUJfvOHdsAohUbvg63/BAuBwNK1qGW6vDbnl780n9mvggdH2w9o/2', 'USAMILITARY@Military.USA', 0, '0 dollars');--setrgh43876%$
 
 --Services to fill the site a bit
 INSERT INTO services (id, pricing, delivery_time, description, rating, user, taskname, category) VALUES (1, 200,'More than a week','Hear hear, do you have a dragon and dont know how to properly train him/her? Dont fear beacuse, for a mere 200 money currency I will train your dragon to be obidient to you. Full refund if you end up unsatisfied and the site allows for refunds. PS: it doesnt',5,'admin', 'How to train your dragon', 'education');

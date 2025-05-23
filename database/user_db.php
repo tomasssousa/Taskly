@@ -11,8 +11,9 @@ class User {
     public string $bio;
     public string $profile_foto;
     public string $skills;
+    public string $money;
 
-    public function __construct(string $username, string $name, string $email, bool $admin, bool $task_mode , string $bio, string $profile_foto, string $skills) {
+    public function __construct(string $username, string $name, string $email, bool $admin, bool $task_mode , string $bio, string $profile_foto, string $skills, string $money) {
         $this->username = $username;
         $this->name = $name;
         $this->email = $email;
@@ -21,12 +22,13 @@ class User {
         $this->bio = $bio;
         $this->profile_foto = $profile_foto;
         $this->skills = $skills;
+        $this->money = $money;
     }
 
     public static function create($username, $name, $password, $email, $task_mode) {
         $db = Database::getInstance();
-        $stmt = $db->prepare('INSERT INTO users (username, name, password, email, admin_power, task_mode) VALUES (?, ?, ?, ?, ?, ?)');
-        $stmt->execute([$username, $name, $password, $email, FALSE, $task_mode]);
+        $stmt = $db->prepare('INSERT INTO users (username, name, password, email, admin_power, task_mode, money) VALUES (?, ?, ?, ?, ?, ?, ?)');
+        $stmt->execute([$username, $name, $password, $email, FALSE, $task_mode, '0 euros']);
     }
 
     #it does not return a new User beacuse it requires further investigation on how it will be used
@@ -61,15 +63,23 @@ class User {
         $stmt = $db->prepare('UPDATE users SET task_mode = TRUE WHERE username = ?');
         $stmt->execute([$username]);
     }
+
     public static function task_mode_off($username) {
         $db = Database::getInstance();
         $stmt = $db->prepare('UPDATE users SET task_mode = FALSE WHERE username = ?');
         $stmt->execute([$username]);
     }
+
     public static function delete_user($username) {
         $db = Database::getInstance();
         $stmt = $db->prepare('DELETE FROM users WHERE username = ?');
         $stmt->execute([$username]);
+    }
+
+    public static function update_money($username, $money){
+        $db = Database::getInstance();
+        $stmt = $db->prepare('UPDATE users SET money = ? WHERE username = ?');
+        $stmt->execute([$money, $username]); 
     }
 }
 ?>
