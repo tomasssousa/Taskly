@@ -28,7 +28,7 @@ if (isset($_SESSION['username'])) {
     <div class="header-right">
         <?php if (isset($_SESSION['username'])): ?>
             <a href="new_task.php" class="new-task-button">New Task</a>
-            <a href="messages.php" class="messages-button">
+            <a href="message_hub.php" class="message-hub-button">
                 <img src="../docs/message.png" alt="Messages" class="message-icon">
             </a>
             <a href="favorites.php" class="favorites-button">
@@ -36,7 +36,7 @@ if (isset($_SESSION['username'])) {
             </a>
         <?php else: ?>
             <a href="login.php?redirect=new_task" class="new-task-button">New Task</a>
-            <a href="login.php?redirect=messages" class="messages-button">
+            <a href="login.php?redirect=message_hub" class="message-hub-button">
                 <img src="../docs/message.png" alt="Messages" class="message-icon">
             </a>
             <a href="login.php?redirect=favorites" class="favorites-button">
