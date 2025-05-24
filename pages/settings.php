@@ -6,28 +6,68 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="css/container.css">
+        <link rel="stylesheet" href="css/settings.css">
+        <script src="js/settings.js" defer></script>
         <link rel="icon" href="../docs/logo.png" type="icon/x-icon">
     </head>
 <body>
 <?php include_once(__DIR__ . '/../components/header.php'); ?>
 
-    <main>
-        <div class="container">
-            <h2>Edit Account Settings</h2>
-            <form action="/settings" method="post">
-                <input type="text" placeholder="Username" name="username">
-                <input type="text" placeholder="Name" name="name">
-                <input type="email" placeholder="Email" name="email">
-                <input type="password" placeholder="New Password" name="password">
-                <button type="submit">Update</button>
+<main>
+    <div class="settings-tabs">
+        <button class="tab-btn active" data-tab="analytics">Analytics</button>
+        <button class="tab-btn" data-tab="settings">Settings</button>
+    </div>
+    <div class="container">
+        <div class="tab-content" id="analytics-tab">
+            <h3>Analytics</h3>
+            <p>Coming soon! Here you'll see your account and task stats.</p>
+        </div>
+        <div class="tab-content" id="settings-tab" style="display:none;">
+            <h3>Edit Account Details</h3>
+            <form action="../actions/action_update_account.php" method="post">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" placeholder="Current username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="current_password">Current Password:</label>
+                    <input type="password" id="current_password" name="current_password" placeholder="Enter current password" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="new_email">New Email (optional):</label>
+                    <input type="email" id="new_email" name="new_email" placeholder="Enter new email (leave blank to keep current)">
+                </div>
+                
+                <div class="form-group">
+                    <label for="new_password">New Password (optional):</label>
+                    <input type="password" id="new_password" name="new_password" placeholder="Enter new password (leave blank to keep current)">
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirm_password">Confirm New Password:</label>
+                    <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm new password">
+                </div>
+                
+                <div class="toggle-row">
+                    <label>Account Type:</label>
+                    <div class="account-type-buttons">
+                        <button type="button" class="account-type-btn active" data-type="user">User</button>
+                        <button type="button" class="account-type-btn" data-type="tasker">Tasker</button>
+                    </div>
+                </div>
+                
+                <button type="submit" class="update-btn">Update Account</button>
+            </form>
+            
+            <form action="../actions/action_delete_account.php" method="post" style="margin-top: 1em;">
+                <button type="submit" class="delete-account-btn" onclick="return confirm('Are you sure you want to delete your account? This action cannot be undone.')">Delete Account</button>
             </form>
         </div>
-    </main>
-    <script>
-        function toggleUserMenu() {
-            const menu = document.getElementById('userMenu');
-            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-        }
-    </script>
+    </div>
+</main>
+
 </body>
 </html>

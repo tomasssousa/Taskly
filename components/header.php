@@ -19,10 +19,6 @@ if (isset($_SESSION['username'])) {
 }
 ?>
 
-<head>
-    <link rel="stylesheet" href="../components/warning_popup.css">
-</head>
-
 <header>
     <a href="home.php"><img src="../docs/logo.png" alt="Taskly Logo" class="logo"></a>
     <div class="header-right">

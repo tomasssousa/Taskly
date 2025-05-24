@@ -103,6 +103,13 @@ if ($taskId) {
                         <span class="review-stars">★★★★½☆</span>
                     </div>
                 </div>
+                <div class="toggle-row">
+                    <label>Account Type:</label>
+                    <div class="account-type-buttons">
+                        <button type="button" class="account-type-btn active" data-type="user">User</button>
+                        <button type="button" class="account-type-btn" data-type="tasker">Tasker</button>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
