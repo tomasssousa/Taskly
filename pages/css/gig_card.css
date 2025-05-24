@@ -15,10 +15,12 @@
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     transition: transform 0.2s ease;
     position: relative; /* Add this */
+    cursor: pointer;
+    margin-bottom: 20px;  /* Reduce space between cards */
 }
 
 .gig-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
@@ -295,4 +297,16 @@
 
 .modal-btn-confirm:hover {
     background: #c82333;
+}
+
+/* Stop propagation for interactive elements */
+.gig-actions,
+.carousel-btn,
+.dot,
+.gig-seller a {
+    pointer-events: auto;
+}
+
+.gig-card * {
+    pointer-events: none;
 }

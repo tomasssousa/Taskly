@@ -58,10 +58,13 @@
         <title>Taskly | The website that solves your problems</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="style.css">
-        <link rel="stylesheet" href="gigs.css">
-        <link rel="stylesheet" href="gig_card.css">
+        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="css/gigs.css">
+        <link rel="stylesheet" href="css/gig_card.css">
         <link rel="icon" href="../docs/logo.png" type="icon/x-icon">
+        <script src="js/gig_card.js" defer></script>
+        <script src="js/images.js" defer></script>
+
     </head>
     <body>
         <?php include_once(__DIR__ . '/../components/header.php'); ?>
@@ -119,11 +122,5 @@
                 </div>
             </section>
     </main>
-    <script>
-        function toggleUserMenu() {
-            const menu = document.getElementById('userMenu');
-            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-        }
-    </script>
     </body>
 </html>
