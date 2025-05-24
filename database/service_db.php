@@ -206,5 +206,69 @@ class Service {
         $stmt = $db->prepare('UPDATE services SET category = ? WHERE id = ?');
         $stmt->execute([$category, $id]);
     }
+
+
+    #Specific function for User.php 
+    public static function get_services_by_user(string $username): array {
+        $db = Database::getInstance();
+        $stmt = $db->prepare("SELECT s.*, u.profile_photo as seller_photo, u.name as seller_name,
+                               COALESCE(s.taskname, s.description) as task_title,
+                               (SELECT COUNT(*) FROM transactions WHERE service_id = s.id) as order_count,
+                               (SELECT GROUP_CONCAT(file_path) FROM media WHERE service_id = s.id ORDER BY id ASC) as all_images
+                            FROM services s
+                            JOIN users u ON s.user = u.username
+                            WHERE s.user = ?
+                            ORDER BY s.id DESC ");
+        $stmt->execute([$username]);
+        
+        return $stmt->fetchAll();
+    }
+
+    #Specific function for gigs.php 
+    public static function search($search, $category, $delivery_time, $min_price, $max_price): array{
+        $db = Database::getInstance();
+
+        $where = [];
+        $params = [];
+
+        if (!empty($search)) {
+            $where[] = "(s.taskname LIKE ? OR s.description LIKE ?)";
+            $params[] = "%$search%";
+            $params[] = "%$search%";
+        }
+        if (!empty($category)) {
+            $where[] = "s.category = ?";
+            $params[] = $category;
+        }
+        if (!empty($delivery_time)) {
+            $where[] = "s.delivery_time = ?";
+            $params[] = $delivery_time;
+        }
+        if ($min_price !== '') {
+            $where[] = "s.pricing >= ?";
+            $params[] = $min_price;
+        }
+        if ($max_price !== '') {
+            $where[] = "s.pricing <= ?";
+            $params[] = $max_price;
+        }
+
+        $whereSQL = $where ? 'WHERE ' . implode(' AND ', $where) : '';
+
+        $stmt = $db->prepare("
+            SELECT s.*, u.profile_photo as seller_photo, u.name as seller_name,
+                COALESCE(s.taskname, s.description) as task_title,
+                (SELECT COUNT(*) FROM transactions WHERE service_id = s.id) as order_count,
+                (SELECT GROUP_CONCAT(file_path) FROM media WHERE service_id = s.id ORDER BY id ASC) as all_images
+            FROM services s
+            JOIN users u ON s.user = u.username
+            $whereSQL
+            ORDER BY s.id DESC
+        ");
+        
+        $stmt->execute($params);
+        
+        return $stmt->fetchAll();
+    }
 }
 ?>
