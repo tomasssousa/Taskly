@@ -48,7 +48,7 @@ class User {
 
     public static function update_profile_photo($username, $profile_photo) {
         $db = Database::getInstance();
-        $stmt = $db->prepare('UPDATE users SET profile_foto = ? WHERE username = ?');
+        $stmt = $db->prepare('UPDATE users SET profile_photo = ? WHERE username = ?');
         return $stmt->execute([$profile_photo, $username]);
     }
 

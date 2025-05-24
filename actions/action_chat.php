@@ -1,16 +1,10 @@
 <?php
 session_start();
 require_once(__DIR__ . '/../database/connection.php');
-
-// Check if this is an AJAX request
-$isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+require_once(__DIR__ . '/../database/chat_db.php');
+require_once(__DIR__ . '/../database/user_db.php');
 
 if (!isset($_SESSION['username'])) {
-    if ($isAjax) {
-        header('Content-Type: application/json');
-        echo json_encode(['success' => false, 'error' => 'Not authenticated']);
-        exit();
-    }
     $_SESSION['error'] = 'Not authenticated';
     header('Location: ../pages/login.php');
     exit();
@@ -19,7 +13,7 @@ if (!isset($_SESSION['username'])) {
 $action = $_POST['action'] ?? $_GET['action'] ?? '';
 
 try {
-    $db = getDatabaseConnection();
+    $db = Database::getInstance();
     
     switch ($action) {
         case 'send_message':
@@ -30,41 +24,46 @@ try {
                 throw new Exception('Receiver and message are required');
             }
             
-            // Verify if the selected user exists
-            $stmt = $db->prepare('SELECT username FROM users WHERE username = ?');
-            $stmt->execute([$receiver]);
-            if (!$stmt->fetch()) {
+            // Verify if the selected user exists using User class
+            if (!User::get_user($receiver)) {
                 throw new Exception('User not found');
             }
             
-            // Write the message to the database
-            $stmt = $db->prepare('INSERT INTO chat (text, sender, receiver) VALUES (?, ?, ?)');
-            $stmt->execute([$message, $_SESSION['username'], $receiver]);
+            // Use Chat class to create message
+            Chat::create_chat($message, $_SESSION['username'], $receiver);
 
             header('Content-Type: application/json');
             echo json_encode(['success' => true]);
             exit();
             
         case 'get_messages':
+            header('Content-Type: application/json');
+            
             $other_user = $_GET['user'] ?? '';
             
             if (empty($other_user)) {
                 throw new Exception('User parameter required');
             }
             
-            $stmt = $db->prepare('
-                SELECT * FROM chat 
-                WHERE (sender = ? AND receiver = ?) OR (sender = ? AND receiver = ?) 
-                ORDER BY id ASC
-            ');
-            $stmt->execute([$_SESSION['username'], $other_user, $other_user, $_SESSION['username']]);
-            $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            // Use Chat class to get messages
+            $chatObjects = Chat::get_chat($_SESSION['username'], $other_user);
             
-            header('Content-Type: application/json');
+            $messages = [];
+            foreach ($chatObjects as $chat) {
+                $messages[] = [
+                    'id' => $chat->id,
+                    'text' => $chat->text,
+                    'sender' => $chat->sender,
+                    'receiver' => $chat->receiver
+                ];
+            }
+            
             echo json_encode(['success' => true, 'messages' => $messages]);
             exit();
             
         case 'get_conversations':
+            header('Content-Type: application/json');
+            
             $stmt = $db->prepare('
                 SELECT DISTINCT 
                     CASE 
@@ -82,9 +81,7 @@ try {
 
             $conversationDetails = [];
             foreach ($conversations as $conv) {
-                $stmt = $db->prepare('SELECT name, profile_photo FROM users WHERE username = ?');
-                $stmt->execute([$conv['other_user']]);
-                $userDetails = $stmt->fetch(PDO::FETCH_ASSOC);
+                $userDetails = User::get_user($conv['other_user']);
                 
                 $conversationDetails[] = [
                     'username' => $conv['other_user'],
@@ -93,40 +90,39 @@ try {
                 ];
             }
             
-            header('Content-Type: application/json');
             echo json_encode(['success' => true, 'conversations' => $conversationDetails]);
             exit();
             
         case 'search_users':
-            $search = trim($_GET['search'] ?? '');
+            header('Content-Type: application/json');
+            
+            $search = $_GET['search'] ?? '';
             
             if (strlen($search) < 2) {
-                header('Content-Type: application/json');
                 echo json_encode(['success' => true, 'users' => []]);
                 exit();
             }
             
-            $searchTerm = "%$search%";
             $stmt = $db->prepare('
                 SELECT username, name, profile_photo 
                 FROM users 
                 WHERE username != ? AND (username LIKE ? OR name LIKE ?)
-                ORDER BY username
                 LIMIT 10
             ');
-            $stmt->execute([$_SESSION['username'], $searchTerm, $searchTerm]);
+            $stmt->execute([$_SESSION['username'], "%$search%", "%$search%"]);
             $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
-            header('Content-Type: application/json');
             echo json_encode(['success' => true, 'users' => $users]);
             exit();
             
         default:
-            throw new Exception('Invalid action');
+            $_SESSION['error'] = 'Invalid action';
+            header('Location: ../pages/message_hub.php');
+            exit();
     }
     
 } catch (Exception $e) {
-    if ($isAjax) {
+    if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
         header('Content-Type: application/json');
         echo json_encode(['success' => false, 'error' => $e->getMessage()]);
         exit();
