@@ -30,7 +30,15 @@
                 </select>
                 <select name="category" required>
                     <option value="" disabled selected>Select Category</option>
+                    <option value="Writing">Writing</option>
+                    <option value="Graphic_Design">Graphic Design</option>
+                    <option value="Web_App_Development">Web & App Development</option>
+                    <option value="Digital_Marketing">Digital Marketing</option>
+                    <option value="Image_Video">Image & Video</option>
                     <option value="Translation">Translation</option>
+                    <option value="Business_Consulting">Business Consulting</option>
+                    <option value="Audio_Music">Audio & Music</option>
+
                 </select>
                 <input type="file" placeholder="Upload photo(s)" name="taskphoto[]" accept="image/*" multiple>
                 <button type="submit">Submit Task</button>

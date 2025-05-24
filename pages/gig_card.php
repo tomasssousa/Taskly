@@ -1,19 +1,19 @@
-<script src="js/gig_card.js"></script>
+<script src="js/gig_card.js" defer></script>
 
 <?php
-function renderGigCard($service) {
+function renderGigCard($service, $showSettings = false) {
     $images = !empty($service['all_images']) ? explode(',', $service['all_images']) : ['default-gig.jpg'];
     $isOwner = isset($_SESSION['username']) && $_SESSION['username'] === $service['user'];
     ?>
     <div class="gig-card" data-gig-id="<?= $service['id'] ?>">
-        <?php if ($isOwner): ?>
+        <?php if ($isOwner && $showSettings): ?>
             <div class="gig-actions">
-                <button class="gig-settings-btn" data-gig-id="<?= $service['id'] ?>">
+                <button class="gig-settings-btn" data-gig-id="<?= $service['id'] ?>" onclick="toggleGigMenu(<?= $service['id'] ?>)">
                     <img src="../docs/settings.png" alt="Settings" class="settings-icon">
                 </button>
                 <div class="gig-menu" id="gigMenu_<?= $service['id'] ?>" style="display: none;">
                     <a href="edit_task.php?id=<?= $service['id'] ?>" class="menu-item">Edit Task</a>
-                    <a href="#" class="menu-item delete-task" data-gig-id="<?= $service['id'] ?>">Delete Task</a>
+                    <a href="#" class="menu-item delete-task" onclick="showDeleteConfirmation(<?= $service['id'] ?>); return false;" data-gig-id="<?= $service['id'] ?>">Delete Task</a>
                 </div>
             </div>
         <?php endif; ?>

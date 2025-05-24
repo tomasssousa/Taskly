@@ -50,17 +50,18 @@
 
 .search-container {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start; 
     align-items: center;
+    width: 90%; 
 }
 
 .search-input {
-    width: 50%;
     padding: 0.5em;
     font-size: 1rem;
     border: 1px solid #ccc;
     border-radius: 5px 0 0 5px;
     outline: none;
+    margin-left: 50px;
 }
 
 .search-button {
@@ -70,6 +71,7 @@
     width: auto;
     border-radius: 0 5px 5px 0;
     cursor: pointer;
+    flex-shrink: 0; /* Prevent button from shrinking */
 }
 
 .search-icon {

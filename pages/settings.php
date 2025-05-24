@@ -10,7 +10,7 @@
         <script src="js/settings.js" defer></script>
         <link rel="icon" href="../docs/logo.png" type="icon/x-icon">
     </head>
-<body>
+<body class="settings-page">
 <?php include_once(__DIR__ . '/../components/header.php'); ?>
 
 <main>

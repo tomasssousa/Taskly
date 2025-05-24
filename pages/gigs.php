@@ -75,7 +75,14 @@
                     <label>Category:
                         <select name="category">
                             <option value="">All</option>
+                            <option value="Writing" <?= ($_GET['category'] ?? '') === 'Writing' ? 'selected' : '' ?>>Writing</option>
+                            <option value="Graphic_Design" <?= ($_GET['category'] ?? '') === 'Graphic_Design' ? 'selected' : '' ?>>Graphic Design</option>
+                            <option value="Web_App_Development" <?= ($_GET['category'] ?? '') === 'Web_App_Development' ? 'selected' : '' ?>>Web & App Development</option>
+                            <option value="Digital_Marketing" <?= ($_GET['category'] ?? '') === 'Digital_Marketing' ? 'selected' : '' ?>>Digital Marketing</option>
+                            <option value="Image_Video" <?= ($_GET['category'] ?? '') === 'Image_Video' ? 'selected' : '' ?>>Image & Video</option>
                             <option value="Translation" <?= ($_GET['category'] ?? '') === 'Translation' ? 'selected' : '' ?>>Translation</option>
+                            <option value="Business_Consulting" <?= ($_GET['category'] ?? '') === 'Business_Consulting' ? 'selected' : '' ?>>Business Consulting</option>
+                            <option value="Audio_Music" <?= ($_GET['category'] ?? '') === 'Audio_Music' ? 'selected' : '' ?>>Audio & Music</option>
                         </select>
                     </label>
                     <label>Delivery Time:
@@ -113,7 +120,7 @@
                     <?php
                     if (!empty($services)) {
                         foreach ($services as $service) {
-                            renderGigCard($service);
+                            renderGigCard($service, false); // Pass false to hide settings
                         }
                     } else {
                         echo '<p>No gigs found.</p>';

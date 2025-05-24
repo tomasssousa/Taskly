@@ -145,7 +145,7 @@ if ($profileUser) {
                     
                     if (!empty($services)) {
                         foreach($services as $service) {
-                            renderGigCard($service);
+                            renderGigCard($service, true); // Pass true to show settings
                         }
                     } else {
                         echo '<p class="no-tasks">No tasks found. <a href="new_task.php">Create your first task!</a></p>';

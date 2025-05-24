@@ -1,30 +1,35 @@
-document.addEventListener('click', function(e) {
-    document.querySelectorAll('.gig-menu').forEach(menu => {
-        menu.style.display = 'none';
+function toggleGigMenu(gigId) {
+    const menu = document.getElementById(`gigMenu_${gigId}`);
+    
+    // Close all other menus first
+    document.querySelectorAll('.gig-menu').forEach(m => {
+        if (m.id !== `gigMenu_${gigId}`) {
+            m.style.display = 'none';
+        }
+    });
+    
+    menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+}
+
+document.addEventListener('click', function(event) {
+    const openMenus = document.querySelectorAll('.gig-menu');
+    
+    openMenus.forEach(menu => {
+        if (menu.style.display === 'block') {
+            const gigId = menu.id.replace('gigMenu_', '');
+            const settingsBtn = document.querySelector(`[data-gig-id="${gigId}"].gig-settings-btn`);
+            
+            if (!menu.contains(event.target) && 
+                !settingsBtn.contains(event.target)) {
+                menu.style.display = 'none';
+            }
+        }
     });
 });
 
-document.querySelectorAll('.gig-settings-btn').forEach(button => {
-    button.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        const gigId = this.dataset.gigId;
-        const menu = document.getElementById(`gigMenu_${gigId}`);
-        // Close other menus
-        document.querySelectorAll('.gig-menu').forEach(m => {
-            if (m.id !== `gigMenu_${gigId}`) m.style.display = 'none';
-        });
-        menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
-    });
-});
-
-// Add task click handler
 document.querySelectorAll('.gig-card').forEach(card => {
     card.addEventListener('click', function(e) {
-        // Don't navigate if clicking on interactive elements
         if (!e.target.closest('.gig-actions') && 
-            !e.target.closest('.carousel-btn') && 
-            !e.target.closest('.dot') &&
             !e.target.closest('.user-profile-link')) {
             const gigId = this.dataset.gigId;
             window.location.href = `task.php?id=${gigId}`;
@@ -32,9 +37,7 @@ document.querySelectorAll('.gig-card').forEach(card => {
     });
 });
 
-function showDeleteConfirmation(taskId) {
-showPopup('deleteTaskPopup', () => deleteTask(taskId));
-}
+
 
 function deleteTask(taskId) {
     fetch(`../actions/action_delete_task.php?id=${taskId}`, {
