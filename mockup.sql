@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS transactions;
 DROP TABLE IF EXISTS categories;
 DROP TABLE IF EXISTS media;
 DROP TABLE IF EXISTS delivery_time;
-DROP TABLE IF EXISTS favourite_services:
+DROP TABLE IF EXISTS favourite_services;
 
 
 
@@ -30,7 +30,7 @@ CREATE TABLE services (
     rating INTEGER,
     Nrating INTEGER,
     category VARCHAR REFERENCES categories,
-    user VARCHAR REFERENCES users NOT NULL ON DELETE CASCADE
+    user VARCHAR NOT NULL REFERENCES users ON DELETE CASCADE
 );
 
 CREATE TABLE favourite_services (
@@ -41,18 +41,18 @@ CREATE TABLE favourite_services (
 
 CREATE TABLE comments (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    text VARCHAR,
+    comment VARCHAR,
     service_id INTEGER REFERENCES services,
     user VARCHAR REFERENCES users NOT NULL,
-    replie_to INTEGER REFERENCES comments
+    reply_to INTEGER REFERENCES comments
 );
 
 CREATE TABLE chat (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     text VARCHAR,
     chat_id INTEGER REFERENCES chat,
-    sender VARCHAR REFERENCES users NOT NULL ON DELETE CASCADE,
-    receiver VARCHAR REFERENCES users NOT NULL ON DELETE CASCADE
+    sender VARCHAR NOT NULL REFERENCES users ON DELETE CASCADE,
+    receiver VARCHAR NOT NULL REFERENCES users ON DELETE CASCADE
 );
 
 CREATE TABLE transactions (

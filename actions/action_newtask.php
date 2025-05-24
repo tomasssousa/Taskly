@@ -38,17 +38,17 @@ try {
 
     // Insert service
     $stmt = $db->prepare('
-        INSERT INTO services (taskname, pricing, delivery_time, description, user, status)
+        INSERT INTO services (taskname, pricing, delivery_time, description, user, category)
         VALUES (?, ?, ?, ?, ?, ?)
     ');
     
     $stmt->execute([
-        $taskname,      // Add taskname here
+        $taskname, // Add taskname here
         $pricing,
         $deltime,
         $taskdesc,
-        $_SESSION['username'], 
-        'open'
+        $_SESSION['username'],
+        $category 
     ]);
 
     $serviceId = $db->lastInsertId();
