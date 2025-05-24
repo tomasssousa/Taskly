@@ -270,5 +270,19 @@ class Service {
         
         return $stmt->fetchAll();
     }
+
+    #Specific function for task.php
+    public static function get_service_with_media(int $id): array {
+        $db = Database::getInstance();
+        $stmt = $db->prepare("
+            SELECT s.*, 
+                   COALESCE(s.taskname, s.description) as task_title,
+                   (SELECT GROUP_CONCAT(file_path) FROM media WHERE service_id = s.id ORDER BY id ASC) as all_images
+            FROM services s 
+            WHERE s.id = ?
+        ");
+        $stmt->execute([$id]);
+        return $stmt->fetch();
+    }
 }
 ?>

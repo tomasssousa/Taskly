@@ -1,31 +1,23 @@
 <?php
 session_start();
 
-require_once(__DIR__ . '/../database/connection.php');
+require_once(__DIR__ . '/../database/service_db.php');
+require_once(__DIR__ . '/../database/user_db.php');
 
 // Get task ID from URL
 $taskId = $_GET['id'] ?? null;
 
 if ($taskId) {
     try {
-        $db = getDatabaseConnection();
-        $stmt = $db->prepare("
-            SELECT s.*, 
-                   COALESCE(s.taskname, s.description) as task_title,
-                   (SELECT GROUP_CONCAT(file_path) FROM media WHERE service_id = s.id) as all_images
-            FROM services s 
-            WHERE s.id = ?
-        ");
-        $stmt->execute([$taskId]);
-        $task = $stmt->fetch();
+        
+        $task = Service::get_service_with_media($taskId);
         
         // Convert image string to array
         $images = !empty($task['all_images']) ? explode(',', $task['all_images']) : ['default-gig.jpg'];
 
         // After fetching $task
-        $stmt = $db->prepare("SELECT profile_photo FROM users WHERE username = ?");
-        $stmt->execute([$task['user']]);
-        $userInfo = $stmt->fetch();
+       
+        $userInfo = User::get_user($task['user']);
         $profilePhoto = $userInfo && !empty($userInfo['profile_photo']) ? $userInfo['profile_photo'] : null;
 
     } catch (Exception $e) {
