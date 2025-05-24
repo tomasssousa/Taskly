@@ -1,5 +1,5 @@
 <?php
-require_once(__DIR__ . '/../database/connection.php');
+require_once(__DIR__ . '/../database/user_db.php');
 session_start();
 
 header('Content-Type: application/json');
@@ -9,7 +9,6 @@ if (!isset($_SESSION['username'])) {
 }
 
 try {
-    $db = getDatabaseConnection();
     
     // Create uploads directory if it doesn't exist
     $uploadDir = __DIR__ . '/../docs/uploads';
@@ -53,24 +52,17 @@ try {
     }
     
     // Update database
-    $query = 'UPDATE users SET name = ?, bio = ?, skills = ?';
-    $params = [
-        $_POST['name'] ?? '',
-        $_POST['bio'] ?? '',
-        $_POST['skills'] ?? ''
-    ];
-
+    
     if ($profile_photo) {
-        $query .= ', profile_photo = ?';
-        $params[] = $profile_photo;
+        if(!User::update_profile_photo($_SESSION['username'], $profile_photo) || !User::update_user($_SESSION['username'],$_POST['name'] ?? '', $_POST['bio'] ?? '', $_POST['skills'] ?? '')){
+            throw new Exception('Database update failed'); 
+        }
     }
 
-    $query .= ' WHERE username = ?';
-    $params[] = $_SESSION['username'];
-
-    $stmt = $db->prepare($query);
-    if (!$stmt->execute($params)) {
-        throw new Exception('Database update failed');
+    else {
+        if(!User::update_user($_SESSION['username'],$_POST['name'] ?? '', $_POST['bio'] ?? '', $_POST['skills'] ?? '')){
+            throw new Exception('Database update failed');
+        }
     }
 
     echo json_encode([

@@ -6,9 +6,11 @@ error_reporting(E_ALL);
 session_start();
 
 require_once(__DIR__ . '/../database/connection.php');
+require_once(__DIR__ . '/../database/user_db.php');
+require_once(__DIR__ . '/../database/service_db.php');
 
 try {
-    $db = getDatabaseConnection();
+    $db = Database::getInstance();
     if (!$db) {
         throw new Exception("Database connection failed");
     }
@@ -20,9 +22,7 @@ $profileUser = $_GET['user'] ?? $_SESSION['username'] ?? null;
 
 $userData = null;
 if ($profileUser) {
-    $stmt = $db->prepare("SELECT profile_photo, name, bio, skills FROM users WHERE username = ?");
-    $stmt->execute([$profileUser]);
-    $userData = $stmt->fetch();
+    $userData = User::get_user($profileUser);
     
 }
 ?>
@@ -128,18 +128,8 @@ if ($profileUser) {
                 <?php
                 // Fetch user's services/tasks
                 try {
-                    $stmt = $db->prepare("
-                        SELECT s.*, u.profile_photo as seller_photo, u.name as seller_name,
-                               COALESCE(s.taskname, s.description) as task_title,
-                               (SELECT COUNT(*) FROM transactions WHERE service_id = s.id) as order_count,
-                               (SELECT GROUP_CONCAT(file_path) FROM media WHERE service_id = s.id ORDER BY id ASC) as all_images
-                        FROM services s
-                        JOIN users u ON s.user = u.username
-                        WHERE s.user = ?
-                        ORDER BY s.id DESC
-                    ");
-                    $stmt->execute([$profileUser]);
-                    $services = $stmt->fetchAll();
+                    
+                    $services = Service::get_services_by_user($profileUser);
 
                     require_once(__DIR__ . '/gig_card.php');
                     

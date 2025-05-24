@@ -1,16 +1,15 @@
 <?php
 session_start();
-require_once(__DIR__ . '/../database/connection.php');
+require_once(__DIR__ . '/../database/user_db.php');
 
-$db = getDatabaseConnection();
+
 
 $username = trim($_POST['username'] ?? '');
 $password = $_POST['password'] ?? '';
 
 try {
-    $stmt = $db->prepare('SELECT * FROM users WHERE username = ?');
-    $stmt->execute([$username]);
-    $user = $stmt->fetch();
+    
+    $user = User::get_user($username);
 
     if ($user && password_verify($password, $user['password'])) {
         session_regenerate_id(true);

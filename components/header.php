@@ -4,12 +4,10 @@ if (session_status() === PHP_SESSION_NONE) session_start();
 // Get user's profile photo if logged in
 $userPhoto = '../docs/user_icon.png'; // Default photo
 if (isset($_SESSION['username'])) {
-    require_once(__DIR__ . '/../database/connection.php');
+    require_once(__DIR__ . '/../database/user_db.php');
     try {
-        $db = getDatabaseConnection();
-        $stmt = $db->prepare("SELECT profile_photo FROM users WHERE username = ?");
-        $stmt->execute([$_SESSION['username']]);
-        $result = $stmt->fetch();
+        $result = User::get_user($_SESSION['username']);
+        
         if ($result && !empty($result['profile_photo'])) {
             $userPhoto = '../docs/' . $result['profile_photo'];
         }

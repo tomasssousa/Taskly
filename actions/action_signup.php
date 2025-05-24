@@ -1,8 +1,7 @@
 <?php
 session_start();
-require_once(__DIR__ . '/../database/connection.php');
+require_once(__DIR__ . '/../database/user_db.php');
 
-$db = getDatabaseConnection();
 
 $username = trim($_POST['username'] ?? '');
 $name = trim($_POST['name'] ?? '');
@@ -16,10 +15,8 @@ if (!preg_match("/^[a-zA-Z0-9_]{3,20}$/", $username) || strlen($password) < 6) {
 }
 
 try {
-    $stmt = $db->prepare('SELECT username FROM users WHERE username = ?');
-    $stmt->execute([$username]);
 
-    if ($stmt->fetch()) {
+    if (User::get_user($username)) {
         $_SESSION['error'] = 'Username already taken.';
         header('Location: ../pages/signup.php');
         exit();
@@ -27,11 +24,7 @@ try {
 
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-    $stmt = $db->prepare('
-        INSERT INTO users (username, name, password, email, admin_power)
-        VALUES (?, ?, ?, ?, 0)
-    ');
-    $stmt->execute([$username, $name, $hashedPassword, $email]);
+    User::create($username, $name, $hashedPassword, $email);
 
     session_regenerate_id(true);
     $_SESSION['username'] = $username;
