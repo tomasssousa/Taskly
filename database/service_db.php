@@ -29,7 +29,7 @@ class Service {
 
     public static function create(int $pricing, string $delivery_time, string $description, string $user, string $title, string $category) {
         $db = Database::getInstance();
-        $stmt = $db->prepare('INSERT INTO services (pricing, delivery_time, description, rating, Nrating, user, task_name, category) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
+        $stmt = $db->prepare('INSERT INTO services (pricing, delivery_time, description, rating, Nrating, user, taskname, category) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
         $stmt->execute([$pricing, $delivery_time, $description, 5, 1, $user, $title, $category]);
     }
 
