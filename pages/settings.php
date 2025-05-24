@@ -11,7 +11,17 @@
         <link rel="icon" href="../docs/logo.png" type="icon/x-icon">
     </head>
 <body class="settings-page">
-<?php include_once(__DIR__ . '/../components/header.php'); ?>
+<?php 
+session_start();
+include_once(__DIR__ . '/../components/header.php'); 
+
+// Get current user data
+require_once(__DIR__ . '/../database/user_db.php');
+$current_user = null;
+if (isset($_SESSION['username'])) {
+    $current_user = User::get_user($_SESSION['username']);
+}
+?>
 
 <main>
     <div class="settings-tabs">
@@ -25,10 +35,27 @@
         </div>
         <div class="tab-content" id="settings-tab" style="display:none;">
             <h3>Edit Account Details</h3>
+            
+            <!-- Display messages -->
+            <?php if (isset($_SESSION['success'])): ?>
+                <div class="alert alert-success"><?= $_SESSION['success'] ?></div>
+                <?php unset($_SESSION['success']); ?>
+            <?php endif; ?>
+            
+            <?php if (isset($_SESSION['error'])): ?>
+                <div class="alert alert-error"><?= $_SESSION['error'] ?></div>
+                <?php unset($_SESSION['error']); ?>
+            <?php endif; ?>
+            
+            <?php if (isset($_SESSION['info'])): ?>
+                <div class="alert alert-info"><?= $_SESSION['info'] ?></div>
+                <?php unset($_SESSION['info']); ?>
+            <?php endif; ?>
+            
             <form action="../actions/action_update_account.php" method="post">
                 <div class="form-group">
                     <label for="username">Username:</label>
-                    <input type="text" id="username" name="username" placeholder="Current username" required>
+                    <input type="text" id="username" name="username" value="<?= htmlspecialchars($current_user['username'] ?? '') ?>" readonly>
                 </div>
                 
                 <div class="form-group">
@@ -38,7 +65,7 @@
                 
                 <div class="form-group">
                     <label for="new_email">New Email (optional):</label>
-                    <input type="email" id="new_email" name="new_email" placeholder="Enter new email (leave blank to keep current)">
+                    <input type="email" id="new_email" name="new_email" placeholder="<?= htmlspecialchars($current_user['email'] ?? 'Enter new email') ?>">
                 </div>
                 
                 <div class="form-group">
@@ -54,9 +81,10 @@
                 <div class="toggle-row">
                     <label>Account Type:</label>
                     <div class="account-type-buttons">
-                        <button type="button" class="account-type-btn active" data-type="user">User</button>
-                        <button type="button" class="account-type-btn" data-type="tasker">Tasker</button>
+                        <button type="button" class="account-type-btn <?= (!$current_user['task_mode']) ? 'active' : '' ?>" data-type="user">User</button>
+                        <button type="button" class="account-type-btn <?= ($current_user['task_mode']) ? 'active' : '' ?>" data-type="tasker">Tasker</button>
                     </div>
+                    <input type="hidden" id="account_type" name="account_type" value="<?= $current_user['task_mode'] ? 'tasker' : 'user' ?>">
                 </div>
                 
                 <button type="submit" class="update-btn">Update Account</button>

@@ -1,18 +1,24 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
 
-// Get user's profile photo if logged in
+// Get user's profile photo and check admin status if logged in
 $userPhoto = '../docs/user_icon.png'; // Default photo
+$isAdmin = false;
+
 if (isset($_SESSION['username'])) {
     require_once(__DIR__ . '/../database/user_db.php');
     try {
         $result = User::get_user($_SESSION['username']);
         
-        if ($result && !empty($result['profile_photo'])) {
-            $userPhoto = '../docs/' . $result['profile_photo'];
+        if ($result) {
+            if (!empty($result['profile_photo'])) {
+                $userPhoto = '../docs/' . $result['profile_photo'];
+            }
+            // Check if user has admin privileges
+            $isAdmin = $result['admin_power'] ?? false;
         }
     } catch (PDOException $e) {
-        error_log("Error fetching user photo: " . $e->getMessage());
+        error_log("Error fetching user data: " . $e->getMessage());
     }
 }
 ?>
@@ -44,6 +50,12 @@ if (isset($_SESSION['username'])) {
                     <img src="../docs/user_logo.png" alt="" class="menu-icon">
                     Profile
                 </a>
+                <?php if ($isAdmin): ?>
+                    <a href="admin.php">
+                        <img src="../docs/dashboard.png" alt="" class="menu-icon">
+                        Admin Dashboard
+                    </a>
+                <?php endif; ?>
                 <a href="settings.php">
                     <img src="../docs/settings.png" alt="" class="menu-icon">
                     Settings

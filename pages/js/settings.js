@@ -11,6 +11,8 @@ document.querySelectorAll('.account-type-btn').forEach(btn => {
     btn.addEventListener('click', function() {
         document.querySelectorAll('.account-type-btn').forEach(b => b.classList.remove('active'));
         this.classList.add('active');
+        
+        document.getElementById('account_type').value = this.dataset.type;
     });
 });
 
