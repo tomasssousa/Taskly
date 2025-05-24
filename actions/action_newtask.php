@@ -76,7 +76,7 @@ try {
                 
                 // Set first image as service's main image
                 if ($key === 0) {
-                    Service::setMainImage($serviceId, 'uploads/' . $filename);
+                    Service::set_main_image($serviceId, 'uploads/' . $filename);
                 }
             }
         }
