@@ -84,7 +84,7 @@ if ($taskId) {
                 <div class="delivery-section">
                     <!-- Delivery details will go here -->
                     <div class="delivery-actions">
-                        <button class="message-button">Message</button>
+                        <a href="message_hub.php?user=<?= urlencode($task['user']) ?>&action=start_conversation" class="message-button">Message</a>
                         <button class="hire-button">Hire</button>
                     </div>
                 </div>

@@ -118,9 +118,11 @@
 
 .delivery-actions {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
+    align-items: center;
     gap: 1em;
-    margin-top: auto; 
+    margin-top: auto;
+    flex-wrap: nowrap;
 }
 
 .hire-button {

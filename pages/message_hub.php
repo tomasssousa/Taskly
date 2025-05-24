@@ -51,6 +51,19 @@ const currentUser = '<?= $_SESSION['username'] ?>';
 // Load chats while loading the page
 document.addEventListener('DOMContentLoaded', function() {
     loadConversations();
+    
+    // Check if we need to start a conversation with a specific user
+    const urlParams = new URLSearchParams(window.location.search);
+    const targetUser = urlParams.get('user');
+    const action = urlParams.get('action');
+    
+    if (targetUser && action === 'start_conversation') {
+        // Start chat with the specified user
+        setTimeout(() => {
+            startChat(targetUser);
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }, 500); // Some delay
+    }
 });
 
 function searchUsers() {
@@ -95,8 +108,10 @@ function startChat(username) {
     currentChat = username;
     document.getElementById('searchResults').innerHTML = '';
     document.getElementById('userSearch').value = '';
-    loadMessages(username);
-    loadConversations(); // Show new messages
+    
+    displayChat(username, []); // Create an empty chat interface immediately
+    loadMessages(username); // Try to load existing messages
+    loadConversations(); // Refresh conversations list
 }
 
 function loadConversations() {
@@ -136,7 +151,6 @@ function loadMessages(username) {
     document.querySelectorAll('.conversation-item').forEach(item => {
         item.classList.remove('active');
     });
-    event.target.closest('.conversation-item')?.classList.add('active');
     
     fetch(`../actions/action_chat.php?action=get_messages&user=${encodeURIComponent(username)}`)
         .then(response => response.json())
@@ -144,9 +158,15 @@ function loadMessages(username) {
             if (data.success) {
                 displayChat(username, data.messages);
                 startMessagePolling(username);
+            } else {
+                displayChat(username, []); // Show the chat interface, even if no messages exist
+                startMessagePolling(username);
             }
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error => {
+            console.error('Error:', error);
+            displayChat(username, []);
+        });
 }
 
 function displayChat(username, messages) {
