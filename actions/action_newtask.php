@@ -1,100 +1,99 @@
 <?php
 session_start();
+
+if (!isset($_SESSION['username'])) {
+    header('Location: ../pages/login.php');
+    exit();
+}
+
 require_once(__DIR__ . '/../database/connection.php');
 require_once(__DIR__ . '/../database/service_db.php');
 require_once(__DIR__ . '/../database/media_db.php');
 
-$db = Database::getInstance();
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $taskTitle = trim($_POST['taskname']); // Form sends 'taskname'
+    $taskDescription = trim($_POST['taskdesc']); 
+    $pricing = (int)trim($_POST['pricing']);
+    $deliveryTime = $_POST['deltime'];
+    $category = $_POST['category'];
+    $username = $_SESSION['username'];
 
-// Create uploads directory if it doesn't exist
-$uploadDir = __DIR__ . '/../docs/uploads';
-if (!is_dir($uploadDir)) {
-    if (!mkdir($uploadDir, 0755, true)) {
-        $_SESSION['error'] = 'Failed to create uploads directory';
+    if (empty($taskTitle) || empty($taskDescription) || empty($pricing)) {
+        $_SESSION['error'] = 'All fields are required.';
         header('Location: ../pages/new_task.php');
         exit();
     }
-}
 
-// Validate form data
-$taskname = trim($_POST['taskname'] ?? '');
-$taskdesc = trim($_POST['taskdesc'] ?? '');
-$pricing = trim($_POST['pricing'] ?? '');
-$deltime = $_POST['deltime'] ?? '';
-$category = $_POST['category'] ?? '';
+    if (!is_numeric($pricing)) {
+        $_SESSION['error'] = 'Price must be a number.';
+        header('Location: ../pages/new_task.php');
+        exit();
+    }
 
-if (empty($taskname) || empty($taskdesc) || empty($pricing)) {
-    $_SESSION['error'] = 'All fields are required.';
-    header('Location: ../pages/new_task.php');
-    exit();
-}
+    try {
+        $db = getDatabaseConnection();
+        $db->beginTransaction();
 
-if (!is_numeric($pricing)) {
-    $_SESSION['error'] = 'Price must be a number.';
-    header('Location: ../pages/new_task.php');
-    exit();
-}
-
-try {
-    $db->beginTransaction();
-
-    // Insert service
-    Service::create($pricing, $deltime, $taskdesc, $_SESSION['username'], $taskname, 'other');
-
-    $serviceId = $db->lastInsertId();
-
-    // Handle image uploads
-    if (isset($_FILES['taskphoto']) && is_array($_FILES['taskphoto']['tmp_name'])) {
-        foreach ($_FILES['taskphoto']['tmp_name'] as $key => $tmp_name) {
-            if ($_FILES['taskphoto']['error'][$key] === UPLOAD_ERR_OK) {
-                $tempFile = $tmp_name;
-                if (!is_uploaded_file($tempFile)) {
-                    throw new Exception('Invalid upload attempt');
+        // Insert into services table using taskname column
+        $stmt = $db->prepare("
+            INSERT INTO services (taskname, description, pricing, delivery_time, category, user, rating, Nrating) 
+            VALUES (?, ?, ?, ?, ?, ?, 5, 1)
+        ");
+        
+        $success = $stmt->execute([
+            $taskTitle,      // maps to taskname column
+            $taskDescription, 
+            $pricing,
+            $deliveryTime,
+            $category,
+            $username
+        ]);
+        
+        if ($success) {
+            $serviceId = $db->lastInsertId();
+            
+            // Handle file uploads if any
+            if (isset($_FILES['taskphoto']) && !empty($_FILES['taskphoto']['name'][0])) {
+                $uploadDir = __DIR__ . '/../docs/uploads';
+                if (!is_dir($uploadDir)) {
+                    if (!mkdir($uploadDir, 0755, true)) {
+                        $_SESSION['error'] = 'Failed to create uploads directory';
+                        header('Location: ../pages/new_task.php');
+                        exit();
+                    }
                 }
-
-                // Get file extension
-                $fileInfo = pathinfo($_FILES['taskphoto']['name'][$key]);
-                $extension = strtolower($fileInfo['extension']);
                 
-                // Validate extension
-                $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
-                if (!in_array($extension, $allowedExtensions)) {
-                    throw new Exception('Invalid file type. Allowed: ' . implode(', ', $allowedExtensions));
-                }
-
-                // Generate unique filename
-                $filename = 'task_' . $serviceId . '_' . uniqid() . '.' . $extension;
-                $targetPath = $uploadDir . '/' . $filename;
-                
-                // Move uploaded file
-                if (!move_uploaded_file($tempFile, $targetPath)) {
-                    throw new Exception('Failed to save uploaded file');
-                }
-
-                // Insert into media table with consistent path format
-                Media::create($serviceId, 'uploads/' . $filename, 'image');
-                
-                // Set first image as service's main image
-                if ($key === 0) {
-                    Service::set_main_image($serviceId, 'uploads/' . $filename);
+                foreach ($_FILES['taskphoto']['tmp_name'] as $index => $tmpName) {
+                    if (!empty($tmpName)) {
+                        $fileName = uniqid() . '_' . $_FILES['taskphoto']['name'][$index];
+                        $uploadPath = $uploadDir . '/' . $fileName;
+                        
+                        if (move_uploaded_file($tmpName, $uploadPath)) {
+                            // Insert into media table
+                            $mediaStmt = $db->prepare("INSERT INTO media (service_id, file_path, file_type) VALUES (?, ?, 'image')");
+                            $mediaStmt->execute([$serviceId, 'uploads/' . $fileName]);
+                        }
+                    }
                 }
             }
+            
+            $_SESSION['success'] = 'Task created successfully!';
+            header('Location: ../pages/user.php');
+        } else {
+            $_SESSION['error'] = 'Failed to create task.';
+            header('Location: ../pages/new_task.php');
         }
+
+        $db->commit();
+        
+    } catch (PDOException $e) {
+        $db->rollBack();
+        error_log("Database error: " . $e->getMessage());
+        $_SESSION['error'] = 'Failed to create task: ' . $e->getMessage();
+        header('Location: ../pages/new_task.php');
     }
-
-    // Handle category
-    if (!empty($category)) {
-        Service::set_category($serviceId, $category);   
-    }
-
-    $db->commit();
-    header('Location: ../pages/home.php');
-    exit();
-
-} catch (Exception $e) {
-    $db->rollBack();
-    $_SESSION['error'] = 'Failed to create task: ' . $e->getMessage();
+} else {
     header('Location: ../pages/new_task.php');
-    exit();
 }
+exit();
 ?>

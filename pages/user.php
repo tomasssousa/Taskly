@@ -20,6 +20,11 @@ try {
 
 $profileUser = $_GET['user'] ?? $_SESSION['username'] ?? null;
 
+if (!$profileUser) {
+    header('Location: login.php');
+    exit();
+}
+
 $userData = null;
 if ($profileUser) {
     $userData = User::get_user($profileUser);
@@ -31,22 +36,19 @@ if ($profileUser) {
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Taskly | The website that solves your problems</title>
+        <title><?= htmlspecialchars($profileUser) ?>'s Profile | Taskly</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="css/user.css">
         <link rel="stylesheet" href="css/gig_card.css">
         <link rel="icon" href="../docs/logo.png" type="icon/x-icon">
+        <script src="js/images.js" defer></script>
         <script src="js/gig_card.js" defer></script>
         <script src="js/user.js" defer></script>
         </head>
     <body>
     <?php include_once(__DIR__ . '/../components/header.php'); ?>
-
-    <?php
-    $profileUser = $_GET['user'] ?? $_SESSION['username'] ?? null;
-    ?>
 
     <main class="main-layout">
         <aside class="user">

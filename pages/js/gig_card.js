@@ -11,6 +11,13 @@ function toggleGigMenu(gigId) {
     menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
 }
 
+function showDeleteConfirmation(taskId) {
+    if (confirm('Are you sure you want to delete this task? This action cannot be undone.')) {
+        deleteTask(taskId);
+    }
+}
+
+// Close menus when clicking outside
 document.addEventListener('click', function(event) {
     const openMenus = document.querySelectorAll('.gig-menu');
     
@@ -27,17 +34,23 @@ document.addEventListener('click', function(event) {
     });
 });
 
-document.querySelectorAll('.gig-card').forEach(card => {
-    card.addEventListener('click', function(e) {
+// Use event delegation for gig card clicks
+document.addEventListener('click', function(e) {
+    const gigCard = e.target.closest('.gig-card');
+    
+    if (gigCard) {
+        // Only navigate if NOT clicking on interactive elements
         if (!e.target.closest('.gig-actions') && 
-            !e.target.closest('.user-profile-link')) {
-            const gigId = this.dataset.gigId;
-            window.location.href = `task.php?id=${gigId}`;
+            !e.target.closest('.gig-menu') &&
+            !e.target.closest('.gig-seller a')) {
+            
+            const gigId = gigCard.getAttribute('data-gig-id');
+            if (gigId) {
+                window.location.href = `task.php?id=${gigId}`;
+            }
         }
-    });
+    }
 });
-
-
 
 function deleteTask(taskId) {
     fetch(`../actions/action_delete_task.php?id=${taskId}`, {
@@ -47,8 +60,11 @@ function deleteTask(taskId) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            const gigCard = document.querySelector(`[data-gig-id="${taskId}"]`).closest('.gig-card');
-            gigCard.remove();
+            const gigCard = document.querySelector(`[data-gig-id="${taskId}"]`);
+            if (gigCard) {
+                gigCard.remove();
+            }
+            alert('Task deleted successfully!');
         } else {
             throw new Error(data.error || 'Failed to delete task');
         }

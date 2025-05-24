@@ -17,17 +17,19 @@ function renderGigCard($service, $showSettings = false) {
                 </div>
             </div>
         <?php endif; ?>
+        
+        <!-- Use gig-image-container for cards, NOT carousel -->
         <div class="gig-image-container">
             <?php foreach ($images as $index => $image): ?>
                 <img src="../docs/<?= htmlspecialchars($image) ?>" 
-                        alt="<?= htmlspecialchars($service['task_title']) ?>" 
-                        class="gig-image <?= $index === 0 ? 'active' : '' ?>"
-                        data-index="<?= $index ?>">
+                     alt="<?= htmlspecialchars($service['taskname']) ?>" 
+                     class="gig-image <?= $index === 0 ? 'active' : '' ?>"
+                     data-index="<?= $index ?>">
             <?php endforeach; ?>
-            
         </div>
+        
         <div class="gig-details">
-            <h3><?= htmlspecialchars($service['task_title']) ?></h3>
+            <h3><?= htmlspecialchars($service['taskname']) ?></h3>
             <div class="gig-seller">
                 <a href="user.php?user=<?= urlencode($service['user']) ?>" style="display: flex; align-items: center; text-decoration: none; color: inherit;">
                     <img src="<?= !empty($service['seller_photo']) ? '../docs/' . htmlspecialchars($service['seller_photo']) : '../docs/user_icon.png' ?>" 

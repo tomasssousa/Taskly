@@ -11,12 +11,12 @@
     background-color: white;
     border-radius: 8px;
     overflow: hidden;
-    height: 230px;  /* Increased from 200px to 250px */
+    height: 230px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     transition: transform 0.2s ease;
-    position: relative; /* Add this */
+    position: relative;
     cursor: pointer;
-    margin-bottom: 20px;  /* Reduce space between cards */
+    margin-bottom: 20px;
 }
 
 .gig-card:hover {
@@ -24,9 +24,10 @@
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
+/* Image container for gig cards (NOT carousel) */
 .gig-image-container {
     width: 300px;
-    height: 230px;  /* Match the card height */
+    height: 230px;
     overflow: hidden;
     flex-shrink: 0;
     position: relative;
@@ -54,13 +55,13 @@
 }
 
 .gig-details {
-    position: relative; /* Needed for absolute positioning of price */
+    position: relative;
     padding: 25px;
     flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: 15px;  /* Add gap between elements */
+    gap: 15px;
 }
 
 .gig-price {
@@ -105,71 +106,6 @@
     margin-top: 15px;
 }
 
-.carousel {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    overflow: hidden;
-}
-
-.carousel-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 40px;
-    height: 40px;
-    background: rgba(0, 0, 0, 0.5);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    font-size: 24px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s ease, background-color 0.3s ease;
-    z-index: 3;
-}
-
-.carousel:hover .carousel-btn {
-    opacity: 1;
-}
-
-.carousel-btn:hover {
-    background: rgba(0, 0, 0, 0.7);
-}
-
-.prev {
-    left: 10px;
-}
-
-.next {
-    right: 10px;
-}
-
-.carousel-dots {
-    position: absolute;
-    bottom: 15px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 8px;
-    z-index: 3;
-}
-
-.dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.5);
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.dot.active {
-    background: white;
-}
 
 /* Settings button and menu styles */
 .gig-actions:empty {
@@ -183,16 +119,16 @@
     z-index: 10;
     width: 40px;
     height: 40px;
-    pointer-events: none; /* Add this */
+    pointer-events: none;
 }
 
 .gig-settings-btn {
-    pointer-events: auto; /* Add this */
+    pointer-events: auto;
     background: rgba(255, 255, 255, 0.9);
     border: none;
     border-radius: 50%;
-    width: 40px;  /* Increased from 32px */
-    height: 40px; /* Increased from 32px */
+    width: 40px;
+    height: 40px;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -205,22 +141,22 @@
 }
 
 .settings-icon {
-    width: 20px;  /* Increased from 16px */
-    height: 20px; /* Increased from 16px */
+    width: 20px;
+    height: 20px;
     opacity: 0.7;
 }
 
 .gig-menu {
-    pointer-events: auto; /* Add this */
+    pointer-events: auto;
     position: absolute;
-    top: 40px;
+    top: 45px;
     right: 0;
     background: white;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     min-width: 120px;
     z-index: 11;
-    display: none; /* Add this */
+    display: none;
 }
 
 .gig-menu a {
@@ -297,6 +233,89 @@
 
 .modal-btn-confirm:hover {
     background: #c82333;
+}
+
+/* SEPARATE carousel styles for task.php only */
+.carousel {
+    width: 100%;
+    height: 300px; /* Only for task page */
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.carousel .gig-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.carousel .gig-image.active {
+    display: block;
+}
+
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 3;
+}
+
+.carousel:hover .carousel-btn {
+    opacity: 1;
+}
+
+.prev {
+    left: 10px;
+}
+
+.next {
+    right: 10px;
+}
+
+.carousel-dots {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 5px;
+    z-index: 3;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.dot.active {
+    background: white;
+}
+
+.dot:hover {
+    background: rgba(255, 255, 255, 0.8);
 }
 
 /* Stop propagation for interactive elements */
