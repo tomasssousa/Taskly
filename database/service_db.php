@@ -44,7 +44,7 @@ class Service {
         $stmt = $db->prepare('SELECT * FROM services WHERE id = ?');
         $stmt->execute([$id]);
         $service = $stmt->fetch();
-        return new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['Nrating'], $service['user'], $service['taskname'], $service['category'], $service['media']);
+        return new Service($service['id'], $service['pricing'], $service['delivery_time'], $service['description'], $service['rating'], $service['Nrating'], $service['user'], $service['taskname'], $service['category'], $service['media'] ?? '');
     }
 
     public static function set_main_image(int $id, string $image_path) {

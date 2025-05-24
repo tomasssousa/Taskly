@@ -307,6 +307,3 @@
     pointer-events: auto;
 }
 
-.gig-card * {
-    pointer-events: none;
-}
