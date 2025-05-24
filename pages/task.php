@@ -1,53 +1,43 @@
 <?php
 session_start();
-require_once(__DIR__ . '/../database/connection.php');
-require_once(__DIR__ . '/../database/service_db.php');
 
+require_once(__DIR__ . '/../database/service_db.php');
+require_once(__DIR__ . '/../database/user_db.php');
+
+// Get task ID from URL
 $taskId = $_GET['id'] ?? null;
 
-if (!$taskId) {
-    header('Location: gigs.php');
-    exit();
-}
+if ($taskId) {
+    try {
+        
+        $task = Service::get_service_with_media($taskId);
+        
+        // Convert image string to array
+        $images = !empty($task['all_images']) ? explode(',', $task['all_images']) : ['default-gig.jpg'];
 
-try {
-    $db = getDatabaseConnection();
-    
-    // Get task with user details and media
-    $stmt = $db->prepare("
-        SELECT s.*, u.name as seller_name, u.profile_photo as seller_photo,
-               (SELECT GROUP_CONCAT(file_path) FROM media WHERE service_id = s.id ORDER BY id ASC) as all_images
-        FROM services s
-        JOIN users u ON s.user = u.username
-        WHERE s.id = ?
-    ");
-    $stmt->execute([$taskId]);
-    $task = $stmt->fetch();
-    
-    if (!$task) {
-        header('Location: gigs.php');
-        exit();
+        // After fetching $task
+       
+        $userInfo = User::get_user($task['user']);
+        $profilePhoto = $userInfo && !empty($userInfo['profile_photo']) ? $userInfo['profile_photo'] : null;
+
+    } catch (Exception $e) {
+        die("Error: " . $e->getMessage());
     }
-    
-    $images = !empty($task['all_images']) ? explode(',', $task['all_images']) : ['default-gig.jpg'];
-    
-} catch (PDOException $e) {
-    error_log("Error fetching task: " . $e->getMessage());
-    header('Location: gigs.php');
-    exit();
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title><?= htmlspecialchars($task['taskname']) ?> | Taskly</title>
+    <title>Taskly | Task</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/task.css">
+    <link rel="stylesheet" href="css/gig_card.css">  
     <link rel="icon" href="../docs/logo.png" type="icon/x-icon">
+    <script src="js/gig_card.js" defer></script>
     <script src="js/images.js" defer></script>
+
 </head>
 <body>
 <?php include_once(__DIR__ . '/../components/header.php'); ?>
@@ -60,7 +50,7 @@ try {
                     <div class="carousel" data-gig-id="<?= $task['id'] ?>">
                         <?php foreach ($images as $index => $image): ?>
                             <img src="../docs/<?= htmlspecialchars($image) ?>" 
-                                 alt="<?= htmlspecialchars($task['taskname']) ?>" 
+                                 alt="<?= htmlspecialchars($task['task_title']) ?>" 
                                  class="gig-image <?= $index === 0 ? 'active' : '' ?>"
                                  data-index="<?= $index ?>">
                         <?php endforeach; ?>
@@ -78,43 +68,34 @@ try {
                     </div>
                 </div>
                 <div class="info-section">
-                    <h1 class="task-title"><?= htmlspecialchars($task['taskname']) ?></h1>
-                    
+                    <h2 class="task-title"><?= htmlspecialchars($task['task_title']) ?></h2>
                     <div class="task-user">
                         <a href="user.php?user=<?= urlencode($task['user']) ?>" class="user-profile-link">
-                            <img src="<?= !empty($task['seller_photo']) ? '../docs/' . htmlspecialchars($task['seller_photo']) : '../docs/user_icon.png' ?>" 
-                                 alt="<?= htmlspecialchars($task['seller_name']) ?>" 
+                            <img src="<?= !empty($profilePhoto) ? '../docs/' . htmlspecialchars($profilePhoto) : '../docs/user_icon.png' ?>"
+                                 alt="<?= htmlspecialchars($task['user']) ?>"
                                  class="task-user-avatar">
-                            <span class="user-name"><?= htmlspecialchars($task['seller_name']) ?></span>
+                            <span class="user-name"><?= htmlspecialchars($task['user']) ?></span>
                         </a>
                     </div>
-                    
                     <div class="task-description">
-                        <p><?= htmlspecialchars($task['description']) ?></p>
+                        <?= nl2br(htmlspecialchars($task['description'])) ?>
                     </div>
                 </div>
-                
                 <div class="delivery-section">
-                    <h3>Order Details</h3>
-                    <p><strong>Delivery Time:</strong> <?= htmlspecialchars($task['delivery_time']) ?></p>
-                    <p><strong>Category:</strong> <?= htmlspecialchars($task['category']) ?></p>
-                    <p><strong>Price:</strong> €<?= htmlspecialchars($task['pricing']) ?></p>
-                    
+                    <!-- Delivery details will go here -->
                     <div class="delivery-actions">
-                        <button class="message-button">Message Seller</button>
-                        <button class="hire-button">Hire Now</button>
+                        <button class="message-button">Message</button>
+                        <button class="hire-button">Hire</button>
                     </div>
                 </div>
-                
                 <div class="reviews-section">
-                    <h3>Reviews</h3>
+                    <span class="review-label">Reviews</span>
                     <div class="review-rating-group">
-                        <span class="review-label">Rating:</span>
-                        <span class="review-rating-number"><?= htmlspecialchars($task['rating']) ?></span>
-                        <span class="review-stars">★★★★★</span>
-                        <span>(<?= htmlspecialchars($task['Nrating']) ?> reviews)</span>
+                        <span class="review-rating-number">4.5</span>
+                        <span class="review-stars">★★★★½☆</span>
                     </div>
                 </div>
+            
             </div>
         </div>
     </section>
