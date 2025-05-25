@@ -123,7 +123,7 @@ if ($profileUser) {
                     renderGigCard($service, true); 
                 }
             } else {
-                echo '<p class="no-tasks">No tasks found. <a href="new_task.php">Create your first task!</a></p>';
+                echo '<p class="no-tasks">No tasks found.</p>';
             }
             ?>
         </div>
