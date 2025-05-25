@@ -3,6 +3,7 @@ function toggleFavorite(serviceId) {
     const star = favoriteBtn.querySelector('.favorite-star');
     const text = favoriteBtn.querySelector('.favorite-text');
     
+    // Disable button during request
     favoriteBtn.disabled = true;
     
     fetch('../actions/action_toggle_favorite.php', {
@@ -21,7 +22,7 @@ function toggleFavorite(serviceId) {
         return response.json();
     })
     .then(data => {
-        console.log('Server response:', data);
+        console.log('Server response:', data); // Debug log
         
         if (data.success) {
             if (data.is_favorite) {
@@ -50,6 +51,7 @@ function setRating(rating) {
     selectedRating = rating;
     document.getElementById('ratingValue').value = rating;
     
+    // Update star display
     const stars = document.querySelectorAll('.star-input');
     stars.forEach((star, index) => {
         if (index < rating) {
@@ -77,6 +79,7 @@ function submitReview(event) {
         return;
     }
     
+    // Send review to backend
     fetch('../actions/action_add_review.php', {
         method: 'POST',
         headers: {
@@ -92,7 +95,7 @@ function submitReview(event) {
     .then(data => {
         if (data.success) {
             alert('Review submitted successfully!');
-            location.reload(); 
+            location.reload(); // Refresh to show new review
         } else {
             alert('Error: ' + data.error);
         }
@@ -103,6 +106,8 @@ function submitReview(event) {
     });
 }
 
+// Add hover effect for star rating
+document.addEventListener('DOMContentLoaded', function() {
     const stars = document.querySelectorAll('.star-input');
     
     stars.forEach((star, index) => {
@@ -126,3 +131,4 @@ function submitReview(event) {
             });
         });
     });
+});

@@ -146,6 +146,7 @@ function saveProfileChanges() {
         alert('Failed to save profile: ' + error.message);
     })
     .finally(() => {
+        // Reset button state
         saveButton.textContent = 'Save';
         saveButton.disabled = false;
     });

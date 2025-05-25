@@ -21,10 +21,12 @@ document.querySelectorAll('.account-type-btn').forEach(btn => {
     });
 });
 
+// Debug: Log form submission
 document.querySelector('form[action="../actions/action_update_account.php"]')?.addEventListener('submit', function(e) {
     const accountType = document.getElementById('account_type').value;
     console.log('Form submitting with account_type:', accountType);
     
+    // Show all form data
     const formData = new FormData(this);
     for (let [key, value] of formData.entries()) {
         console.log(key, ':', value);

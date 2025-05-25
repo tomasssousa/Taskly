@@ -5,12 +5,14 @@ require_once(__DIR__ . '/../database/service_db.php');
 
 header('Content-Type: application/json');
 
+// Check if user is logged in
 if (!isset($_SESSION['username'])) {
     http_response_code(401);
     echo json_encode(['success' => false, 'message' => 'Not logged in']);
     exit();
 }
 
+// Get POST data
 $input = json_decode(file_get_contents('php://input'), true);
 $serviceId = $input['service_id'] ?? null;
 
@@ -21,9 +23,11 @@ if (!$serviceId) {
 }
 
 try {
+    // Check if already favorited with direct SQL query 
     $isFavorite = Service::get_favourite_count($_SESSION['username'], $serviceId);
     
     if ($isFavorite) {
+        // Remove from favorites
         $result = Service::remove_from_favourite($_SESSION['username'], $serviceId);
         
         if ($result) {
@@ -32,6 +36,7 @@ try {
             echo json_encode(['success' => false, 'message' => 'Failed to remove from favorites']);
         }
     } else {
+        // Add to favorites
         $result = Service::add_as_favourite($_SESSION['username'], $serviceId);
         
         if ($result) {

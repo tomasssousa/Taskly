@@ -2,7 +2,7 @@
 session_start();
 
 require_once(__DIR__ . '/../database/service_db.php');
-require_once(__DIR__ . '/../database/user_db.php'); 
+require_once(__DIR__ . '/../database/user_db.php'); // Add this line!
 
 header('Content-Type: application/json');
 
