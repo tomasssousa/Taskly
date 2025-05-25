@@ -1,4 +1,5 @@
 let currentChat = null;
+let currentChatId = null;
 let messagePollingInterval = null;
 
 function loadConversations() {
@@ -16,12 +17,13 @@ function displayConversations(conversations) {
     const list = document.getElementById('conversationList');
     
     if (conversations.length === 0) {
-        list.innerHTML = '<li class="no-conversations">No conversations yet</li>';
+        const modeText = userTaskMode ? 'received' : 'initiated';
+        list.innerHTML = `<li class="no-conversations">No conversations ${modeText} yet</li>`;
         return;
     }
     
     list.innerHTML = conversations.map(conv => `
-        <li class="conversation-item ${currentChat === conv.username ? 'active' : ''}" data-username="${conv.username}">
+        <li class="conversation-item ${currentChat === conv.username ? 'active' : ''}" data-username="${conv.username}" data-chat-id="${conv.chat_id}">
             <img src="../docs/${conv.profile_photo}" alt="${conv.name}" class="user-avatar">
             <div class="conversation-info">
                 <div class="user-name">${conv.name}</div>
@@ -33,30 +35,45 @@ function displayConversations(conversations) {
 
 function startChat(username) {
     currentChat = username;
+    currentChatId = null;
     displayChat(username, []);
     loadMessages(username);
     loadConversations();
 }
 
-function loadMessages(username) {
+function loadMessages(username, chatId = null) {
     currentChat = username;
+    if (chatId) {
+        currentChatId = chatId;
+    }
     
-    // Update an active conversation
+    // Update active conversation
     document.querySelectorAll('.conversation-item').forEach(item => {
         item.classList.remove('active');
         if (item.dataset.username === username) {
             item.classList.add('active');
+            if (!currentChatId) {
+                currentChatId = item.dataset.chatId;
+            }
         }
     });
     
-    fetch(`../actions/action_chat.php?action=get_messages&user=${encodeURIComponent(username)}`)
+    let url = `../actions/action_chat.php?action=get_messages&user=${encodeURIComponent(username)}`;
+    if (currentChatId) {
+        url += `&chat_id=${currentChatId}`;
+    }
+    
+    fetch(url)
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                displayChat(username, data.messages);
+                if (data.messages.length > 0) {
+                    currentChatId = data.messages[0].chat_id;
+                }
+                displayChat(username, data.messages, data);
                 startMessagePolling(username);
             } else {
-                displayChat(username, []); // Show the chat interface, even if no messages exist
+                displayChat(username, [], data);
                 startMessagePolling(username);
             }
         })
@@ -66,8 +83,27 @@ function loadMessages(username) {
         });
 }
 
-function displayChat(username, messages) {
+function displayChat(username, messages, data = {}) {
     const messagesArea = document.getElementById('messagesArea');
+    
+    // Check if user can send messages
+    const canSendMessages = data.can_start_conversation || messages.length > 0;
+    
+    let messageForm = '';
+    if (canSendMessages) {
+        messageForm = `
+            <form class="message-form">
+                <input type="text" id="messageInput" placeholder="Type a message..." required>
+                <button type="submit">Send</button>
+            </form>
+        `;
+    } else {
+        messageForm = `
+            <div class="no-message-permission">
+                <p>You cannot start new conversations. Only task providers can initiate conversations.</p>
+            </div>
+        `;
+    }
     
     messagesArea.innerHTML = `
         <div class="chat-header">
@@ -83,20 +119,23 @@ function displayChat(username, messages) {
                 </div>
             `).join('')}
         </div>
-        <form class="message-form">
-            <input type="text" id="messageInput" placeholder="Type a message..." required>
-            <button type="submit">Send</button>
-        </form>
+        ${messageForm}
     `;
 
     const container = document.getElementById('messagesContainer');
-    container.scrollTop = container.scrollHeight;
+    if (container) {
+        container.scrollTop = container.scrollHeight;
+    }
 }
 
 function sendMessage(event) {
-    event.preventDefault();
+    if (event) {
+        event.preventDefault();
+    }
     
     const messageInput = document.getElementById('messageInput');
+    if (!messageInput) return;
+    
     const message = messageInput.value.trim();
     
     if (!message || !currentChat) return;
@@ -117,14 +156,15 @@ function sendMessage(event) {
     .then(data => {
         if (data.success) {
             messageInput.value = '';
-            loadMessages(currentChat); // Refresh messages
+            loadMessages(currentChat, currentChatId);
+            loadConversations();
         } else {
-            alert('Failed to send message: ' + data.error);
+            alert('Error sending message: ' + (data.error || 'Unknown error'));
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Failed to send message');
+        alert('Error sending message');
     });
 }
 
@@ -155,7 +195,12 @@ function startMessagePolling(username) {
 
     messagePollingInterval = setInterval(() => {
         if (currentChat === username) {
-            fetch(`../actions/action_chat.php?action=get_messages&user=${encodeURIComponent(username)}`)
+            let url = `../actions/action_chat.php?action=get_messages&user=${encodeURIComponent(username)}`;
+            if (currentChatId) {
+                url += `&chat_id=${currentChatId}`;
+            }
+            
+            fetch(url)
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
@@ -167,7 +212,7 @@ function startMessagePolling(username) {
     }, 3000);
 }
 
-function escapeHtml(unsafe) { // For security purposes
+function escapeHtml(unsafe) {
     return unsafe
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
@@ -196,7 +241,8 @@ document.addEventListener('click', function(event) {
     const conversationItem = event.target.closest('.conversation-item');
     if (conversationItem) {
         const username = conversationItem.dataset.username;
-        loadMessages(username);
+        const chatId = conversationItem.dataset.chatId;
+        loadMessages(username, chatId);
     }
 });
 

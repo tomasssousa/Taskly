@@ -8,8 +8,6 @@ DROP TABLE IF EXISTS delivery_time;
 DROP TABLE IF EXISTS favourite_services;
 DROP TABLE IF EXISTS chat;
 
-
-
 CREATE TABLE users (
     username VARCHAR PRIMARY KEY,
     name VARCHAR NOT NULL,
@@ -51,11 +49,14 @@ CREATE TABLE comments (
 );
 
 CREATE TABLE chat (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    text VARCHAR,
-    chat_id INTEGER REFERENCES chat,
-    sender VARCHAR REFERENCES users ON DELETE CASCADE,
-    receiver VARCHAR REFERENCES users ON DELETE CASCADE
+    chat_id INTEGER NOT NULL,
+    message_id INTEGER NOT NULL,
+    text VARCHAR NOT NULL,
+    sender VARCHAR NOT NULL REFERENCES users ON DELETE CASCADE,
+    receiver VARCHAR NOT NULL REFERENCES users ON DELETE CASCADE,
+    first_sender VARCHAR NOT NULL REFERENCES users,
+    first_receiver VARCHAR NOT NULL REFERENCES users,
+    PRIMARY KEY (chat_id, message_id)
 );
 
 CREATE TABLE transactions (
@@ -83,11 +84,11 @@ CREATE TABLE delivery_time (
 
 
 --ADMIN USER.  Password can be changed to somethingless secure and quick (!am$9of28FGT-SALT<-funny_joke   OR    12345678)
-INSERT INTO users (username, name, password, email, admin_power, money) VALUES ('admin', 'administrater', '$2y$10$z58xCvcQdCuGP1bM2Hy6zeYFUSJtZSsVMMAuERMGLxJrcE9cAXkf6', 'siteAdmin@fe.up.pt', 1, '2 Trilion fake money');--12345678
+INSERT INTO users (username, name, password, email, admin_power, task_mode, money) VALUES ('admin', 'administrater', '$2y$10$z58xCvcQdCuGP1bM2Hy6zeYFUSJtZSsVMMAuERMGLxJrcE9cAXkf6', 'siteAdmin@fe.up.pt', 1, 0, '2 Trilion fake money');--12345678
 
 --Regular User.
-INSERT INTO users (username, name, password, email, admin_power, money) VALUES ('Becky', 'Becky Paw', '$2y$10$rafzWJcdAe8Kk9lG6cz2GeyRqLiSyqXYQDhBtWc4hUtGmxiWYY8Wa', 'BeckyP@gmail.com', 0, '42 dollars');--!_L0V3_P3T5
-INSERT INTO users (username, name, password, email, admin_power, money) VALUES ('USA', 'MILITARY', '$2y$10$nUJfvOHdsAohUbvg63/BAuBwNK1qGW6vDbnl780n9mvggdH2w9o/2', 'USAMILITARY@Military.USA', 0, '0 dollars');--setrgh43876%$
+INSERT INTO users (username, name, password, email, admin_power, task_mode, money) VALUES ('Becky', 'Becky Paw', '$2y$10$rafzWJcdAe8Kk9lG6cz2GeyRqLiSyqXYQDhBtWc4hUtGmxiWYY8Wa', 'BeckyP@gmail.com', 0, 1, '42 dollars');--!_L0V3_P3T5
+INSERT INTO users (username, name, password, email, admin_power, task_mode, money) VALUES ('USA', 'MILITARY', '$2y$10$nUJfvOHdsAohUbvg63/BAuBwNK1qGW6vDbnl780n9mvggdH2w9o/2', 'USAMILITARY@Military.USA', 0, 0, '0 dollars');--setrgh43876%$
 
 --Services to fill the site a bit
 INSERT INTO services (id, pricing, delivery_time, description, rating, user, taskname, category) VALUES (1, 200,'More than a week','Hear hear, do you have a dragon and dont know how to properly train him/her? Dont fear beacuse, for a mere 200 money currency I will train your dragon to be obidient to you. Full refund if you end up unsatisfied and the site allows for refunds. PS: it doesnt',5,'admin', 'How to train your dragon', 'education');

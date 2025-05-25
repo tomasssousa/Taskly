@@ -1,6 +1,6 @@
 <?php
-declare(strict_types=1);        # Se Alguém mudar os ficheiros de sitio, que tenha atenção a atualizar o path em baixo
-require_once(__DIR__ . '/../database/connection.php');  # <--
+declare(strict_types=1);
+require_once(__DIR__ . '/../database/connection.php');
 
 class Service {
     public int $id;
@@ -82,7 +82,6 @@ class Service {
     }
 
     #obtain the services that contain a certain word($description) in their description.
-    #The input is not separated in any way and, as such, it does not work well with more than a word, with no spaces before or after, and without caligraphy errors (asssuming the service description is well written)
     public static function get_service_by_description(string $description, int $count): array {
         $db = Database::getInstance();
         $stmt = $db->prepare('SELECT * FROM  services WHERE description LIKE ? LIMIT ?');
@@ -97,7 +96,6 @@ class Service {
     }
 
     #obtain the services that contain a certain word($title) in their title.
-    #The input is not separated in any way and, as such, it does not work well with more than a word, with no spaces before or after, and without caligraphy errors (asssuming the service title is well written)
     public static function get_service_by_name(string $title, int $count): array {
         $db = Database::getInstance();
         $stmt = $db->prepare('SELECT * FROM  services WHERE taskname LIKE ? LIMIT ?');
@@ -191,7 +189,6 @@ class Service {
     }
 
     #obtain the services that contain a certain word($description) in their description, from the favourited services.
-    #The input is not separated in any way and, as such, it does not work well with more than a word, with no spaces before or after, and without caligraphy errors (asssuming the service description is well written)
     public static function get_favourite_service_by_description(string $username, string $description, int $count): array {
         $db = Database::getInstance();
         $stmt = $db->prepare('SELECT services.* FROM services JOIN favourite_services ON favourite_services.id = services.id WHERE favourite_services.username = ? AND description LIKE ? LIMIT ?');
@@ -206,7 +203,6 @@ class Service {
     }
 
     #obtain the services that contain a certain word($title) in their title, from the favourited services.
-    #The input is not separated in any way and, as such, it does not work well with more than a word, with no spaces before or after, and without caligraphy errors (asssuming the service title is well written)
     public static function get_favourite_service_by_name(string $username, string $title, int $count): array {
         $db = Database::getInstance();
         $stmt = $db->prepare('SELECT services.* FROM  services JOIN favourite_services ON favourite_services.id = services.id WHERE favourite_services.username = ? AND taskname LIKE ? LIMIT ?');
@@ -225,7 +221,6 @@ class Service {
         $stmt = $db->prepare('UPDATE services SET category = ? WHERE id = ?');
         $stmt->execute([$category, $id]);
     }
-
 
     #Specific function for User.php 
     public static function get_services_by_user(string $username): array {
@@ -308,7 +303,6 @@ class Service {
         $stmt->execute([$id]);
         return $stmt->fetch();
     }
-
 
     #get all services
     public static function get_services(): array {
@@ -470,6 +464,58 @@ class Service {
         $stmt = $db->prepare('SELECT id, user, taskname FROM services WHERE id = ?');
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    #Specific function for favorites.php
+    static function getFavoriteServices($username, $search = '', $category = '', $delivery_time = '', $min_price = '', $max_price = ''): array {
+        $db = Database::getInstance();
+        
+        $where = ["fs.username = ?"];
+        $params = [$username];
+
+        if (!empty($search)) {
+            $where[] = "(s.taskname LIKE ? OR s.description LIKE ?)";
+            $params[] = "%$search%";
+            $params[] = "%$search%";
+        }
+        
+        if (!empty($category)) {
+            $where[] = "s.category = ?";
+            $params[] = $category;
+        }
+        
+        if (!empty($delivery_time)) {
+            $where[] = "s.delivery_time = ?";
+            $params[] = $delivery_time;
+        }
+        
+        if ($min_price !== '') {
+            $where[] = "s.pricing >= ?";
+            $params[] = $min_price;
+        }
+        
+        if ($max_price !== '') {
+            $where[] = "s.pricing <= ?";
+            $params[] = $max_price;
+        }
+        
+        $whereSQL = 'WHERE ' . implode(' AND ', $where);
+        
+        $stmt = $db->prepare("
+            SELECT s.*, u.profile_photo as seller_photo, u.name as seller_name,
+                COALESCE(s.taskname, s.description) as task_title,
+                (SELECT COUNT(*) FROM transactions WHERE service_id = s.id) as order_count,
+                s.image as all_images
+            FROM services s
+            INNER JOIN favourite_services fs ON s.id = fs.id
+            JOIN users u ON s.user = u.username
+            $whereSQL
+            ORDER BY s.id DESC
+        ");
+        
+        $stmt->execute($params);
+        
+        return $stmt->fetchAll();
     }
 }
 ?>
