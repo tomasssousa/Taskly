@@ -23,14 +23,9 @@ $totalServices = 0;
 
 $allUsers = User::get_users();
 $totalUsers = count($allUsers);
-
-try {
-    
-    $allServices = Service::get_all_services();
-    $totalServices = count($allServices);
-} catch (Exception $e) {
-    error_log("Error fetching services: " . $e->getMessage());
-}
+   
+$allServices = Service::get_all_services();
+$totalServices = count($allServices);
 ?>
 
 <!DOCTYPE html>
@@ -151,7 +146,7 @@ try {
                                 <td><?= $service['rating'] ?> (<?= $service['Nrating'] ?>)</td>
                                 <td>
                                     <a href="task.php?id=<?= $service['id'] ?>" class="admin-btn view-btn">View</a>
-                                    <a href="#" class="admin-btn delete-btn" onclick="deleteService(<?= $service['id'] ?>); return false;">Delete</a>
+                                    <a href="#" class="admin-btn delete-btn" onclick="deleteTask(<?= $service['id'] ?>); return false;">Delete</a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

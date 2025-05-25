@@ -61,7 +61,7 @@ function deleteUser(username) {
     });
 }
 
-function deleteService(serviceId) {
+function deleteTask(serviceId) {
     if (!confirm(`Are you sure you want to delete this service? This action cannot be undone.`)) {
         return;
     }
@@ -105,7 +105,6 @@ function addCategory(event) {
         return;
     }
     
-    // Send to backend API
     fetch('../actions/action_add_category.php', {
         method: 'POST',
         headers: {
@@ -119,7 +118,7 @@ function addCategory(event) {
     .then(data => {
         if (data.success) {
             alert(data.message);
-            location.reload(); // Refresh to show new category
+            location.reload(); 
         } else {
             alert('Error: ' + data.error);
         }
@@ -145,7 +144,7 @@ function deleteCategory(categoryValue) {
         .then(data => {
             if (data.success) {
                 alert(data.message);
-                location.reload(); // Refresh to update list
+                location.reload(); 
             } else {
                 alert('Error: ' + data.error);
             }

@@ -14,7 +14,6 @@ main {
     justify-content: center;
 }
 
-/* Search Bar */
 .search-container {
     display: flex;
     justify-content: center;
@@ -50,7 +49,6 @@ main {
     width: auto;
 }
 
-/* Category Boxes */
 .categories-section {
     margin-top: 4em;
     width: 100%;

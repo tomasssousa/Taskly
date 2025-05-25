@@ -4,7 +4,6 @@ session_start();
 require_once(__DIR__ . '/../database/user_db.php');
 require_once(__DIR__ . '/../database/chat_db.php');
 
-// Checking if a user is logged in
 if (!isset($_SESSION['username'])) {
     header('Location: login.php');
     exit();
@@ -38,13 +37,11 @@ $action = $_GET['action'] ?? null;
     <?php include_once(__DIR__ . '/../components/header.php'); ?>
     <main>
         <div class="message-hub-container">
-            <!-- Sidebar with conversations -->
             <aside class="sidebar" id="sidebar">
                 <h2>Messages</h2>
                 <ul class="conversation-list" id="conversationList">
                 </ul>
             </aside>
-            <!-- Messages area -->
             <section class="messages-area" id="messagesArea">
                 <div class="no-chat-selected">
                     <p>Select a conversation to start messaging</p>

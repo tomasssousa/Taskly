@@ -21,9 +21,9 @@
     position: relative;
     height: 50px; 
     width: 100%; 
-  }
+}
   
-  .save-button {
+.save-button {
     background-color: #526D82;
     color: white;
     font-weight: bold;
@@ -39,9 +39,7 @@
     top: 10px;
     right: 10px;
     font-size: 14px;
-  }
-  
-
+}
 
 .save-button:hover {
     background-color: white;

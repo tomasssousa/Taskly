@@ -4,13 +4,11 @@ session_start();
 require_once(__DIR__ . '/../database/service_db.php');
 require_once(__DIR__ . '/../database/user_db.php');
 
-// Check if user is logged in
 if (!isset($_SESSION['username'])) {
     header('Location: login.php');
     exit();
 }
 
-// Check if user is in user mode (not tasker mode)
 $currentUser = User::get_user($_SESSION['username']);
 if ($currentUser && $currentUser['task_mode']) {
     $_SESSION['error'] = 'You are in Tasker mode. Switch to User mode in settings to hire services.';
@@ -18,7 +16,6 @@ if ($currentUser && $currentUser['task_mode']) {
     exit();
 }
 
-// Get service ID from URL
 $serviceId = $_GET['id'] ?? null;
 if (!$serviceId) {
     header('Location: home.php');

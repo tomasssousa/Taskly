@@ -171,7 +171,6 @@
     background: white;
 }
 
-/* Settings button and menu styles */
 .gig-actions:empty {
     display: none;
 }
@@ -183,16 +182,16 @@
     z-index: 10;
     width: 40px;
     height: 40px;
-    pointer-events: none; /* Add this */
+    pointer-events: none;
 }
 
 .gig-settings-btn {
-    pointer-events: auto; /* Add this */
+    pointer-events: auto; 
     background: rgba(255, 255, 255, 0.9);
     border: none;
     border-radius: 50%;
-    width: 40px;  /* Increased from 32px */
-    height: 40px; /* Increased from 32px */
+    width: 40px;  
+    height: 40px;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -205,13 +204,13 @@
 }
 
 .settings-icon {
-    width: 20px;  /* Increased from 16px */
-    height: 20px; /* Increased from 16px */
+    width: 20px;
+    height: 20px; 
     opacity: 0.7;
 }
 
 .gig-menu {
-    pointer-events: auto; /* Add this */
+    pointer-events: auto; 
     position: absolute;
     top: 40px;
     right: 0;
@@ -220,7 +219,7 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     min-width: 120px;
     z-index: 11;
-    display: none; /* Add this */
+    display: none; 
 }
 
 .gig-menu a {
@@ -235,13 +234,20 @@
     background-color: #f5f5f5;
 }
 
-
-
-
 .gig-actions,
 .carousel-btn,
 .dot,
 .gig-seller a {
     pointer-events: auto;
+}
+
+.gig-seller-link,
+.gig-seller-link:visited,
+.gig-seller-link:active,
+.gig-seller-link:focus {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
 }
 

@@ -80,7 +80,7 @@
                     <?php
                     if (!empty($services)) {
                         foreach ($services as $service) {
-                            renderGigCard($service, false); // Pass false to hide settings
+                            renderGigCard($service, false);
                         }
                     } else {
                         echo '<p>No gigs found.</p>';

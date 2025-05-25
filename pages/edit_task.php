@@ -5,7 +5,6 @@ require_once(__DIR__ . '/../database/service_db.php');
 require_once(__DIR__ . '/../database/user_db.php');
 require_once(__DIR__ . '/../database/connection.php');
 
-// Check if user is logged in and in tasker mode
 if (!isset($_SESSION['username'])) {
     header('Location: login.php');
     exit();
@@ -18,7 +17,6 @@ if (!$currentUser || !$currentUser['task_mode']) {
     exit();
 }
 
-// Get task ID from URL
 $taskId = $_GET['id'] ?? null;
 if (!$taskId) {
     header('Location: home.php');
@@ -26,7 +24,6 @@ if (!$taskId) {
 }
 
 try {
-    // Use direct SQL instead of Service class to avoid caching issues
     $db = Database::getInstance();
     $stmt = $db->prepare('SELECT * FROM services WHERE id = ? AND user = ?');
     $stmt->execute([$taskId, $_SESSION['username']]);
@@ -38,7 +35,6 @@ try {
         exit();
     }
     
-    // Get existing images from the raw database column
     $existingImages = [];
     if (!empty($task['image'])) {
         $imageList = explode(',', $task['image']);

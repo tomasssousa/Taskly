@@ -1,8 +1,9 @@
 <script src="js/gig_card.js" defer></script>
+<link rel="stylesheet" href="css/gig_card.css">
+
 
 <?php
 function renderGigCard($service, $showSettings = false) {
-    // Handle images the same way as task.php - filter out missing files
     $images = [];
     if (!empty($service['all_images'])) {
         $imageList = explode(',', $service['all_images']);
@@ -14,7 +15,6 @@ function renderGigCard($service, $showSettings = false) {
         }
     }
     
-    // If no valid images found, use default
     if (empty($images)) {
         $images = ['default-gig.jpg'];
     }
@@ -45,7 +45,7 @@ function renderGigCard($service, $showSettings = false) {
         <div class="gig-details">
             <h3><?= htmlspecialchars($service['task_title']) ?></h3>
             <div class="gig-seller">
-                <a href="user.php?user=<?= urlencode($service['user']) ?>" style="display: flex; align-items: center; text-decoration: none; color: inherit;">
+                <a href="user.php?user=<?= urlencode($service['user']) ?>" class="gig-seller-link">
                     <img src="<?= !empty($service['seller_photo']) ? '../docs/' . htmlspecialchars($service['seller_photo']) : '../docs/user_icon.png' ?>" 
                          alt="<?= htmlspecialchars($service['seller_name']) ?>" 
                          class="seller-avatar">

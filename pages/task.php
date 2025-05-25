@@ -6,7 +6,6 @@ require_once(__DIR__ . '/../database/user_db.php');
 
 $taskId = $_GET['id'] ?? null;
 
-// Check if task ID is provided
 if (!$taskId) {
     header('Location: home.php');
     exit();
@@ -17,7 +16,6 @@ $isTasker = false;
 $isFavorite = false;
 $task = null;
 
-// Get task data first
 try {
     $task = Service::get_service_with_media($taskId);
     if (!$task) {
@@ -133,7 +131,6 @@ $reviews = Service::get_service_reviews($taskId);
                     </div>
                 </div>
                 
-                <!-- 3. Info section (left, bottom) -->
                 <div class="info-section">
                     <h2 class="task-title"><?= htmlspecialchars($task['task_title']) ?></h2>
                     <div class="task-user">

@@ -91,19 +91,18 @@
 .phone-logo {
     position: absolute;
     left: 12px;
-    height: 20px; /* Only set height, let width be automatic */
-    width: auto; /* Keep original aspect ratio */
+    height: 20px;
+    width: auto; 
     z-index: 2;
     pointer-events: none;
 }
 
 .phone-input-container input[type="tel"] {
-    padding-left: 55px; /* Even more space for the placeholder */
+    padding-left: 55px;
 }
 
-/* Also add specific styling for the placeholder */
 .phone-input-container input[type="tel"]::placeholder {
-    padding-left: 5px; /* Additional padding just for placeholder text */
+    padding-left: 5px; 
 }
 
 .pay-button {

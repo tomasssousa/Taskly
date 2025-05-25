@@ -1,36 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <title>Taskly | Edit your account settings</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="css/style.css">
-        <link rel="stylesheet" href="css/container.css">
-        <link rel="stylesheet" href="css/settings.css">
-        <script src="js/settings.js" defer></script>
-        <link rel="icon" href="../docs/logo.png" type="icon/x-icon">
-    </head>
-<body class="settings-page">
-<?php 
+<?php
 session_start();
 include_once(__DIR__ . '/../components/header.php'); 
-
-// Get current user data
 require_once(__DIR__ . '/../database/user_db.php');
+
 $current_user = null;
 if (isset($_SESSION['username'])) {
     $current_user = User::get_user($_SESSION['username']);
 }
 
-// Handle money transfer
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['transfer_money'])) {
     if ($current_user && ($current_user['money'] ?? 0) > 0) {
         $transferAmount = $current_user['money'];
-        
         if (User::update_balance($_SESSION['username'], 0)) {
             $_SESSION['success'] = "Successfully transferred €{$transferAmount} to your bank account!";
-            
-            // Redirect to same page to prevent form resubmission and refresh data
             header('Location: settings.php');
             exit();
         } else {
@@ -41,6 +23,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['transfer_money'])) {
     }
 }
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Taskly | Edit your account settings</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/container.css">
+    <link rel="stylesheet" href="css/settings.css">
+    <script src="js/settings.js" defer></script>
+    <link rel="icon" href="../docs/logo.png" type="icon/x-icon">
+</head>
+<body class="settings-page">
 
 <main>
     <div class="settings-tabs">
@@ -50,12 +45,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['transfer_money'])) {
     <div class="container">
         <div class="tab-content" id="analytics-tab">
             <h3>Analytics</h3>
-            
             <div class="balance-section">
                 <p class="balance">Balance: <span>€<?= htmlspecialchars($current_user['money'] ?? '0') ?></span></p>
-                
                 <?php if (($current_user['money'] ?? 0) > 0): ?>
-                    <form method="post" style="margin-top: 1em;">
+                    <form method="post">
                         <input type="hidden" name="transfer_money" value="1">
                         <button type="submit" class="transfer-btn" onclick="return confirm('Transfer €<?= $current_user['money'] ?> to your bank account? This will empty your Taskly balance.')">
                             Transfer to Bank Account
@@ -68,49 +61,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['transfer_money'])) {
         </div>
         <div class="tab-content" id="settings-tab" style="display:none;">
             <h3>Edit Account Details</h3>
-            
-            <!-- Display messages -->
             <?php if (isset($_SESSION['success'])): ?>
                 <div class="alert alert-success"><?= $_SESSION['success'] ?></div>
                 <?php unset($_SESSION['success']); ?>
             <?php endif; ?>
-            
             <?php if (isset($_SESSION['error'])): ?>
                 <div class="alert alert-error"><?= $_SESSION['error'] ?></div>
                 <?php unset($_SESSION['error']); ?>
             <?php endif; ?>
-            
             <?php if (isset($_SESSION['info'])): ?>
                 <div class="alert alert-info"><?= $_SESSION['info'] ?></div>
                 <?php unset($_SESSION['info']); ?>
             <?php endif; ?>
-            
             <form action="../actions/action_update_account.php" method="post">
                 <div class="form-group">
                     <label for="username">Username:</label>
                     <input type="text" id="username" name="username" value="<?= htmlspecialchars($current_user['username'] ?? '') ?>" readonly>
                 </div>
-                
                 <div class="form-group">
                     <label for="current_password">Current Password:</label>
                     <input type="password" id="current_password" name="current_password" placeholder="Enter current password" required>
                 </div>
-                
                 <div class="form-group">
                     <label for="new_email">New Email (optional):</label>
                     <input type="email" id="new_email" name="new_email" placeholder="<?= htmlspecialchars($current_user['email'] ?? 'Enter new email') ?>">
                 </div>
-                
                 <div class="form-group">
                     <label for="new_password">New Password (optional):</label>
                     <input type="password" id="new_password" name="new_password" placeholder="Enter new password (leave blank to keep current)">
                 </div>
-                
                 <div class="form-group">
                     <label for="confirm_password">Confirm New Password:</label>
                     <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm new password">
                 </div>
-                
                 <div class="toggle-row">
                     <label>Account Type:</label>
                     <div class="account-type-buttons">
@@ -119,16 +102,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['transfer_money'])) {
                     </div>
                     <input type="hidden" id="account_type" name="account_type" value="<?= $current_user['task_mode'] ? 'tasker' : 'user' ?>">
                 </div>
-                
                 <button type="submit" class="update-btn">Update Account</button>
             </form>
-            
-            <form action="../actions/action_delete_account.php" method="post" style="margin-top: 1em;">
+            <form action="../actions/action_delete_account.php" method="post">
                 <button type="submit" class="delete-account-btn" onclick="return confirm('Are you sure you want to delete your account? This action cannot be undone.')">Delete Account</button>
             </form>
         </div>
     </div>
 </main>
-
 </body>
 </html>

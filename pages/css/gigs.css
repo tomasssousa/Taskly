@@ -71,7 +71,6 @@
     width: auto;
     border-radius: 0 5px 5px 0;
     cursor: pointer;
-    flex-shrink: 0; /* Prevent button from shrinking */
 }
 
 .search-icon {
