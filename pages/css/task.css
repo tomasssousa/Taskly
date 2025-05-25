@@ -30,15 +30,60 @@
 }
 
 .delivery-section {
-    background-color: #e3f2fd; 
+    background: #f8f9fa;
+    padding: 40px 20px 20px 20px; /* More top padding (40px), less bottom (20px) */
     border-radius: 8px;
-    padding: 20px;
+    margin-top: 20px;
     grid-column: 2;
     grid-row: 1;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    min-height: 250px; /* or whatever height you want */
+    min-height: 280px; /* Keep shorter height */
+    max-height: 350px; /* Keep max height */
+}
+
+.delivery-info {
+    margin-bottom: 10px; /* Reduced from 20px to move buttons up */
+    margin-top: 15px; /* Add top margin to push info down */
+}
+
+.delivery-time, .delivery-price, .delivery-category {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0; /* Keep reduced padding */
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 1.1em; /* Back to larger text */
+}
+
+.delivery-category {
+    border-bottom: none;
+}
+
+.delivery-label, .price-label, .category-label {
+    font-weight: 600;
+    color: #333;
+    font-size: 1.1em; /* Back to larger text */
+}
+
+.delivery-value, .category-value {
+    color: #666;
+    font-size: 1.1em; /* Back to larger text */
+}
+
+.price-value {
+    font-size: 1.4em; /* Back to larger price text */
+    font-weight: bold;
+    color: #526D82;
+}
+
+.delivery-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Keep reduced gap */
+    margin-top: -5px; /* Changed from 5px to -5px to move buttons up more */
+    margin-bottom: 10px; /* Add bottom margin for spacing from edge */
 }
 
 .info-section {
@@ -50,6 +95,13 @@
     background-color: #fbfbfb;
     padding: 1.5em;
     border-radius: 10px;
+    margin-top: 1em;
+}
+
+.task-description {
+    font-size: 1.2em; /* Increased from default */
+    line-height: 1.6; /* Better readability */
+    color: #333;
     margin-top: 1em;
 }
 
@@ -106,6 +158,9 @@
 
 .task-title {
     margin-top: 0;
+    font-size: 1.8em; /* Made title bigger too */
+    font-weight: bold;
+    color: #333;
 }
 
 .user-profile-link {
@@ -116,56 +171,99 @@
     gap: 0.7em;
 }
 
-.delivery-actions {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1em;
-    margin-top: auto;
-    flex-wrap: nowrap;
-}
-
-.hire-button {
-    background-color: #526D82;
-    color: #ffffff;
-    border: none;
-    border-radius: 20px;
-    padding: 8px 22px;
-    font-weight: bold;
+/* Unified button styles for anchor tags */
+.message-button, .hire-button {
+    padding: 12px 24px;
+    border: 2px solid #526D82;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 1em;
-    transition: background 0.2s;
+    font-weight: bold;
+    font-size: 18px;
+    transition: all 0.3s ease;
+    min-height: 45px;
     text-decoration: none;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    height: 36px;
     box-sizing: border-box;
-}
-
-.hire-button:hover {
-    background-color: #27364c;
+    width: 100%;
 }
 
 .message-button {
     background-color: white;
     color: #526D82;
-    font-weight: bold;
-    padding: 8px 22px;
-    border: 1px solid #526D82;
-    border-radius: 20px;
-    text-decoration: none;
-    line-height: 1.2;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    height: 36px;
-    box-sizing: border-box;
-    transition: background 0.2s, color 0.2s;
 }
 
 .message-button:hover {
     background-color: #526D82;
     color: white;
+}
+
+.hire-button {
+    background-color: #526D82;
+    color: white;
+}
+
+.hire-button:hover {
+    background-color: #27364c;
+    border-color: #27364c;
+}
+
+/* Ensure links don't have default styling */
+.message-button:visited,
+.hire-button:visited {
+    color: inherit;
+}
+
+.favorite-section {
+    margin: 15px 0;
+}
+
+.favorite-button {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px; /* Increased from 16px */
+    font-weight: 600;
+    color: #666;
+    transition: all 0.3s ease;
+    padding: 10px 0; /* Increased padding */
+}
+
+.favorite-button:hover {
+    color: #333;
+}
+
+.favorite-button.favorited {
+    color: #333;
+}
+
+.favorite-star {
+    width: 24px; /* Increased from 18px */
+    height: 24px; /* Increased from 18px */
+    transition: all 0.3s ease;
+    filter: grayscale(100%); /* Gray by default */
+}
+
+.favorite-button.favorited .favorite-star {
+    filter: sepia(1) saturate(6) brightness(0.95); /* More golden, less brown */
+}
+
+.favorite-text {
+    font-size: 16px; /* Increased from 14px */
+}
+
+@media (min-width: 768px) {
+    .delivery-actions {
+        flex-direction: row;
+        gap: 10px;
+    }
+    
+    .message-button, .hire-button {
+        width: 48%;
+    }
 }
 

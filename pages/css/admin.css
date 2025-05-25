@@ -1,0 +1,102 @@
+.admin-layout {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.admin-layout h1 {
+    color: #27364c;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.admin-content {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.admin-content h2 {
+    color: #27364c;
+    margin-bottom: 15px;
+    font-size: 24px;
+}
+
+.admin-table-container {
+    padding: 20px;
+    overflow-x: auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+}
+
+.admin-table th {
+    background: #f8f9fa;
+    font-weight: bold;
+    color: #27364c;
+}
+
+.admin-table tr:hover {
+    background: #f8f9fa;
+}
+
+.admin-btn {
+    padding: 5px 10px;
+    margin: 2px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    text-align: center;
+    min-width: 50px;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+.admin-btn:hover {
+    text-decoration: none;
+}
+
+.view-btn {
+    background-color: #526D82;
+    color: white;
+}
+
+.view-btn:hover {
+    background-color: #27364c;
+    text-decoration: none;
+}
+
+.promote-btn {
+    background-color: #526D82;
+    color: white;
+}
+
+.promote-btn:hover {
+    background-color: #27364c;
+}
+
+.delete-btn {
+    background-color: #d5636f;
+    color: white;
+}
+
+.delete-btn:hover {
+    background-color: #c82333;
+}

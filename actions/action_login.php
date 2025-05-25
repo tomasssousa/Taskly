@@ -16,7 +16,6 @@ try {
         $_SESSION['username'] = $user['username'];
         $_SESSION['admin'] = $user['admin_power'];
 
-        // Handle redirect after login
         if (isset($_POST['redirect'])) {
             switch ($_POST['redirect']) {
                 case 'new_task':

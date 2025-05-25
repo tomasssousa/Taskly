@@ -10,7 +10,6 @@ if (!isset($_SESSION['username'])) {
 
 try {
     
-    // Create uploads directory if it doesn't exist
     $uploadDir = __DIR__ . '/../docs/uploads';
     if (!is_dir($uploadDir)) {
         if (!mkdir($uploadDir, 0755, true)) {
@@ -29,21 +28,17 @@ try {
             throw new Exception('Invalid upload attempt');
         }
 
-        // Get file extension
         $fileInfo = pathinfo($_FILES['profile_photo']['name']);
         $extension = strtolower($fileInfo['extension']);
         
-        // Validate extension
         $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
         if (!in_array($extension, $allowedExtensions)) {
             throw new Exception('Invalid file type. Allowed: ' . implode(', ', $allowedExtensions));
         }
 
-        // Generate unique filename
         $filename = 'profile_' . $_SESSION['username'] . '_' . time() . '.' . $extension;
         $targetPath = $uploadDir . '/' . $filename;
         
-        // Move uploaded file
         if (!move_uploaded_file($tempFile, $targetPath)) {
             throw new Exception('Failed to save uploaded file');
         }
@@ -51,7 +46,6 @@ try {
         $profile_photo = 'uploads/' . $filename;
     }
     
-    // Update database
     
     if ($profile_photo) {
         if(!User::update_profile_photo($_SESSION['username'], $profile_photo) || !User::update_user($_SESSION['username'],$_POST['name'] ?? '', $_POST['bio'] ?? '', $_POST['skills'] ?? '')){

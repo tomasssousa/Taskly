@@ -9,18 +9,18 @@ class User {
     public bool $admin_power;
     public bool $task_mode;
     public string $bio;
-    public string $profile_foto;
+    public string $profile_photo;
     public string $skills;
     public string $money;
 
-    public function __construct(string $username, string $name, string $email, bool $admin, bool $task_mode , string $bio, string $profile_foto, string $skills, string $money) {
+    public function __construct(string $username, string $name, string $email, bool $admin, bool $task_mode , string $bio, string $profile_photo, string $skills, string $money) {
         $this->username = $username;
         $this->name = $name;
         $this->email = $email;
         $this->admin_power = $admin;
         $this->task_mode = $task_mode;
         $this->bio = $bio;
-        $this->profile_foto = $profile_foto;
+        $this->profile_photo = $profile_photo;
         $this->skills = $skills;
         $this->money = $money;
     }
@@ -38,6 +38,14 @@ class User {
         $stmt->execute([$username]);
 
         return $stmt->fetch();
+    }
+
+    public static function get_users() {
+        $db = Database::getInstance();
+        $stmt = $db->prepare('SELECT username, name, email, admin_power, task_mode, money, bio, skills, profile_photo FROM users ORDER BY username ASC');
+        $stmt->execute();
+        
+        return $stmt->fetchAll();
     }
 
     public static function update_user($username, $name, $bio, $skills) {

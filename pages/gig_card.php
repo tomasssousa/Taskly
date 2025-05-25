@@ -13,7 +13,7 @@ function renderGigCard($service, $showSettings = false) {
                 </button>
                 <div class="gig-menu" id="gigMenu_<?= $service['id'] ?>" style="display: none;">
                     <a href="edit_task.php?id=<?= $service['id'] ?>" class="menu-item">Edit Task</a>
-                    <a href="#" class="menu-item delete-task" onclick="showDeleteConfirmation(<?= $service['id'] ?>); return false;" data-gig-id="<?= $service['id'] ?>">Delete Task</a>
+                    <a href="#" class="menu-item delete-task" onclick="deleteTask(<?= $service['id'] ?>)">Delete Task</a>
                 </div>
             </div>
         <?php endif; ?>
