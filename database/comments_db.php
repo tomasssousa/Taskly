@@ -92,5 +92,13 @@ class Comment {
         }
         return $comments;
     }
+
+    #specific function used in action_add_review.php
+    public static function has_user_reviewed_service($service_id, $user): bool {
+        $db = Database::getInstance();
+        $stmt = $db->prepare('SELECT COUNT(*) FROM comments WHERE service_id = ? AND user = ?');
+        $stmt->execute([$service_id, $user]);
+        return $stmt->fetchColumn() > 0;
+    }
 }
 ?>

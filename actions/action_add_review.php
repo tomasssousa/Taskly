@@ -37,12 +37,10 @@ if (empty($reviewText)) {
 }
 
 try {
-    $db = Database::getInstance();
     
     // Check if user already reviewed this service
-    $stmt = $db->prepare('SELECT COUNT(*) FROM comments WHERE service_id = ? AND user = ?');
-    $stmt->execute([$taskId, $username]);
-    if ($stmt->fetchColumn() > 0) {
+    
+    if (Comment::has_user_reviewed_service($taskId, $username)) {
         echo json_encode(['success' => false, 'error' => 'You have already reviewed this service']);
         exit();
     }

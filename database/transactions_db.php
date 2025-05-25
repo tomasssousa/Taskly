@@ -64,5 +64,12 @@ class Transaction{
         $stmt = $db->prepare('UPDATE transactions SET rating = ? WHERE id = ? AND user = ?');
         $stmt->execute([$rating, $id, $user]);
     }
+
+    #specific function used in transactions_db.php
+    public static function insert_replace_transaction($user, $service_id, $rating){
+        $db = Database::getInstance();
+        $stmt = $db->prepare('INSERT OR REPLACE INTO transactions (user, service_id, status, rating) VALUES (?, ?, "completed", ?)');
+        $stmt->execute([$user, $service_id, $rating]);
+    }
 }
 ?>
