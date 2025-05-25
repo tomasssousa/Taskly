@@ -517,5 +517,13 @@ class Service {
         
         return $stmt->fetchAll();
     }
+
+    #Specific function for edit_task.php
+    public static function get_service_by_id_and_user(int $id, string $user){
+        $db = Database::getInstance();
+        $stmt = $db->prepare('SELECT * FROM services WHERE id = ? AND user = ?');
+        $stmt->execute([$id, $user]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 }
 ?>
