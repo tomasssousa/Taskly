@@ -19,7 +19,7 @@ if (!$taskId) {
 try {
     
     // Verify ownership
-    $task = Service::get_service($taskid);
+    $task = Service::get_service($taskId);
     
     if (!$task || $task->user !== $_SESSION['username']) {
         echo json_encode(['success' => false, 'error' => 'Unauthorized']);
