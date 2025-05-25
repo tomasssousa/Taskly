@@ -48,12 +48,9 @@ if (isset($_SESSION['username'])) {
 $reviews = Service::get_service_reviews($taskId);
 
 function formatDeliveryTime($value) {
-    // Special case for "1_2_days"
     if ($value === '1_2_days') return '1 to 2 days';
-    // Replace underscores with spaces and hyphens with "to"
     $value = str_replace('_', ' ', $value);
     $value = str_replace('-', 'to', $value);
-    // Capitalize first letter
     return ucfirst($value);
 }
 ?>

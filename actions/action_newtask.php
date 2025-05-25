@@ -6,7 +6,6 @@ require_once(__DIR__ . '/../database/media_db.php');
 
 $db = Database::getInstance();
 
-// Create uploads directory if it doesn't exist
 $uploadDir = __DIR__ . '/../docs/uploads';
 if (!is_dir($uploadDir)) {
     if (!mkdir($uploadDir, 0755, true)) {
@@ -16,7 +15,6 @@ if (!is_dir($uploadDir)) {
     }
 }
 
-// Validate form data
 $taskname = trim($_POST['taskname'] ?? '');
 $taskdesc = trim($_POST['taskdesc'] ?? '');
 $pricing = trim($_POST['pricing'] ?? '');

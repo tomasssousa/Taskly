@@ -3,7 +3,6 @@
     require_once(__DIR__ . '/../database/service_db.php');
     require_once(__DIR__ . '/gig_card.php');
 
-    // Check if user is logged in
     if (!isset($_SESSION['username'])) {
         header('Location: login.php');
         exit();
@@ -86,7 +85,7 @@
                     <?php
                     if (!empty($services)) {
                         foreach ($services as $service) {
-                            renderGigCard($service, false); // Pass false to hide settings
+                            renderGigCard($service, false); 
                         }
                     } else {
                         echo '<p>No favorite gigs found. <a href="gigs.php">Browse available gigs</a> to start building your favorites list!</p>';

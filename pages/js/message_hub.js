@@ -47,7 +47,6 @@ function loadMessages(username, chatId = null) {
         currentChatId = chatId;
     }
     
-    // Update active conversation
     document.querySelectorAll('.conversation-item').forEach(item => {
         item.classList.remove('active');
         if (item.dataset.username === username) {
@@ -86,7 +85,6 @@ function loadMessages(username, chatId = null) {
 function displayChat(username, messages, data = {}) {
     const messagesArea = document.getElementById('messagesArea');
     
-    // Check if user can send messages
     const canSendMessages = data.can_start_conversation || messages.length > 0;
     
     let messageForm = '';
@@ -236,7 +234,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Conversation item click
 document.addEventListener('click', function(event) {
     const conversationItem = event.target.closest('.conversation-item');
     if (conversationItem) {
@@ -246,14 +243,12 @@ document.addEventListener('click', function(event) {
     }
 });
 
-// Submitting a message
 document.addEventListener('submit', function(event) {
     if (event.target.classList.contains('message-form')) {
         sendMessage(event);
     }
 });
 
-// Cleanup on page unload
 window.addEventListener('beforeunload', function() {
     if (messagePollingInterval) {
         clearInterval(messagePollingInterval);

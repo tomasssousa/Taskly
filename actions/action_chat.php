@@ -3,7 +3,6 @@ session_start();
 require_once(__DIR__ . '/../database/chat_db.php');
 require_once(__DIR__ . '/../database/user_db.php');
 
-// Check if any user is logged in
 if (!isset($_SESSION['username'])) {
     $_SESSION['error'] = 'Not authenticated';
     header('Location: ../pages/login.php');
@@ -12,7 +11,6 @@ if (!isset($_SESSION['username'])) {
 
 $action = $_POST['action'] ?? $_GET['action'] ?? '';
 
-// Handle different actions
 switch ($action) {
     case 'send_message':
         handleSendMessage();
@@ -49,19 +47,15 @@ function handleSendMessage() {
             throw new Exception('User not found');
         }
 
-        // Check if user can start conversations
         if (!Chat::can_start_conversation($_SESSION['username'])) {
-            // Check if conversation exists where this user can participate
             $existing_chat_id = Chat::conversation_exists($receiver, $_SESSION['username']);
             
             if ($existing_chat_id) {
-                // User can reply to existing conversation where they are first_receiver
                 Chat::add_message($existing_chat_id, $message, $_SESSION['username'], $receiver);
             } else {
                 throw new Exception('You cannot start new conversations. Only users with task_mode = 0 can initiate conversations.');
             }
         } else {
-            // User can start conversations, send message normally
             Chat::send_message($message, $_SESSION['username'], $receiver);
         }
 
@@ -158,7 +152,6 @@ function handleSearchUsers() {
             exit();
         }
         
-        // Only allow task_mode = 0 users to start new conversations
         if (!Chat::can_start_conversation($_SESSION['username'])) {
             echo json_encode(['success' => true, 'users' => [], 'message' => 'Only task providers can start new conversations']);
             exit();

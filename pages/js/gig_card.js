@@ -1,7 +1,6 @@
 function toggleGigMenu(gigId) {
     const menu = document.getElementById(`gigMenu_${gigId}`);
     
-    // Close all other menus first
     document.querySelectorAll('.gig-menu').forEach(m => {
         if (m.id !== `gigMenu_${gigId}`) {
             m.style.display = 'none';

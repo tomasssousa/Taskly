@@ -38,17 +38,14 @@ if (empty($reviewText)) {
 
 try {
     
-    // Check if user already reviewed this service
     
     if (Comment::has_user_reviewed_service($taskId, $username)) {
         echo json_encode(['success' => false, 'error' => 'You have already reviewed this service']);
         exit();
     }
     
-    // Add the comment
     Comment::create_comment($reviewText, $taskId, $username);
     
-    // Update the transaction with the rating
     $transaction = $completedTransactions[0];
     Transaction::update_rating($transaction->id, $username, $rating);
     

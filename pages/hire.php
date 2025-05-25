@@ -41,7 +41,7 @@ try {
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/hire.css">
     <link rel="icon" href="../docs/logo.png" type="icon/x-icon">
-    <script src="js/hire.js"></script>
+    <script src="js/hire.js" defer></script>
 </head>
 <body>
 <?php include_once(__DIR__ . '/../components/header.php'); ?>
