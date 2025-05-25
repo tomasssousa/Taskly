@@ -7,7 +7,7 @@ class Database {
     public static function getInstance(): PDO {
         if (self::$instance === null) {             # Se Alguém mudar os ficheiros de sitio, que tenha atenção a atualizar o path em baixo
             try {
-                self::$instance = new PDO('sqlite:' . __DIR__ . '/database2.db');   # <--
+                self::$instance = new PDO('sqlite:' . __DIR__ . '/database.db');   # <--
             } catch (PDOException $e) {
                 die('Connection failed: ' . $e->getMessage());
             }

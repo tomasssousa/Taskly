@@ -55,6 +55,7 @@ $action = $_GET['action'] ?? null;
     </main>
     <script>
         const currentUser = '<?= htmlspecialchars($current_username, ENT_QUOTES, 'UTF-8') ?>';
+        const userTaskMode = <?= json_encode((bool)$current_user['task_mode']) ?>;
         <?php if ($target_user && $action === 'start_conversation'): ?>
         const startConversationWith = '<?= htmlspecialchars($target_user, ENT_QUOTES, 'UTF-8') ?>';
         <?php endif; ?>

@@ -49,9 +49,22 @@ function handleSendMessage() {
         if (!User::get_user($receiver)) {
             throw new Exception('User not found');
         }
-        
-        // Create message
-        Chat::create_chat($message, $_SESSION['username'], $receiver);
+
+        // Check if user can start conversations
+        if (!Chat::can_start_conversation($_SESSION['username'])) {
+            // Check if conversation exists where this user can participate
+            $existing_chat_id = Chat::conversation_exists($receiver, $_SESSION['username']);
+            
+            if ($existing_chat_id) {
+                // User can reply to existing conversation where they are first_receiver
+                Chat::add_message($existing_chat_id, $message, $_SESSION['username'], $receiver);
+            } else {
+                throw new Exception('You cannot start new conversations. Only users with task_mode = 0 can initiate conversations.');
+            }
+        } else {
+            // User can start conversations, send message normally
+            Chat::send_message($message, $_SESSION['username'], $receiver);
+        }
 
         header('Content-Type: application/json');
         echo json_encode(['success' => true]);
@@ -67,25 +80,38 @@ function handleGetMessages() {
         header('Content-Type: application/json');
         
         $other_user = $_GET['user'] ?? '';
+        $chat_id = $_GET['chat_id'] ?? '';
         
         if (empty($other_user)) {
             throw new Exception('User parameter required');
         }
+
+        if (!empty($chat_id)) {
+            $messages = Chat::get_conversation_messages($chat_id);
+        } else {
+            $messages = Chat::get_messages_between_users($_SESSION['username'], $other_user);
+
+            if (empty($messages)) {
+                $messages = Chat::get_messages_between_users($other_user, $_SESSION['username']);
+            }
+        }
         
-        // Get chat messages
-        $chatObjects = Chat::get_chat($_SESSION['username'], $other_user);
-        
-        $messages = [];
-        foreach ($chatObjects as $chat) {
-            $messages[] = [
-                'id' => $chat->id,
-                'text' => $chat->text,
-                'sender' => $chat->sender,
-                'receiver' => $chat->receiver
+        $messageArray = [];
+        foreach ($messages as $msg) {
+            $messageArray[] = [
+                'chat_id' => $msg->chat_id,
+                'message_id' => $msg->message_id,
+                'text' => $msg->text,
+                'sender' => $msg->sender,
+                'receiver' => $msg->receiver
             ];
         }
         
-        echo json_encode(['success' => true, 'messages' => $messages]);
+        echo json_encode([
+            'success' => true, 
+            'messages' => $messageArray,
+            'can_start_conversation' => Chat::can_start_conversation($_SESSION['username'])
+        ]);
         exit();
         
     } catch (Exception $e) {
@@ -97,31 +123,19 @@ function handleGetConversations() {
     try {
         header('Content-Type: application/json');
         
-        $db = Database::getInstance();
-        $stmt = $db->prepare('
-            SELECT DISTINCT 
-                CASE 
-                    WHEN sender = ? THEN receiver 
-                    ELSE sender 
-                END as other_user,
-                MAX(id) as last_message_id
-            FROM chat 
-            WHERE sender = ? OR receiver = ?
-            GROUP BY other_user
-            ORDER BY last_message_id DESC
-        ');
-        $stmt->execute([$_SESSION['username'], $_SESSION['username'], $_SESSION['username']]);
-        $conversations = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
+        $conversations = Chat::get_user_conversations($_SESSION['username']);
+        
         $conversationDetails = [];
         foreach ($conversations as $conv) {
             $userDetails = User::get_user($conv['other_user']);
             
             if ($userDetails) {
                 $conversationDetails[] = [
+                    'chat_id' => $conv['chat_id'],
                     'username' => $conv['other_user'],
                     'name' => $userDetails['name'] ?? $conv['other_user'],
-                    'profile_photo' => $userDetails['profile_photo'] ?? 'user_icon.png'
+                    'profile_photo' => $userDetails['profile_photo'] ?? 'user_icon.png',
+                    'last_message_id' => $conv['last_message_id']
                 ];
             }
         }
@@ -142,6 +156,12 @@ function handleSearchUsers() {
         
         if (strlen($search) < 2) {
             echo json_encode(['success' => true, 'users' => []]);
+            exit();
+        }
+        
+        // Only allow task_mode = 0 users to start for new conversations
+        if (!Chat::can_start_conversation($_SESSION['username'])) {
+            echo json_encode(['success' => true, 'users' => [], 'message' => 'Only task providers can start new conversations']);
             exit();
         }
         
