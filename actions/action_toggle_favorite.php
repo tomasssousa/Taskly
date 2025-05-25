@@ -28,7 +28,7 @@ try {
     
     if ($isFavorite) {
         // Remove from favorites
-        Service::remove_from_favourite($_SESSION['username'], $serviceId);
+        $result = Service::remove_from_favourite($_SESSION['username'], $serviceId);
         
         if ($result) {
             echo json_encode(['success' => true, 'is_favorite' => false, 'message' => 'Removed from favorites']);
@@ -37,7 +37,7 @@ try {
         }
     } else {
         // Add to favorites
-        Service::add_as_favourite($_SESSION['username'], $serviceId);
+        $result = Service::add_as_favourite($_SESSION['username'], $serviceId);
         
         if ($result) {
             echo json_encode(['success' => true, 'is_favorite' => true, 'message' => 'Added to favorites']);
