@@ -80,5 +80,17 @@ class Comment {
         }
         return $comments;
     }
+
+    public static function get_user_comments_for_service($user, $service_id): array {
+        $db = Database::getInstance();
+        $stmt = $db->prepare('SELECT * FROM comments WHERE user = ? AND service_id = ?');
+        $stmt->execute([$user, $service_id]);
+        
+        $comments = [];
+        while ($comment = $stmt->fetch()) {
+            $comments[] = new Comment($comment['id'], $comment['text'], $comment['service_id'], $comment['user'], $comment['reply_to']);
+        }
+        return $comments;
+    }
 }
 ?>

@@ -48,6 +48,14 @@ if (isset($_SESSION['username'])) {
 }
 
 $reviews = Service::get_service_reviews($taskId);
+
+// Check if current user has completed a transaction for this service
+$canReview = false;
+if (isset($_SESSION['username']) && $_SESSION['username'] !== $task['user']) {
+    require_once(__DIR__ . '/../database/transactions_db.php');
+    $completedTransactions = Transaction::get_pending_transaction($_SESSION['username'], $taskId, 'completed', 1);
+    $canReview = !empty($completedTransactions);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -188,17 +196,21 @@ $reviews = Service::get_service_reviews($taskId);
         <?php endif; ?>
     </div>
     <?php if (isset($_SESSION['username']) && $_SESSION['username'] !== $task['user']): ?>
-        <form id="reviewForm" class="review-form" onsubmit="submitReview(event)">
-            <div class="rating-input">
-                <label>Rating:</label>
-                <?php for ($i = 1; $i <= 5; $i++): ?>
-                    <span class="star-input" data-rating="<?= $i ?>" onclick="setRating(<?= $i ?>)">★</span>
-                <?php endfor; ?>
-                <input type="hidden" id="ratingValue" name="rating" value="0" required>
-            </div>
-            <textarea id="reviewText" name="reviewText" placeholder="Write your review here..." rows="2" required></textarea>
-            <button type="submit" class="submit-review-btn">Submit Review</button>
-        </form>
+        <?php if ($canReview): ?>
+            <form id="reviewForm" class="review-form" onsubmit="submitReview(event)">
+                <div class="rating-input">
+                    <label>Rating:</label>
+                    <?php for ($i = 1; $i <= 5; $i++): ?>
+                        <span class="star-input" data-rating="<?= $i ?>" onclick="setRating(<?= $i ?>)">★</span>
+                    <?php endfor; ?>
+                    <input type="hidden" id="ratingValue" name="rating" value="0" required>
+                </div>
+                <textarea id="reviewText" name="reviewText" placeholder="Write your review here..." rows="2" required></textarea>
+                <button type="submit" class="submit-review-btn">Submit Review</button>
+            </form>
+        <?php else: ?>
+            <div class="review-form disabled">You must complete a transaction for this service before reviewing</div>
+        <?php endif; ?>
     <?php elseif (!isset($_SESSION['username'])): ?>
         <div class="review-form disabled">Please <a href="login.php">log in</a> to leave a review</div>
     <?php else: ?>

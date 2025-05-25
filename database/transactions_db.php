@@ -62,7 +62,7 @@ class Transaction{
     public static function update_rating($id, $user, $rating){
         $db = Database::getInstance();
         $stmt = $db->prepare('UPDATE transactions SET rating = ? WHERE id = ? AND user = ?');
-        $stmt->execute([$rating],[$id],[$user]);
+        $stmt->execute([$rating, $id, $user]);
     }
 }
 ?>

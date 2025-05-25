@@ -49,7 +49,7 @@ try {
     
     User::update_money($service['user'], $newMoney . ' euros');
     
-    Transaction::create_transaction($_SESSION['username'], $serviceId, 'completed', 0);
+    Transaction::create_transaction($_SESSION['username'], $serviceId, 'pending', 0);
     
     echo json_encode(['success' => true, 'message' => 'Payment successful']);
     
