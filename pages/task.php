@@ -4,19 +4,22 @@ session_start();
 require_once(__DIR__ . '/../database/service_db.php');
 require_once(__DIR__ . '/../database/user_db.php');
 
-// Get task ID from URL
+
 $taskId = $_GET['id'] ?? null;
+
+$currentUser = null;
+$isTasker = false;
+if (isset($_SESSION['username'])) {
+    $currentUser = User::get_user($_SESSION['username']);
+    $isTasker = $currentUser && $currentUser['task_mode'];
+}
 
 if ($taskId) {
     try {
-        
         $task = Service::get_service_with_media($taskId);
         
-        // Convert image string to array
         $images = !empty($task['all_images']) ? explode(',', $task['all_images']) : ['default-gig.jpg'];
 
-        // After fetching $task
-       
         $userInfo = User::get_user($task['user']);
         $profilePhoto = $userInfo && !empty($userInfo['profile_photo']) ? $userInfo['profile_photo'] : null;
 
@@ -37,7 +40,7 @@ if ($taskId) {
     <link rel="icon" href="../docs/logo.png" type="icon/x-icon">
     <script src="js/gig_card.js" defer></script>
     <script src="js/images.js" defer></script>
-
+    <script src="js/task.js" defer></script>
 </head>
 <body>
 <?php include_once(__DIR__ . '/../components/header.php'); ?>
@@ -82,10 +85,31 @@ if ($taskId) {
                     </div>
                 </div>
                 <div class="delivery-section">
-                    <!-- Delivery details will go here -->
+                    <div class="delivery-info">
+                        <div class="delivery-time">
+                            <span class="delivery-label">Delivery Time</span>
+                            <span class="delivery-value"><?= htmlspecialchars($task['delivery_time']) ?></span>
+                        </div>
+                        <div class="delivery-price">
+                            <span class="price-label">Price</span>
+                            <span class="price-value"><?= number_format($task['pricing'], 2) ?>€</span>
+                        </div>
+                        <div class="delivery-category">
+                            <span class="category-label">Category</span>
+                            <span class="category-value"><?= htmlspecialchars($task['category']) ?></span>
+                        </div>
+                    </div>
                     <div class="delivery-actions">
-                        <button class="message-button">Message</button>
-                        <button class="hire-button">Hire</button>
+                        <?php if (!isset($_SESSION['username'])): ?>
+                            <a href="#" class="message-button" onclick="alert('Please log in to message sellers'); return false;">Message</a>
+                            <a href="#" class="hire-button" onclick="alert('Please log in to hire services'); return false;">Hire</a>
+                        <?php elseif ($isTasker): ?>
+                            <a href="#" class="message-button" onclick="alert('You are in Tasker mode. Switch to User mode in settings to hire services.'); return false;">Message</a>
+                            <a href="#" class="hire-button" onclick="alert('You are in Tasker mode. Switch to User mode in settings to hire services.'); return false;">Hire</a>
+                        <?php else: ?>
+                            <a href="messages.php?user=<?= urlencode($task['user']) ?>" class="message-button">Message</a>
+                            <a href="hire.php?id=<?= $task['id'] ?>" class="hire-button">Hire</a>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <div class="reviews-section">
@@ -95,7 +119,6 @@ if ($taskId) {
                         <span class="review-stars">★★★★½☆</span>
                     </div>
                 </div>
-            
             </div>
         </div>
     </section>

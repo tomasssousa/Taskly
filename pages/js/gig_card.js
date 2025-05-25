@@ -37,24 +37,41 @@ document.querySelectorAll('.gig-card').forEach(card => {
     });
 });
 
-
-
 function deleteTask(taskId) {
-    fetch(`../actions/action_delete_task.php?id=${taskId}`, {
+    if (!confirm('Are you sure you want to delete this task? This action cannot be undone.')) {
+        return;
+    }
+
+    fetch('../actions/action_delete_task.php', {
         method: 'POST',
-        credentials: 'same-origin'
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            service_id: taskId
+        })
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.success) {
-            const gigCard = document.querySelector(`[data-gig-id="${taskId}"]`).closest('.gig-card');
-            gigCard.remove();
+            const gigCard = document.querySelector(`[data-gig-id="${taskId}"]`);
+            if (gigCard) {
+                gigCard.closest('.gig-card').remove();
+            } else {
+                location.reload();
+            }
+            
         } else {
-            throw new Error(data.error || 'Failed to delete task');
+            alert('Error: ' + data.error);
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Failed to delete task: ' + error.message);
+        alert('An error occurred while deleting the task: ' + error.message);
     });
 }

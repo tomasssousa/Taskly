@@ -156,3 +156,17 @@ body.settings-page .delete-account-btn:hover {
     background: #c62828;
 }
 
+.balance {
+    font-size: 1.2em;
+    color: #333;
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+}
+
+.balance span {
+    color: #526D82;
+}
+

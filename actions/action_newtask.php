@@ -38,12 +38,10 @@ if (!is_numeric($pricing)) {
 try {
     $db->beginTransaction();
 
-    // Insert service
     Service::create($pricing, $deltime, $taskdesc, $_SESSION['username'], $taskname, 'other');
 
     $serviceId = $db->lastInsertId();
 
-    // Handle image uploads
     if (isset($_FILES['taskphoto']) && is_array($_FILES['taskphoto']['tmp_name'])) {
         foreach ($_FILES['taskphoto']['tmp_name'] as $key => $tmp_name) {
             if ($_FILES['taskphoto']['error'][$key] === UPLOAD_ERR_OK) {
@@ -52,29 +50,23 @@ try {
                     throw new Exception('Invalid upload attempt');
                 }
 
-                // Get file extension
                 $fileInfo = pathinfo($_FILES['taskphoto']['name'][$key]);
                 $extension = strtolower($fileInfo['extension']);
                 
-                // Validate extension
                 $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
                 if (!in_array($extension, $allowedExtensions)) {
                     throw new Exception('Invalid file type. Allowed: ' . implode(', ', $allowedExtensions));
                 }
 
-                // Generate unique filename
                 $filename = 'task_' . $serviceId . '_' . uniqid() . '.' . $extension;
                 $targetPath = $uploadDir . '/' . $filename;
                 
-                // Move uploaded file
                 if (!move_uploaded_file($tempFile, $targetPath)) {
                     throw new Exception('Failed to save uploaded file');
                 }
 
-                // Insert into media table with consistent path format
                 Media::create($serviceId, 'uploads/' . $filename, 'image');
                 
-                // Set first image as service's main image
                 if ($key === 0) {
                     Service::set_main_image($serviceId, 'uploads/' . $filename);
                 }
@@ -82,7 +74,6 @@ try {
         }
     }
 
-    // Handle category
     if (!empty($category)) {
         Service::set_category($serviceId, $category);   
     }

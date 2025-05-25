@@ -1,9 +1,9 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
 
-// Get user's profile photo and check admin status if logged in
-$userPhoto = '../docs/user_icon.png'; // Default photo
+$userPhoto = '../docs/user_icon.png'; 
 $isAdmin = false;
+$isTasker = false;
 
 if (isset($_SESSION['username'])) {
     require_once(__DIR__ . '/../database/user_db.php');
@@ -14,8 +14,8 @@ if (isset($_SESSION['username'])) {
             if (!empty($result['profile_photo'])) {
                 $userPhoto = '../docs/' . $result['profile_photo'];
             }
-            // Check if user has admin privileges
             $isAdmin = $result['admin_power'] ?? false;
+            $isTasker = $result['task_mode'] ?? false;
         }
     } catch (PDOException $e) {
         error_log("Error fetching user data: " . $e->getMessage());
@@ -27,7 +27,9 @@ if (isset($_SESSION['username'])) {
     <a href="home.php"><img src="../docs/logo.png" alt="Taskly Logo" class="logo"></a>
     <div class="header-right">
         <?php if (isset($_SESSION['username'])): ?>
-            <a href="new_task.php" class="new-task-button">New Task</a>
+            <?php if ($isTasker): ?>
+                <a href="new_task.php" class="new-task-button">New Task</a>
+            <?php endif; ?>
             <a href="messages.php" class="messages-button">
                 <img src="../docs/message.png" alt="Messages" class="message-icon">
             </a>
@@ -35,7 +37,6 @@ if (isset($_SESSION['username'])) {
                 <img src="../docs/star.png" alt="Favorites" class="star-icon">
             </a>
         <?php else: ?>
-            <a href="login.php?redirect=new_task" class="new-task-button">New Task</a>
             <a href="login.php?redirect=messages" class="messages-button">
                 <img src="../docs/message.png" alt="Messages" class="message-icon">
             </a>
@@ -84,7 +85,6 @@ function toggleUserMenu() {
     menu.style.display = menu.style.display === "block" ? "none" : "block";
 }
 
-// Close user menu when clicking outside
 document.addEventListener('click', function(event) {
     const userMenu = document.getElementById('userMenu');
     const userIcon = document.querySelector('.user-icon');

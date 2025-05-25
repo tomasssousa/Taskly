@@ -31,7 +31,8 @@ if (isset($_SESSION['username'])) {
     <div class="container">
         <div class="tab-content" id="analytics-tab">
             <h3>Analytics</h3>
-            <p>Coming soon! Here you'll see your account and task stats.</p>
+            
+            <p class="balance">Balance: <span><?= htmlspecialchars($current_user['money'] ?? '0 euros') ?></span></p>
         </div>
         <div class="tab-content" id="settings-tab" style="display:none;">
             <h3>Edit Account Details</h3>

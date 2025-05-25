@@ -4,13 +4,11 @@ session_start();
 require_once(__DIR__ . '/../database/user_db.php');
 require_once(__DIR__ . '/../database/connection.php');
 
-// Check if user is logged in
 if (!isset($_SESSION['username'])) {
     header('Location: ../pages/login.php');
     exit();
 }
 
-// Check if form was submitted
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: ../pages/settings.php');
     exit();
@@ -21,9 +19,13 @@ $current_password = $_POST['current_password'] ?? '';
 $new_email = trim($_POST['new_email'] ?? '');
 $new_password = $_POST['new_password'] ?? '';
 $confirm_password = $_POST['confirm_password'] ?? '';
-$account_type = $_POST['account_type'] ?? 'user'; // This should come from the form
+$account_type = $_POST['account_type'] ?? '';
 
-// Get current user data
+error_log("=== Account Update Debug ===");
+error_log("Username: " . $username);
+error_log("Account type received: '" . $account_type . "'");
+error_log("All POST data: " . print_r($_POST, true));
+
 $current_user = User::get_user($username);
 if (!$current_user) {
     $_SESSION['error'] = 'User not found.';
@@ -31,14 +33,14 @@ if (!$current_user) {
     exit();
 }
 
-// Verify current password
+error_log("Current user task_mode: " . $current_user['task_mode']);
+
 if (!password_verify($current_password, $current_user['password'])) {
     $_SESSION['error'] = 'Current password is incorrect.';
     header('Location: ../pages/settings.php');
     exit();
 }
 
-// Validate new password if provided
 if (!empty($new_password)) {
     if (strlen($new_password) < 6) {
         $_SESSION['error'] = 'New password must be at least 6 characters long.';
@@ -53,7 +55,6 @@ if (!empty($new_password)) {
     }
 }
 
-// Validate email if provided
 if (!empty($new_email) && !filter_var($new_email, FILTER_VALIDATE_EMAIL)) {
     $_SESSION['error'] = 'Invalid email format.';
     header('Location: ../pages/settings.php');
@@ -62,8 +63,8 @@ if (!empty($new_email) && !filter_var($new_email, FILTER_VALIDATE_EMAIL)) {
 
 try {
     $db = Database::getInstance();
+    $changes_made = false;
     
-    // Check if new email already exists (if email is being changed)
     if (!empty($new_email) && $new_email !== $current_user['email']) {
         $stmt = $db->prepare('SELECT username FROM users WHERE email = ? AND username != ?');
         $stmt->execute([$new_email, $username]);
@@ -73,37 +74,45 @@ try {
             exit();
         }
     }
-    
-    // Prepare update query
-    $updates = [];
-    $values = [];
-    
-    // Update email if provided
     if (!empty($new_email) && $new_email !== $current_user['email']) {
-        $updates[] = 'email = ?';
-        $values[] = $new_email;
+        $stmt = $db->prepare('UPDATE users SET email = ? WHERE username = ?');
+        $stmt->execute([$new_email, $username]);
+        $changes_made = true;
+        error_log("Email updated for user: " . $username);
     }
     
-    // Update password if provided
     if (!empty($new_password)) {
-        $updates[] = 'password = ?';
-        $values[] = password_hash($new_password, PASSWORD_DEFAULT);
+        $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
+        $stmt = $db->prepare('UPDATE users SET password = ? WHERE username = ?');
+        $stmt->execute([$hashed_password, $username]);
+        $changes_made = true;
+        error_log("Password updated for user: " . $username);
     }
     
-    // Update task mode based on account type
-    $task_mode = ($account_type === 'tasker') ? 1 : 0;
-    if ($task_mode !== (int)$current_user['task_mode']) {
-        $updates[] = 'task_mode = ?';
-        $values[] = $task_mode;
-    }
-    
-    // If there are updates to make
-    if (!empty($updates)) {
-        $values[] = $username; // Add username for WHERE clause
-        $sql = 'UPDATE users SET ' . implode(', ', $updates) . ' WHERE username = ?';
-        $stmt = $db->prepare($sql);
-        $stmt->execute($values);
+    if (!empty($account_type)) {
+        $new_task_mode = ($account_type === 'tasker') ? 1 : 0;
+        $current_task_mode = (int)$current_user['task_mode'];
         
+        error_log("Task mode comparison - Current: " . $current_task_mode . ", New: " . $new_task_mode . ", Account type: " . $account_type);
+        
+        if ($new_task_mode !== $current_task_mode) {
+            if ($new_task_mode === 1) {
+                User::task_mode_on($username);
+                error_log("Called User::task_mode_on() for user: " . $username);
+            } else {
+                User::task_mode_off($username);
+                error_log("Called User::task_mode_off() for user: " . $username);
+            }
+            $changes_made = true;
+            error_log("Task mode updated successfully");
+        } else {
+            error_log("No task mode change needed");
+        }
+    } else {
+        error_log("Account type is empty!");
+    }
+    
+    if ($changes_made) {
         $_SESSION['success'] = 'Account updated successfully!';
     } else {
         $_SESSION['info'] = 'No changes were made.';
