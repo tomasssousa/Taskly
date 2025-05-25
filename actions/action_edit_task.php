@@ -3,7 +3,6 @@ session_start();
 
 require_once(__DIR__ . '/../database/service_db.php');
 require_once(__DIR__ . '/../database/user_db.php');
-require_once(__DIR__ . '/../database/connection.php');
 
 // Check if user is logged in and in tasker mode
 if (!isset($_SESSION['username'])) {

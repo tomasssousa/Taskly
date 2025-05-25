@@ -131,14 +131,14 @@ class Service {
         $stmt->execute([$username, $id]);
         if ($stmt->fetchColumn() == 0) {
             $stmt = $db->prepare('INSERT INTO favourite_services (username, id) VALUES (?, ?)');
-            $stmt->execute([$username, $id]);
+            return $stmt->execute([$username, $id]);
         }
     }
 
     public static function remove_from_favourite(string $username, int $id){
         $db = Database::getInstance();
         $stmt = $db->prepare('DELETE FROM favourite_services WHERE username = ? AND id = ?');
-        $stmt->execute([$username, $id]);
+        return $stmt->execute([$username, $id]);
     }
     
     #obtain all of a users favourited services
@@ -516,6 +516,14 @@ class Service {
         $stmt->execute($params);
         
         return $stmt->fetchAll();
+    }
+
+    #Specific function for edit_task.php
+    public static function get_service_by_id_and_user(int $id, string $user){
+        $db = Database::getInstance();
+        $stmt = $db->prepare('SELECT * FROM services WHERE id = ? AND user = ?');
+        $stmt->execute([$id, $user]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 }
 ?>

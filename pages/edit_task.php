@@ -3,7 +3,6 @@ session_start();
 
 require_once(__DIR__ . '/../database/service_db.php');
 require_once(__DIR__ . '/../database/user_db.php');
-require_once(__DIR__ . '/../database/connection.php');
 
 if (!isset($_SESSION['username'])) {
     header('Location: login.php');
@@ -24,10 +23,7 @@ if (!$taskId) {
 }
 
 try {
-    $db = Database::getInstance();
-    $stmt = $db->prepare('SELECT * FROM services WHERE id = ? AND user = ?');
-    $stmt->execute([$taskId, $_SESSION['username']]);
-    $task = $stmt->fetch(PDO::FETCH_ASSOC);
+    $task = Service::get_service_by_id_and_user($taskId, $_SESSION['username']);
     
     if (!$task) {
         $_SESSION['error'] = 'Task not found or you do not have permission to edit this task.';

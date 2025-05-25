@@ -80,5 +80,25 @@ class Comment {
         }
         return $comments;
     }
+
+    public static function get_user_comments_for_service($user, $service_id): array {
+        $db = Database::getInstance();
+        $stmt = $db->prepare('SELECT * FROM comments WHERE user = ? AND service_id = ?');
+        $stmt->execute([$user, $service_id]);
+        
+        $comments = [];
+        while ($comment = $stmt->fetch()) {
+            $comments[] = new Comment($comment['id'], $comment['text'], $comment['service_id'], $comment['user'], $comment['reply_to']);
+        }
+        return $comments;
+    }
+
+    #specific function used in action_add_review.php
+    public static function has_user_reviewed_service($service_id, $user): bool {
+        $db = Database::getInstance();
+        $stmt = $db->prepare('SELECT COUNT(*) FROM comments WHERE service_id = ? AND user = ?');
+        $stmt->execute([$service_id, $user]);
+        return $stmt->fetchColumn() > 0;
+    }
 }
 ?>

@@ -2,6 +2,10 @@
 session_start();
 
 require_once(__DIR__ . '/../database/connection.php');
+require_once(__DIR__ . '/../database/service_db.php');
+require_once(__DIR__ . '/../database/user_db.php');
+require_once(__DIR__ . '/../database/transactions_db.php');
+require_once(__DIR__ . '/../database/comments_db.php');
 
 header('Content-Type: application/json');
 
@@ -33,32 +37,22 @@ if (empty($reviewText)) {
 }
 
 try {
-    $db = Database::getInstance();
     
     // Check if user already reviewed this service
-    $stmt = $db->prepare('SELECT COUNT(*) FROM comments WHERE service_id = ? AND user = ?');
-    $stmt->execute([$taskId, $username]);
-    if ($stmt->fetchColumn() > 0) {
+    
+    if (Comment::has_user_reviewed_service($taskId, $username)) {
         echo json_encode(['success' => false, 'error' => 'You have already reviewed this service']);
         exit();
     }
     
     // Add the comment
-    $stmt = $db->prepare('INSERT INTO comments (text, service_id, user) VALUES (?, ?, ?)');
-    $success = $stmt->execute([$reviewText, $taskId, $username]);
+    Comment::create_comment($reviewText, $taskId, $username);
     
-    if ($success) {
-        // Also create/update transaction record with rating
-        $stmt = $db->prepare('
-            INSERT OR REPLACE INTO transactions (user, service_id, status, rating) 
-            VALUES (?, ?, "completed", ?)
-        ');
-        $stmt->execute([$username, $taskId, $rating]);
-        
-        echo json_encode(['success' => true, 'message' => 'Review added successfully']);
-    } else {
-        echo json_encode(['success' => false, 'error' => 'Failed to add review']);
-    }
+    // Update the transaction with the rating
+    $transaction = $completedTransactions[0];
+    Transaction::update_rating($transaction->id, $username, $rating);
+    
+    echo json_encode(['success' => true, 'message' => 'Review added successfully']);
     
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'error' => 'Database error: ' . $e->getMessage()]);
