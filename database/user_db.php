@@ -101,5 +101,39 @@ class User {
         $stmt = $db->prepare('UPDATE users SET money = ? WHERE username = ?');
         $stmt->execute([$money, $username]); 
     }
+
+    #Specific function from action_chat.php
+    public static function search_users($search) {
+        $db = Database::getInstance();
+        $stmt = $db->prepare('
+            SELECT username, name, profile_photo 
+            FROM users 
+            WHERE username != ? AND (username LIKE ? OR name LIKE ?)
+            LIMIT 10
+        ');
+        $stmt->execute([$_SESSION['username'], "%$search%", "%$search%"]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    #Specific function from action_update_account.php
+    public static function check_email($new_email, $username) {
+        $db = Database::getInstance();
+        $stmt = $db->prepare('SELECT username FROM users WHERE email = ? AND username != ?');
+        return $stmt->execute([$new_email, $username]);
+    }
+
+    #Specific function from action_update_account.php
+    public static function update_email($new_email, $username) {
+        $db = Database::getInstance();
+        $stmt = $db->prepare('UPDATE users SET email = ? WHERE username = ?');
+        $stmt->execute([$new_email, $username]);
+    }
+
+    # Specific function from action_update_account.php
+    public static function update_password($hashed_password, $username) {
+        $db = Database::getInstance();
+        $stmt = $db->prepare('UPDATE users SET password = ? WHERE username = ?');
+        $stmt->execute([$hashed_password, $username]);
+    }
 }
 ?>

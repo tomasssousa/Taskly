@@ -43,5 +43,25 @@ class Chat {
         }
         return $chats;
     }
+
+    #Specific function from action_chat.php
+    public static function get_conversations($username): array {
+        $db = Database::getInstance();
+        $stmt = $db->prepare('
+            SELECT DISTINCT 
+                CASE 
+                    WHEN sender = ? THEN receiver 
+                    ELSE sender 
+                END as other_user,
+                MAX(id) as last_message_id
+            FROM chat 
+            WHERE sender = ? OR receiver = ?
+            GROUP BY other_user
+            ORDER BY last_message_id DESC
+        ');
+        $stmt->execute([$username, $username, $username]);
+        $conversations = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $conversations;
+    }
 }
 ?>

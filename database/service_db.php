@@ -284,5 +284,34 @@ class Service {
         $stmt->execute([$id]);
         return $stmt->fetch();
     }
+
+    #Specific function for admin.php
+    public static function get_all_services(): array {
+        $db = Database::getInstance();
+        $stmt = $db->prepare("
+            SELECT s.*, u.name as seller_name 
+            FROM services s 
+            LEFT JOIN users u ON s.user = u.username 
+            ORDER BY s.id DESC
+        ");
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    #Specific function for task.php AND action_toggle_favorite.php
+    public static function get_favourite_count($username, $serviceId) {
+        $db = Database::getInstance();
+        $stmt = $db->prepare('SELECT COUNT(*) FROM favourite_services WHERE username = ? AND id = ?');
+        $stmt->execute([$username, $serviceId]);
+        return $stmt->fetchColumn()> 0;
+    }
+
+    #Specific function for action_delete_task.php
+    public static function get_service_No_class(int $id): ?array {
+        $db = Database::getInstance();
+        $stmt = $db->prepare('SELECT id, user, taskname FROM services WHERE id = ?');
+        $stmt->execute([$id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 }
 ?>
