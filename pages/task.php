@@ -4,28 +4,53 @@ session_start();
 require_once(__DIR__ . '/../database/service_db.php');
 require_once(__DIR__ . '/../database/user_db.php');
 
-
 $taskId = $_GET['id'] ?? null;
+
+// Check if task ID is provided
+if (!$taskId) {
+    header('Location: home.php');
+    exit();
+}
 
 $currentUser = null;
 $isTasker = false;
+$isFavorite = false;
+$task = null;
+
+// Get task data first
+try {
+    $task = Service::get_service_with_media($taskId);
+    if (!$task) {
+        header('Location: home.php');
+        exit();
+    }
+    
+    $images = !empty($task['all_images']) ? explode(',', $task['all_images']) : ['default-gig.jpg'];
+    $userInfo = User::get_user($task['user']);
+    $profilePhoto = $userInfo && !empty($userInfo['profile_photo']) ? $userInfo['profile_photo'] : null;
+
+} catch (Exception $e) {
+    die("Error: " . $e->getMessage());
+}
+
+// Check user authentication and favorites
 if (isset($_SESSION['username'])) {
     $currentUser = User::get_user($_SESSION['username']);
     $isTasker = $currentUser && $currentUser['task_mode'];
-}
-
-if ($taskId) {
+    
+    // Check if this service is in user's favorites with direct SQL
     try {
-        $task = Service::get_service_with_media($taskId);
-        
-        $images = !empty($task['all_images']) ? explode(',', $task['all_images']) : ['default-gig.jpg'];
-
-        $userInfo = User::get_user($task['user']);
-        $profilePhoto = $userInfo && !empty($userInfo['profile_photo']) ? $userInfo['profile_photo'] : null;
-
+        require_once(__DIR__ . '/../database/connection.php');
+        $db = Database::getInstance();
+        $stmt = $db->prepare('SELECT COUNT(*) FROM favourite_services WHERE username = ? AND id = ?');
+        $stmt->execute([$_SESSION['username'], $taskId]);
+        $isFavorite = $stmt->fetchColumn() > 0;
     } catch (Exception $e) {
-        die("Error: " . $e->getMessage());
+        error_log("Favorites check error: " . $e->getMessage());
+        $isFavorite = false;
     }
+} else {
+    $isFavorite = false;
 }
 ?>
 <!DOCTYPE html>
@@ -99,6 +124,18 @@ if ($taskId) {
                             <span class="category-value"><?= htmlspecialchars($task['category']) ?></span>
                         </div>
                     </div>
+                    
+                    <?php if (isset($_SESSION['username'])): ?>
+                    <div class="favorite-section">
+                        <button class="favorite-button <?= $isFavorite ? 'favorited' : '' ?>" 
+                                onclick="toggleFavorite(<?= $task['id'] ?>)" 
+                                id="favoriteBtn">
+                            <img src="../docs/star.png" alt="Star" class="favorite-star">
+                            <span class="favorite-text"><?= $isFavorite ? 'Remove from favorites' : 'Add to favorites' ?></span>
+                        </button>
+                    </div>
+                    <?php endif; ?>
+                    
                     <div class="delivery-actions">
                         <?php if (!isset($_SESSION['username'])): ?>
                             <a href="#" class="message-button" onclick="alert('Please log in to message sellers'); return false;">Message</a>
@@ -110,7 +147,6 @@ if ($taskId) {
                             <a href="message_hub.php?user=<?= urlencode($task['user']) ?>&action=start_conversation" class="message-button">Message</a>
                             <a href="hire.php?id=<?= $task['id'] ?>" class="hire-button">Hire</a>
                         <?php endif; ?>
-
                     </div>
                 </div>
                 <div class="reviews-section">

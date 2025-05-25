@@ -30,7 +30,7 @@ if (isset($_SESSION['username'])) {
             <?php if ($isTasker): ?>
                 <a href="new_task.php" class="new-task-button">New Task</a>
             <?php endif; ?>
-            <a href="messages.php" class="messages-button">
+            <a href="message_hub.php" class="messages-button">
                 <img src="../docs/message.png" alt="Messages" class="message-icon">
             </a>
             <a href="favorites.php" class="favorites-button">
