@@ -14,6 +14,7 @@ main {
     justify-content: center;
 }
 
+/* Search Bar */
 .search-container {
     display: flex;
     justify-content: center;
@@ -47,4 +48,61 @@ main {
 .search-icon {
     height: 1.5em;
     width: auto;
+}
+
+/* Category Boxes */
+.categories-section {
+    margin-top: 4em;
+    width: 100%;
+    max-width: 80em;
+}
+
+.categories-title {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 2em;
+    color: #333;
+}
+
+.categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5em;
+    padding: 0 1em;
+}
+
+.category-box {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 2em 1.5em;
+    text-align: center;
+    text-decoration: none;
+    color: #333;
+    transition: all 0.3s;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.category-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    border-color: #516c81;
+}
+
+.category-icon {
+    font-size: 3em;
+    margin-bottom: 0.5em;
+}
+
+.category-box h3 {
+    margin: 0.5em 0;
+    font-size: 1.3rem;
+    color: #516c81;
+}
+
+.category-box p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #666;
+    line-height: 1.4;
 }

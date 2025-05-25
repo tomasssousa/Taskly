@@ -5,12 +5,12 @@ require_once(__DIR__ . '/../database/connection.php');  # <--
 class Chat {
     public int $id;
     public string $text;
-    public int $chat_id;
+    public ?int $chat_id;
     public string $sender;
     public string $receiver;
     
 
-    public function __construct(int $id, string $text, int $chat_id, string $sender, int $receiver){
+    public function __construct(int $id, string $text, ?int $chat_id, string $sender, string $receiver){
         $this->id = $id;
         $this->text = $text;
         $this->chat_id = $chat_id;

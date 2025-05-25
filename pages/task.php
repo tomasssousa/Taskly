@@ -107,9 +107,10 @@ if ($taskId) {
                             <a href="#" class="message-button" onclick="alert('You are in Tasker mode. Switch to User mode in settings to hire services.'); return false;">Message</a>
                             <a href="#" class="hire-button" onclick="alert('You are in Tasker mode. Switch to User mode in settings to hire services.'); return false;">Hire</a>
                         <?php else: ?>
-                            <a href="messages.php?user=<?= urlencode($task['user']) ?>" class="message-button">Message</a>
+                            <a href="message_hub.php?user=<?= urlencode($task['user']) ?>&action=start_conversation" class="message-button">Message</a>
                             <a href="hire.php?id=<?= $task['id'] ?>" class="hire-button">Hire</a>
                         <?php endif; ?>
+
                     </div>
                 </div>
                 <div class="reviews-section">
