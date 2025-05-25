@@ -41,7 +41,7 @@ function startChat(username) {
 function loadMessages(username) {
     currentChat = username;
     
-    // Update active conversation
+    // Update an active conversation
     document.querySelectorAll('.conversation-item').forEach(item => {
         item.classList.remove('active');
         if (item.dataset.username === username) {
@@ -167,7 +167,7 @@ function startMessagePolling(username) {
     }, 3000);
 }
 
-function escapeHtml(unsafe) {
+function escapeHtml(unsafe) { // For security purposes
     return unsafe
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
