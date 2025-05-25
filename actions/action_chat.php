@@ -1,6 +1,5 @@
 <?php
 session_start();
-require_once(__DIR__ . '/../database/connection.php');
 require_once(__DIR__ . '/../database/chat_db.php');
 require_once(__DIR__ . '/../database/user_db.php');
 
@@ -97,21 +96,7 @@ function handleGetConversations() {
     try {
         header('Content-Type: application/json');
         
-        $db = Database::getInstance();
-        $stmt = $db->prepare('
-            SELECT DISTINCT 
-                CASE 
-                    WHEN sender = ? THEN receiver 
-                    ELSE sender 
-                END as other_user,
-                MAX(id) as last_message_id
-            FROM chat 
-            WHERE sender = ? OR receiver = ?
-            GROUP BY other_user
-            ORDER BY last_message_id DESC
-        ');
-        $stmt->execute([$_SESSION['username'], $_SESSION['username'], $_SESSION['username']]);
-        $conversations = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $conversations = Chat::get_conversations($_SESSION['username']);
 
         $conversationDetails = [];
         foreach ($conversations as $conv) {
@@ -145,15 +130,7 @@ function handleSearchUsers() {
             exit();
         }
         
-        $db = Database::getInstance();
-        $stmt = $db->prepare('
-            SELECT username, name, profile_photo 
-            FROM users 
-            WHERE username != ? AND (username LIKE ? OR name LIKE ?)
-            LIMIT 10
-        ');
-        $stmt->execute([$_SESSION['username'], "%$search%", "%$search%"]);
-        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $users = User::search_users($search);
         
         echo json_encode(['success' => true, 'users' => $users]);
         exit();

@@ -2,7 +2,7 @@
 session_start();
 
 require_once(__DIR__ . '/../database/user_db.php');
-require_once(__DIR__ . '/../database/connection.php');
+require_once(__DIR__ . '/../database/service_db.php');
 
 header('Content-Type: application/json');
 
@@ -20,14 +20,11 @@ if (!$service_id) {
 }
 
 try {
-    $db = Database::getInstance();
     
     $currentUser = User::get_user($_SESSION['username']);
     $isAdmin = $currentUser && $currentUser['admin_power'];
     
-    $stmt = $db->prepare('SELECT id, user, taskname FROM services WHERE id = ?');
-    $stmt->execute([$service_id]);
-    $service = $stmt->fetch();
+    $service = Service::get_service_No_class($service_id);
     
     if (!$service) {
         echo json_encode(['success' => false, 'error' => 'Service not found']);
@@ -38,9 +35,7 @@ try {
         echo json_encode(['success' => false, 'error' => 'You can only delete your own services']);
         exit();
     }
-    
-    $stmt = $db->prepare('DELETE FROM services WHERE id = ?');
-    $stmt->execute([$service_id]);
+    Service::delete($service_id);
     
     echo json_encode(['success' => true, 'message' => 'Service deleted successfully']);
     

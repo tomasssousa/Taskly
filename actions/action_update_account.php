@@ -2,7 +2,6 @@
 session_start();
 
 require_once(__DIR__ . '/../database/user_db.php');
-require_once(__DIR__ . '/../database/connection.php');
 
 if (!isset($_SESSION['username'])) {
     header('Location: ../pages/login.php');
@@ -62,29 +61,24 @@ if (!empty($new_email) && !filter_var($new_email, FILTER_VALIDATE_EMAIL)) {
 }
 
 try {
-    $db = Database::getInstance();
     $changes_made = false;
     
     if (!empty($new_email) && $new_email !== $current_user['email']) {
-        $stmt = $db->prepare('SELECT username FROM users WHERE email = ? AND username != ?');
-        $stmt->execute([$new_email, $username]);
-        if ($stmt->fetch()) {
+        if (User::check_email($new_email, $username)) {
             $_SESSION['error'] = 'Email address is already in use.';
             header('Location: ../pages/settings.php');
             exit();
         }
     }
     if (!empty($new_email) && $new_email !== $current_user['email']) {
-        $stmt = $db->prepare('UPDATE users SET email = ? WHERE username = ?');
-        $stmt->execute([$new_email, $username]);
+        User::update_email($new_email, $username);
         $changes_made = true;
         error_log("Email updated for user: " . $username);
     }
     
     if (!empty($new_password)) {
         $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
-        $stmt = $db->prepare('UPDATE users SET password = ? WHERE username = ?');
-        $stmt->execute([$hashed_password, $username]);
+        User::update_password($hashed_password, $username);
         $changes_made = true;
         error_log("Password updated for user: " . $username);
     }

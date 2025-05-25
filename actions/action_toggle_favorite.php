@@ -2,7 +2,6 @@
 session_start();
 
 require_once(__DIR__ . '/../database/service_db.php');
-require_once(__DIR__ . '/../database/connection.php');
 
 header('Content-Type: application/json');
 
@@ -24,18 +23,12 @@ if (!$serviceId) {
 }
 
 try {
-    // Get database connection
-    $db = Database::getInstance();
-    
-    // Check if already favorited with direct SQL query
-    $stmt = $db->prepare('SELECT COUNT(*) FROM favourite_services WHERE username = ? AND id = ?');
-    $stmt->execute([$_SESSION['username'], $serviceId]);
-    $isFavorite = $stmt->fetchColumn() > 0;
+    // Check if already favorited with direct SQL query 
+    $isFavorite = Service::get_favourite_count($_SESSION['username'], $serviceId);
     
     if ($isFavorite) {
         // Remove from favorites
-        $stmt = $db->prepare('DELETE FROM favourite_services WHERE username = ? AND id = ?');
-        $result = $stmt->execute([$_SESSION['username'], $serviceId]);
+        Service::remove_from_favourite($_SESSION['username'], $serviceId);
         
         if ($result) {
             echo json_encode(['success' => true, 'is_favorite' => false, 'message' => 'Removed from favorites']);
@@ -44,8 +37,7 @@ try {
         }
     } else {
         // Add to favorites
-        $stmt = $db->prepare('INSERT INTO favourite_services (username, id) VALUES (?, ?)');
-        $result = $stmt->execute([$_SESSION['username'], $serviceId]);
+        Service::add_as_favourite($_SESSION['username'], $serviceId);
         
         if ($result) {
             echo json_encode(['success' => true, 'is_favorite' => true, 'message' => 'Added to favorites']);

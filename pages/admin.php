@@ -8,7 +8,6 @@ if (!isset($_SESSION['username'])) {
 
 require_once(__DIR__ . '/../database/service_db.php');
 require_once(__DIR__ . '/../database/user_db.php');
-require_once(__DIR__ . '/../database/connection.php');
 
 $currentUser = User::get_user($_SESSION['username']);
 
@@ -26,15 +25,8 @@ $allUsers = User::get_users();
 $totalUsers = count($allUsers);
 
 try {
-    $db = Database::getInstance();
-    $stmt = $db->prepare("
-        SELECT s.*, u.name as seller_name 
-        FROM services s 
-        LEFT JOIN users u ON s.user = u.username 
-        ORDER BY s.id DESC
-    ");
-    $stmt->execute();
-    $allServices = $stmt->fetchAll();
+    
+    $allServices = Service::get_all_services();
     $totalServices = count($allServices);
 } catch (Exception $e) {
     error_log("Error fetching services: " . $e->getMessage());

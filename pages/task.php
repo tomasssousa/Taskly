@@ -38,11 +38,7 @@ if (isset($_SESSION['username'])) {
     $isTasker = $currentUser && $currentUser['task_mode'];
     
     try {
-        require_once(__DIR__ . '/../database/connection.php');
-        $db = Database::getInstance();
-        $stmt = $db->prepare('SELECT COUNT(*) FROM favourite_services WHERE username = ? AND id = ?');
-        $stmt->execute([$_SESSION['username'], $taskId]);
-        $isFavorite = $stmt->fetchColumn() > 0;
+        $isFavorite = Service::get_favourite_count($_SESSION['username'], $taskId);
     } catch (Exception $e) {
         error_log("Favorites check error: " . $e->getMessage());
         $isFavorite = false;
