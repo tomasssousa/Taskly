@@ -46,6 +46,16 @@ if (isset($_SESSION['username'])) {
 }
 
 $reviews = Service::get_service_reviews($taskId);
+
+function formatDeliveryTime($value) {
+    // Special case for "1_2_days"
+    if ($value === '1_2_days') return '1 to 2 days';
+    // Replace underscores with spaces and hyphens with "to"
+    $value = str_replace('_', ' ', $value);
+    $value = str_replace('-', 'to', $value);
+    // Capitalize first letter
+    return ucfirst($value);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -94,7 +104,7 @@ $reviews = Service::get_service_reviews($taskId);
                     <div class="delivery-info">
                         <div class="delivery-time">
                             <span class="delivery-label">Delivery Time</span>
-                            <span class="delivery-value"><?= htmlspecialchars($task['delivery_time']) ?></span>
+                            <span class="delivery-value"><?= formatDeliveryTime($task['delivery_time']) ?></span>
                         </div>
                         <div class="delivery-price">
                             <span class="price-label">Price</span>
