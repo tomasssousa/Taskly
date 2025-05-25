@@ -101,6 +101,38 @@ try {
             </table>
         </div>
 
+        <h2>Category Management</h2>
+        <div class="category-management">
+            <div class="add-category-form">
+                <h3>Add New Category</h3>
+                <form id="addCategoryForm" onsubmit="addCategory(event)">
+                    <div class="form-group">
+                        <input type="text" 
+                               id="categoryName" 
+                               name="categoryName" 
+                               placeholder="Category Name" 
+                               required>
+                        <button type="submit" class="admin-btn add-btn">Add</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="current-categories">
+                <h3>Current Categories</h3>
+                <div class="category-list">
+                    <?php 
+                    $categories = Service::get_categories();
+                    
+                    foreach ($categories as $category): ?>
+                        <div class="category-item" data-category="<?= htmlspecialchars($category) ?>">
+                            <span class="category-name"><?= htmlspecialchars($category) ?></span>
+                            <button class="admin-btn delete-btn small" onclick="deleteCategory('<?= htmlspecialchars($category) ?>')">Delete</button>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </div>
+
         <h2>Task Management (<?= count($allServices) ?> services)</h2>
         <div class="admin-table-container">
             <table class="admin-table">

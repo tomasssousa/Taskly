@@ -101,5 +101,16 @@ class User {
         $stmt = $db->prepare('UPDATE users SET money = ? WHERE username = ?');
         $stmt->execute([$money, $username]); 
     }
+
+    public static function update_balance(string $username, float $newBalance): bool {
+        try {
+            $db = Database::getInstance();
+            $stmt = $db->prepare('UPDATE users SET money = ? WHERE username = ?');
+            return $stmt->execute([$newBalance, $username]);
+        } catch (PDOException $e) {
+            error_log("Update balance error: " . $e->getMessage());
+            return false;
+        }
+    }
 }
 ?>
