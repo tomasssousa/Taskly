@@ -128,8 +128,13 @@ class Service {
 
     public static function add_as_favourite(string $username, int $id){
         $db = Database::getInstance();
-        $stmt = $db->prepare('INSERT INTO favourite_services (username, id) VALUES (?, ?)');
+        // Check if already favorited
+        $stmt = $db->prepare('SELECT COUNT(*) FROM favourite_services WHERE username = ? AND id = ?');
         $stmt->execute([$username, $id]);
+        if ($stmt->fetchColumn() == 0) {
+            $stmt = $db->prepare('INSERT INTO favourite_services (username, id) VALUES (?, ?)');
+            $stmt->execute([$username, $id]);
+        }
     }
 
     public static function remove_from_favourite(string $username, int $id){
@@ -291,16 +296,19 @@ class Service {
         $stmt = $db->prepare("
             SELECT s.*, 
                    s.taskname as task_title,
-                   s.image as all_images,
+                   GROUP_CONCAT(m.file_path) as all_images,
                    u.name as seller_name,
                    u.profile_photo as seller_photo
             FROM services s 
             LEFT JOIN users u ON s.user = u.username
+            LEFT JOIN media m ON m.service_id = s.id
             WHERE s.id = ?
+            GROUP BY s.id
         ");
         $stmt->execute([$id]);
         return $stmt->fetch();
     }
+
 
     #get all services
     public static function get_services(): array {
