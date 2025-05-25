@@ -94,3 +94,65 @@ function deleteService(serviceId) {
         alert('An error occurred while deleting the service: ' + error.message);
     });
 }
+
+function addCategory(event) {
+    event.preventDefault();
+    
+    const categoryName = document.getElementById('categoryName').value.trim();
+    
+    if (!categoryName) {
+        alert('Please enter a category name.');
+        return;
+    }
+    
+    // Send to backend API
+    fetch('../actions/action_add_category.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            categoryName: categoryName
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            location.reload(); // Refresh to show new category
+        } else {
+            alert('Error: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while adding the category.');
+    });
+}
+
+function deleteCategory(categoryValue) {
+    if (confirm(`Are you sure you want to delete the category "${categoryValue}"?`)) {
+        fetch('../actions/action_delete_category.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                categoryName: categoryValue
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+                location.reload(); // Refresh to update list
+            } else {
+                alert('Error: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while deleting the category.');
+        });
+    }
+}

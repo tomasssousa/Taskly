@@ -1,3 +1,7 @@
+<?php 
+session_start();
+require_once(__DIR__ . '/../database/service_db.php');
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,8 +23,8 @@
             <?php endif; ?>
             <form action="../actions/action_newtask.php" method="post" enctype="multipart/form-data">
                 <input type="text" placeholder="Task Title" name="taskname" required>
-                <input type="text" placeholder="Task Description" name="taskdesc" required>
-                <input type="text" placeholder="Pricing" name="pricing" required>
+                <textarea placeholder="Task Description" name="taskdesc" rows="4" required></textarea>
+                <input type="text" placeholder="Pricing" name="pricing" min="1" step="0.01" required>
                 <select name="deltime" required>
                     <option value="" disabled selected>Select Delivery Time</option>
                     <option value="less_than_1_day">Less than a day</option>
@@ -30,26 +34,18 @@
                 </select>
                 <select name="category" required>
                     <option value="" disabled selected>Select Category</option>
-                    <option value="Writing">Writing</option>
-                    <option value="Graphic_Design">Graphic Design</option>
-                    <option value="Web_App_Development">Web & App Development</option>
-                    <option value="Digital_Marketing">Digital Marketing</option>
-                    <option value="Image_Video">Image & Video</option>
-                    <option value="Translation">Translation</option>
-                    <option value="Business_Consulting">Business Consulting</option>
-                    <option value="Audio_Music">Audio & Music</option>
-
+                    <?php 
+                    $categories = Service::get_categories();
+                    foreach ($categories as $category): ?>
+                        <option value="<?= htmlspecialchars($category) ?>">
+                            <?= htmlspecialchars($category) ?>
+                        </option>
+                    <?php endforeach; ?>
                 </select>
                 <input type="file" placeholder="Upload photo(s)" name="taskphoto[]" accept="image/*" multiple>
                 <button type="submit">Submit Task</button>
             </form>
         </div>
     </main>
-    <script>
-        function toggleUserMenu() {
-            const menu = document.getElementById('userMenu');
-            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-        }
-    </script>
 </body>
 </html>

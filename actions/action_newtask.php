@@ -78,6 +78,8 @@ try {
         Service::set_category($serviceId, $category);   
     }
 
+
+
     $db->commit();
     header('Location: ../pages/home.php');
     exit();

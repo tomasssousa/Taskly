@@ -159,21 +159,13 @@ function handleSearchUsers() {
             exit();
         }
         
-        // Only allow task_mode = 0 users to start for new conversations
+        // Only allow task_mode = 0 users to start new conversations
         if (!Chat::can_start_conversation($_SESSION['username'])) {
             echo json_encode(['success' => true, 'users' => [], 'message' => 'Only task providers can start new conversations']);
             exit();
         }
         
-        $db = Database::getInstance();
-        $stmt = $db->prepare('
-            SELECT username, name, profile_photo 
-            FROM users 
-            WHERE username != ? AND (username LIKE ? OR name LIKE ?)
-            LIMIT 10
-        ');
-        $stmt->execute([$_SESSION['username'], "%$search%", "%$search%"]);
-        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $users = User::search_users($search);
         
         echo json_encode(['success' => true, 'users' => $users]);
         exit();

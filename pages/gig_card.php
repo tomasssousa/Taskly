@@ -2,7 +2,23 @@
 
 <?php
 function renderGigCard($service, $showSettings = false) {
-    $images = !empty($service['all_images']) ? explode(',', $service['all_images']) : ['default-gig.jpg'];
+    // Handle images the same way as task.php - filter out missing files
+    $images = [];
+    if (!empty($service['all_images'])) {
+        $imageList = explode(',', $service['all_images']);
+        foreach ($imageList as $image) {
+            $image = trim($image);
+            if (!empty($image) && file_exists(__DIR__ . '/../docs/' . $image)) {
+                $images[] = $image;
+            }
+        }
+    }
+    
+    // If no valid images found, use default
+    if (empty($images)) {
+        $images = ['default-gig.jpg'];
+    }
+    
     $isOwner = isset($_SESSION['username']) && $_SESSION['username'] === $service['user'];
     ?>
     <div class="gig-card" data-gig-id="<?= $service['id'] ?>">

@@ -156,17 +156,47 @@ body.settings-page .delete-account-btn:hover {
     background: #c62828;
 }
 
+.balance-section {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
 .balance {
-    font-size: 1.2em;
-    color: #333;
-    margin-top: 20px;
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-weight: bold;
 }
 
 .balance span {
-    color: #526D82;
+    color: #516c81;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.transfer-btn {
+    background: #516c81;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+.transfer-btn:hover {
+    background: #27364c;
+}
+
+.no-balance {
+    color: #6c757d;
+    font-style: italic;
+    margin-top: 0.5rem;
+    font-size: 2rem;
 }
 

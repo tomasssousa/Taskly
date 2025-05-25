@@ -8,7 +8,6 @@ if (!isset($_SESSION['username'])) {
 
 require_once(__DIR__ . '/../database/service_db.php');
 require_once(__DIR__ . '/../database/user_db.php');
-require_once(__DIR__ . '/../database/connection.php');
 
 $currentUser = User::get_user($_SESSION['username']);
 
@@ -26,15 +25,8 @@ $allUsers = User::get_users();
 $totalUsers = count($allUsers);
 
 try {
-    $db = Database::getInstance();
-    $stmt = $db->prepare("
-        SELECT s.*, u.name as seller_name 
-        FROM services s 
-        LEFT JOIN users u ON s.user = u.username 
-        ORDER BY s.id DESC
-    ");
-    $stmt->execute();
-    $allServices = $stmt->fetchAll();
+    
+    $allServices = Service::get_all_services();
     $totalServices = count($allServices);
 } catch (Exception $e) {
     error_log("Error fetching services: " . $e->getMessage());
@@ -99,6 +91,38 @@ try {
                     <?php endif; ?>
                 </tbody>
             </table>
+        </div>
+
+        <h2>Category Management</h2>
+        <div class="category-management">
+            <div class="add-category-form">
+                <h3>Add New Category</h3>
+                <form id="addCategoryForm" onsubmit="addCategory(event)">
+                    <div class="form-group">
+                        <input type="text" 
+                               id="categoryName" 
+                               name="categoryName" 
+                               placeholder="Category Name" 
+                               required>
+                        <button type="submit" class="admin-btn add-btn">Add</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="current-categories">
+                <h3>Current Categories</h3>
+                <div class="category-list">
+                    <?php 
+                    $categories = Service::get_categories();
+                    
+                    foreach ($categories as $category): ?>
+                        <div class="category-item" data-category="<?= htmlspecialchars($category) ?>">
+                            <span class="category-name"><?= htmlspecialchars($category) ?></span>
+                            <button class="admin-btn delete-btn small" onclick="deleteCategory('<?= htmlspecialchars($category) ?>')">Delete</button>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
         </div>
 
         <h2>Task Management (<?= count($allServices) ?> services)</h2>

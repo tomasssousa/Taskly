@@ -21,6 +21,25 @@ $current_user = null;
 if (isset($_SESSION['username'])) {
     $current_user = User::get_user($_SESSION['username']);
 }
+
+// Handle money transfer
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['transfer_money'])) {
+    if ($current_user && ($current_user['money'] ?? 0) > 0) {
+        $transferAmount = $current_user['money'];
+        
+        if (User::update_balance($_SESSION['username'], 0)) {
+            $_SESSION['success'] = "Successfully transferred €{$transferAmount} to your bank account!";
+            
+            // Redirect to same page to prevent form resubmission and refresh data
+            header('Location: settings.php');
+            exit();
+        } else {
+            $_SESSION['error'] = 'Failed to transfer money. Please try again.';
+        }
+    } else {
+        $_SESSION['error'] = 'No funds available to transfer.';
+    }
+}
 ?>
 
 <main>
@@ -32,7 +51,20 @@ if (isset($_SESSION['username'])) {
         <div class="tab-content" id="analytics-tab">
             <h3>Analytics</h3>
             
-            <p class="balance">Balance: <span><?= htmlspecialchars($current_user['money'] ?? '0 euros') ?></span></p>
+            <div class="balance-section">
+                <p class="balance">Balance: <span>€<?= htmlspecialchars($current_user['money'] ?? '0') ?></span></p>
+                
+                <?php if (($current_user['money'] ?? 0) > 0): ?>
+                    <form method="post" style="margin-top: 1em;">
+                        <input type="hidden" name="transfer_money" value="1">
+                        <button type="submit" class="transfer-btn" onclick="return confirm('Transfer €<?= $current_user['money'] ?> to your bank account? This will empty your Taskly balance.')">
+                            Transfer to Bank Account
+                        </button>
+                    </form>
+                <?php else: ?>
+                    <p class="no-balance">No funds available to transfer</p>
+                <?php endif; ?>
+            </div>
         </div>
         <div class="tab-content" id="settings-tab" style="display:none;">
             <h3>Edit Account Details</h3>

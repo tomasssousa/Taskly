@@ -2,7 +2,6 @@
 session_start();
 
 require_once(__DIR__ . '/../database/user_db.php');
-require_once(__DIR__ . '/../database/connection.php');
 
 header('Content-Type: application/json');
 

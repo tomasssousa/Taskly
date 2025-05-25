@@ -33,18 +33,12 @@ try {
     die("Error: " . $e->getMessage());
 }
 
-// Check user authentication and favorites
 if (isset($_SESSION['username'])) {
     $currentUser = User::get_user($_SESSION['username']);
     $isTasker = $currentUser && $currentUser['task_mode'];
     
-    // Check if this service is in user's favorites with direct SQL
     try {
-        require_once(__DIR__ . '/../database/connection.php');
-        $db = Database::getInstance();
-        $stmt = $db->prepare('SELECT COUNT(*) FROM favourite_services WHERE username = ? AND id = ?');
-        $stmt->execute([$_SESSION['username'], $taskId]);
-        $isFavorite = $stmt->fetchColumn() > 0;
+        $isFavorite = Service::get_favourite_count($_SESSION['username'], $taskId);
     } catch (Exception $e) {
         error_log("Favorites check error: " . $e->getMessage());
         $isFavorite = false;
@@ -52,6 +46,8 @@ if (isset($_SESSION['username'])) {
 } else {
     $isFavorite = false;
 }
+
+$reviews = Service::get_service_reviews($taskId);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -95,20 +91,7 @@ if (isset($_SESSION['username'])) {
                         <?php endif; ?>
                     </div>
                 </div>
-                <div class="info-section">
-                    <h2 class="task-title"><?= htmlspecialchars($task['task_title']) ?></h2>
-                    <div class="task-user">
-                        <a href="user.php?user=<?= urlencode($task['user']) ?>" class="user-profile-link">
-                            <img src="<?= !empty($profilePhoto) ? '../docs/' . htmlspecialchars($profilePhoto) : '../docs/user_icon.png' ?>"
-                                 alt="<?= htmlspecialchars($task['user']) ?>"
-                                 class="task-user-avatar">
-                            <span class="user-name"><?= htmlspecialchars($task['user']) ?></span>
-                        </a>
-                    </div>
-                    <div class="task-description">
-                        <?= nl2br(htmlspecialchars($task['description'])) ?>
-                    </div>
-                </div>
+                
                 <div class="delivery-section">
                     <div class="delivery-info">
                         <div class="delivery-time">
@@ -149,14 +132,80 @@ if (isset($_SESSION['username'])) {
                         <?php endif; ?>
                     </div>
                 </div>
-                <div class="reviews-section">
-                    <span class="review-label">Reviews</span>
-                    <div class="review-rating-group">
-                        <span class="review-rating-number">4.5</span>
-                        <span class="review-stars">★★★★½☆</span>
+                
+                <!-- 3. Info section (left, bottom) -->
+                <div class="info-section">
+                    <h2 class="task-title"><?= htmlspecialchars($task['task_title']) ?></h2>
+                    <div class="task-user">
+                        <a href="user.php?user=<?= urlencode($task['user']) ?>" class="user-profile-link">
+                            <img src="<?= !empty($profilePhoto) ? '../docs/' . htmlspecialchars($profilePhoto) : '../docs/user_icon.png' ?>"
+                                 alt="<?= htmlspecialchars($task['user']) ?>"
+                                 class="task-user-avatar">
+                            <span class="user-name"><?= htmlspecialchars($task['user']) ?></span>
+                        </a>
+                    </div>
+                    <div class="task-description">
+                        <?= nl2br(htmlspecialchars($task['description'])) ?>
                     </div>
                 </div>
+                
+                <div class="reviews-section">
+    <div class="reviews-header">
+        <span>Reviews</span>
+        <?php 
+        $rating = Service::get_service_rating($taskId);
+        if ($rating['count'] > 0) {
+            echo number_format($rating['average'], 2) . " ⭐ (" . $rating['count'] . ")";
+        }
+        ?>
+    </div>
+    <div class="reviews-list">
+        <?php if (!empty($reviews)): ?>
+            <?php foreach ($reviews as $review): ?>
+                <div class="review-item">
+                    <div class="review-user">
+                        <img src="<?= !empty($review['profile_photo']) ? '../docs/' . htmlspecialchars($review['profile_photo']) : '../docs/user_icon.png' ?>" 
+                             alt="<?= htmlspecialchars($review['user_name']) ?>" 
+                             class="review-avatar">
+                        <span class="review-username"><?= htmlspecialchars($review['user_name']) ?></span>
+                        <?php if ($review['transaction_rating']): ?>
+                            <span class="review-rating">
+                                <?php for ($i = 1; $i <= 5; $i++): ?>
+                                    <span class="<?= $i <= $review['transaction_rating'] ? 'star filled' : 'star empty' ?>">★</span>
+                                <?php endfor; ?>
+                            </span>
+                        <?php endif; ?>
+                    </div>
+                    <div class="review-text">
+                        <?= nl2br(htmlspecialchars($review['text'])) ?>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <div class="no-reviews">
+                No reviews yet. Be the first to review this service!
             </div>
+        <?php endif; ?>
+    </div>
+    <?php if (isset($_SESSION['username']) && $_SESSION['username'] !== $task['user']): ?>
+        <form id="reviewForm" class="review-form" onsubmit="submitReview(event)">
+            <div class="rating-input">
+                <label>Rating:</label>
+                <?php for ($i = 1; $i <= 5; $i++): ?>
+                    <span class="star-input" data-rating="<?= $i ?>" onclick="setRating(<?= $i ?>)">★</span>
+                <?php endfor; ?>
+                <input type="hidden" id="ratingValue" name="rating" value="0" required>
+            </div>
+            <textarea id="reviewText" name="reviewText" placeholder="Write your review here..." rows="2" required></textarea>
+            <button type="submit" class="submit-review-btn">Submit Review</button>
+        </form>
+    <?php elseif (!isset($_SESSION['username'])): ?>
+        <div class="review-form disabled">Please <a href="login.php">log in</a> to leave a review</div>
+    <?php else: ?>
+        <div class="review-form disabled">You cannot review your own service</div>
+    <?php endif; ?>
+</div>
+            </div> 
         </div>
     </section>
 </main>
