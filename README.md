@@ -1,37 +1,63 @@
-# ltw17g01
+# Taskly
+
+Taskly is a lightweight service marketplace built with PHP and SQLite. Users can publish services, discover and filter listings, contact service providers, simulate purchases, save favorites, and leave reviews.
 
 ## Features
 
-**User:**
-- [x] Register a new account.
-- [x] Log in and out.
-- [x] Edit their profile, including their name, username, password, and email.
+- User registration, login, profiles, and account settings
+- Service creation, editing, deletion, and image uploads
+- Search and filters for category, price, and delivery time
+- Favorites, internal messaging, simulated checkout, and reviews
+- Admin dashboard for managing users, services, and categories
 
-**Freelancers:**
-- [x] List new services, providing details such as category, pricing, delivery time, and service description, along with images or videos.
-- [x] Track and manage their offered services.
-- [x] Respond to inquiries from clients regarding their services and provide custom offers if needed.
-- [ ] Mark services as completed once delivered.
+## Technology
 
-**Clients:**
-- [x] Browse services using filters like category, price, and rating.
-- [x] Engage with freelancers to ask questions or request custom orders.
-- [x] Hire freelancers and proceed to checkout (simulate payment process).
-- [x] Leave ratings and reviews for completed services.
+- PHP with PDO
+- SQLite
+- HTML, CSS, and vanilla JavaScript
+- No framework or package manager is required
 
-**Admins:**
-- [x] Elevate a user to admin status.
-- [x] Introduce new service categories and other pertinent entities.
-- [x] Oversee and ensure the smooth operation of the entire system.
+## Run locally
 
-**Extra:**
-- [x] Favoriite services task
+### Requirements
 
-## Running
+- PHP with the `PDO_SQLite` extension enabled
+- SQLite CLI (only needed to reset the database from the schema)
 
-    sqlite3 database/database.db < database/database.sql
-    php -S localhost:9000
+### Start the application
 
-## Credentials
+From the project root:
 
-- admin/12345678
+```bash
+php -S localhost:9000
+```
+
+Open [http://localhost:9000](http://localhost:9000) in a browser.
+
+The application uses `database/database3.db` by default. A sample database is included in the repository, so no setup is required for a first run.
+
+To reset the database with the schema and seed data:
+
+```bash
+sqlite3 database/database3.db < database/database.sql
+```
+
+> The reset command deletes the existing tables and data before recreating them.
+
+## Demo account
+
+```text
+Username: admin
+Password: 12345678
+```
+
+## Project structure
+
+```text
+actions/      Request handlers and application actions
+components/   Shared PHP components
+database/     SQLite databases, schema, and data access code
+docs/         Static assets and uploaded media
+pages/        Application pages, JavaScript, and CSS
+index.php     Application entry point
+```
